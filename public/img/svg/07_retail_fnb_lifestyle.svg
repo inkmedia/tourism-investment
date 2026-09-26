@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"
+ role="img" aria-labelledby="title desc">
+  <title id="title">Retail, F&amp;B &amp; Lifestyle premium icon</title>
+  <desc id="desc">Editable vector icon with separately grouped elements for CSS, JavaScript, GSAP or SVG animation workflows.</desc>
+  <style>
+    :root {
+      --ink: #24222B;
+      --accent: #C99A43;
+    }
+    .ink {
+      fill: none;
+      stroke: var(--ink);
+      stroke-width: 1.85;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+    }
+    .accent {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 1.85;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+    }
+    .accent-fill { fill: var(--accent); }
+    .ink-fill { fill: var(--ink); }
+  </style>
+  <g id="icon-retail" data-icon="retail-fnb-lifestyle">
+    <g id="storefront" data-part="storefront">
+      <path class="ink" d="M16 26H48L45 20H19L16 26Z"/>
+      <path class="ink" d="M19 26V49H45V26"/>
+      <path class="ink" d="M16 49H48"/>
+    </g>
+    <g id="awning" data-part="awning">
+      <path class="accent" d="M20 26V30C20 32 22 33 24 33C26 33 28 32 28 30V26"/>
+      <path class="accent" d="M28 26V30C28 32 30 33 32 33C34 33 36 32 36 30V26"/>
+      <path class="accent" d="M36 26V30C36 32 38 33 40 33C42 33 44 32 44 30V26"/>
+    </g>
+    <g id="cup" data-part="cup">
+      <path class="ink" d="M27 39H36V45H27Z"/>
+      <path class="ink" d="M36 40H38C40 40 40 44 38 44H36"/>
+      <path class="accent" d="M29 36C29 34.5 30 34 30 32.5M33 36C33 34.5 34 34 34 32.5"/>
+    </g>
+  </g>
+</svg>

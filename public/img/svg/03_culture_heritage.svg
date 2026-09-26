@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"
+ role="img" aria-labelledby="title desc">
+  <title id="title">Culture &amp; Heritage premium icon</title>
+  <desc id="desc">Editable vector icon with separately grouped elements for CSS, JavaScript, GSAP or SVG animation workflows.</desc>
+  <style>
+    :root {
+      --ink: #24222B;
+      --accent: #C99A43;
+    }
+    .ink {
+      fill: none;
+      stroke: var(--ink);
+      stroke-width: 1.85;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+    }
+    .accent {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 1.85;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+    }
+    .accent-fill { fill: var(--accent); }
+    .ink-fill { fill: var(--ink); }
+  </style>
+  <g id="icon-culture" data-icon="culture-heritage">
+    <g id="roof" data-part="roof">
+      <path class="ink" d="M14 25H50"/>
+      <path class="ink" d="M18 25L22 20H42L46 25"/>
+      <path class="accent" d="M22 20L25 16H39L42 20"/>
+    </g>
+    <g id="facade" data-part="facade">
+      <path class="ink" d="M20 25V49H44V25"/>
+      <path class="ink" d="M25 31H39"/>
+      <path class="ink" d="M27 49V39H37V49"/>
+    </g>
+    <g id="heritage-motif" data-part="heritage-motif">
+      <path class="accent" d="M32 27L36 31L32 35L28 31Z"/>
+      <circle class="accent-fill" cx="32" cy="31" r="1.1"/>
+    </g>
+    <g id="base" data-part="base">
+      <path class="ink" d="M16 49H48"/>
+    </g>
+  </g>
+</svg>

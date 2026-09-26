@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"
+ role="img" aria-labelledby="title desc">
+  <title id="title">Events &amp; Activities premium icon</title>
+  <desc id="desc">Editable vector icon with separately grouped elements for CSS, JavaScript, GSAP or SVG animation workflows.</desc>
+  <style>
+    :root {
+      --ink: #24222B;
+      --accent: #C99A43;
+    }
+    .ink {
+      fill: none;
+      stroke: var(--ink);
+      stroke-width: 1.85;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+    }
+    .accent {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 1.85;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+    }
+    .accent-fill { fill: var(--accent); }
+    .ink-fill { fill: var(--ink); }
+  </style>
+  <g id="icon-events" data-icon="events-activities">
+    <g id="stage" data-part="stage">
+      <path class="ink" d="M17 46H47"/>
+      <path class="ink" d="M21 46V34H43V46"/>
+    </g>
+    <g id="spotlight" data-part="spotlight">
+      <path class="accent" d="M32 12V19M18.5 17.5L23.5 22.5M45.5 17.5L40.5 22.5"/>
+      <circle class="accent" cx="32" cy="28" r="6"/>
+    </g>
+    <g id="energy" data-part="energy">
+      <path class="ink" d="M14 28H21M43 28H50"/>
+      <path class="ink" d="M25 46C27 41 37 41 39 46"/>
+    </g>
+    <g id="spark" data-part="spark">
+      <path class="accent" d="M32 24V32M28 28H36"/>
+    </g>
+  </g>
+</svg>

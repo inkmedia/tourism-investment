@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"
+ role="img" aria-labelledby="title desc">
+  <title id="title">Attractions &amp; Leisure premium icon</title>
+  <desc id="desc">Editable vector icon with separately grouped elements for CSS, JavaScript, GSAP or SVG animation workflows.</desc>
+  <style>
+    :root {
+      --ink: #24222B;
+      --accent: #C99A43;
+    }
+    .ink {
+      fill: none;
+      stroke: var(--ink);
+      stroke-width: 1.85;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+    }
+    .accent {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 1.85;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+    }
+    .accent-fill { fill: var(--accent); }
+    .ink-fill { fill: var(--ink); }
+  </style>
+  <g id="icon-attractions" data-icon="attractions-leisure">
+    <g id="orbit" data-part="orbit">
+      <circle class="ink" cx="32" cy="29" r="14"/>
+      <circle class="accent" cx="32" cy="29" r="3.2"/>
+    </g>
+    <g id="spokes" data-part="spokes">
+      <path class="ink" d="M32 15V20M32 38V43M18 29H23M41 29H46M22.1 19.1L25.7 22.7M38.3 35.3L41.9 38.9M41.9 19.1L38.3 22.7M25.7 35.3L22.1 38.9"/>
+    </g>
+    <g id="leisure-arc" data-part="leisure-arc">
+      <path class="accent" d="M14 49C22 44 42 44 50 49"/>
+      <path class="ink" d="M18 53H46"/>
+    </g>
+  </g>
+</svg>

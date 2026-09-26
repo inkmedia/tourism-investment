@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"
+ role="img" aria-labelledby="title desc">
+  <title id="title">Nature &amp; Eco-Tourism premium icon</title>
+  <desc id="desc">Editable vector icon with separately grouped elements for CSS, JavaScript, GSAP or SVG animation workflows.</desc>
+  <style>
+    :root {
+      --ink: #24222B;
+      --accent: #C99A43;
+    }
+    .ink {
+      fill: none;
+      stroke: var(--ink);
+      stroke-width: 1.85;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+    }
+    .accent {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 1.85;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+    }
+    .accent-fill { fill: var(--accent); }
+    .ink-fill { fill: var(--ink); }
+  </style>
+  <g id="icon-nature" data-icon="nature-ecotourism">
+    <g id="mountains" data-part="mountains">
+      <path class="ink" d="M12 43L24 25L31 34L38 21L52 43"/>
+      <path class="accent" d="M35.5 25L38 21L41 25"/>
+    </g>
+    <g id="leaf" data-part="leaf">
+      <path class="accent" d="M20 19C26 15 31 16 34 19C30 23 25 25 20 19Z"/>
+      <path class="accent" d="M22 20L30 19"/>
+    </g>
+    <g id="river" data-part="river">
+      <path class="ink" d="M17 47C23 44 28 44 32 47C36 50 41 50 47 47"/>
+      <path class="ink" d="M20 52C25 50 29 50 33 52C37 54 41 54 45 52"/>
+    </g>
+  </g>
+</svg>

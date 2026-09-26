@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"
+ role="img" aria-labelledby="title desc">
+  <title id="title">Wellness &amp; Mindfulness premium icon</title>
+  <desc id="desc">Editable vector icon with separately grouped elements for CSS, JavaScript, GSAP or SVG animation workflows.</desc>
+  <style>
+    :root {
+      --ink: #24222B;
+      --accent: #C99A43;
+    }
+    .ink {
+      fill: none;
+      stroke: var(--ink);
+      stroke-width: 1.85;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+    }
+    .accent {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 1.85;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+    }
+    .accent-fill { fill: var(--accent); }
+    .ink-fill { fill: var(--ink); }
+  </style>
+  <g id="icon-wellness" data-icon="wellness-mindfulness">
+    <g id="breath-orbit" data-part="breath-orbit">
+      <circle class="accent" cx="32" cy="23" r="6"/>
+      <path class="accent" d="M32 14V10M32 36V32"/>
+    </g>
+    <g id="lotus-left" data-part="lotus-left">
+      <path class="ink" d="M31.5 46C24 46 18.5 41.5 17 34C24.5 34 30 38.5 31.5 46Z"/>
+    </g>
+    <g id="lotus-right" data-part="lotus-right">
+      <path class="ink" d="M32.5 46C40 46 45.5 41.5 47 34C39.5 34 34 38.5 32.5 46Z"/>
+    </g>
+    <g id="lotus-center" data-part="lotus-center">
+      <path class="accent" d="M32 46C26.5 40.5 26.5 33 32 28C37.5 33 37.5 40.5 32 46Z"/>
+    </g>
+    <path id="ground" data-part="ground" class="ink" d="M20 50H44"/>
+  </g>
+</svg>
