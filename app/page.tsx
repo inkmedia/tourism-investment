@@ -5,6 +5,7 @@ import WhyInvest from "@/components/WhyInvest";
 import Opportunities from "@/components/Opportunities";
 import InvestorEnquiries from "@/components/InvestorEnquiries";
 import HowToInvest from "@/components/HowToInvest";
+import AvailableInvestments from "@/components/AvailableInvestments";
 import PlannedAttractions from "@/components/PlannedAttractions";
 import SiteContext from "@/components/SiteContext";
 import WhyInvestNow from "@/components/WhyInvestNow";
@@ -90,6 +91,7 @@ export default function Home() {
       </section>
       <WhyInvest />
       <Opportunities />
+      <AvailableInvestments />
       <PlannedAttractions />
       <SiteContext />
       <WhyInvestNow />
