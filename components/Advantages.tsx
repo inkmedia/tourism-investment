@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ArrowRight, X } from "lucide-react";
 
@@ -23,7 +23,11 @@ export default function Advantages() {
   const wordsRef = useRef<HTMLDivElement>(null);
   const footerRef = useRef<HTMLElement>(null);
   const [active, setActive] = useState<number | null>(null);
+  const [preview, setPreview] = useState(0);
+  const letterTimelines = useRef(new Map<number, gsap.core.Timeline>());
+  const previousTitle = useRef<number | null>(null);
   const floating = useRef<HTMLDivElement>(null);
+  const floatingCard = useRef<HTMLDivElement>(null);
   const aim = useRef({ x: 0, y: 0 });
   const dialog = useRef<HTMLDialogElement>(null);
   const panel = useRef<HTMLDivElement>(null);
@@ -49,36 +53,131 @@ export default function Advantages() {
     return () => { observer.disconnect(); gsap.killTweensOf([header, ...words, footer]); };
   }, []);
 
+  // Two text faces roll through the same plane, as in Codrops' 3DLettersMenuHover.
+  // See THIRD_PARTY_NOTICES.md for attribution and license.
+  useLayoutEffect(() => {
+    const timelines = letterTimelines.current;
+    const context = gsap.context(() => {
+      gsap.set(".advantages__face--clone .advantages__letter", { yPercent: -100, rotationX: 90, opacity: 0 });
+    }, wordsRef);
+    return () => {
+      timelines.forEach((timeline) => timeline.kill());
+      timelines.clear();
+      previousTitle.current = null;
+      context.revert();
+    };
+  }, []);
+
   useEffect(() => {
-    if (active === null || !floating.current) return;
-    const box = floating.current;
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let x = aim.current.x, y = aim.current.y, last = 0, frame = 0;
-    gsap.fromTo(box, { opacity: 0, scale: .9, rotation: -1.5 }, { opacity: 1, scale: 1, rotation: 0, duration: reduced ? 0 : .42, ease: "back.out(1.5)" });
+    const buttons = wordsRef.current!.querySelectorAll<HTMLButtonElement>(".advantages__word button");
+    const roll = (index: number, entering: boolean) => {
+      const original = buttons[index].querySelectorAll(".advantages__face--original .advantages__letter");
+      const clone = buttons[index].querySelectorAll(".advantages__face--clone .advantages__letter");
+      letterTimelines.current.get(index)?.kill();
+      if (reduced) {
+        gsap.set(original, { yPercent: 0, rotationX: 0, opacity: 1 });
+        gsap.set(clone, { yPercent: -100, rotationX: 90, opacity: 0 });
+        return;
+      }
+      const timeline = gsap.timeline({
+        delay: entering ? .1 : 0,
+        defaults: { duration: .5, ease: "power2.out", stagger: .025 },
+      });
+      timeline
+        .to(original, { yPercent: entering ? 100 : 0, rotationX: entering ? -90 : 0, opacity: entering ? 0 : 1 }, 0)
+        .to(clone, { yPercent: entering ? 0 : -100, rotationX: entering ? 0 : 90, opacity: entering ? 1 : 0 }, 0);
+      letterTimelines.current.set(index, timeline);
+    };
+    if (previousTitle.current !== null && previousTitle.current !== active) roll(previousTitle.current, false);
+    if (active !== null) roll(active, true);
+    previousTitle.current = active;
+  }, [active]);
+
+  // Swap copy only after the outgoing card has finished shrinking.
+  // Killing the previous tween also cancels stale swaps during rapid hovering.
+  useLayoutEffect(() => {
+    const card = floatingCard.current!;
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let tween: gsap.core.Tween;
+    if (active === null) {
+      tween = gsap.to(card, { autoAlpha: 0, scale: reduced ? 1 : .78, duration: reduced ? 0 : .2, ease: "power2.in" });
+    } else if (active !== preview) {
+      tween = gsap.to(card, {
+        autoAlpha: 0, scale: reduced ? 1 : .78,
+        duration: reduced || Number(gsap.getProperty(card, "opacity")) === 0 ? 0 : .18,
+        ease: "power2.in",
+        onComplete: () => setPreview(active),
+      });
+    } else {
+      if (Number(gsap.getProperty(card, "opacity")) === 0) gsap.set(card, { scale: reduced ? 1 : .78 });
+      tween = gsap.to(card, { autoAlpha: 1, scale: 1, duration: reduced ? 0 : .38, ease: "power3.out" });
+    }
+    return () => { tween.kill(); };
+  }, [active, preview]);
+
+  useEffect(() => {
+    const box = floating.current!;
+    const card = floatingCard.current!;
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (active === null) return;
+    // The outer element follows the pointer; the inner card swings independently.
+    const position = () => {
+      const margin = reduced ? 12 : 38;
+      const width = box.offsetWidth, height = box.offsetHeight;
+      return {
+        x: Math.max(margin, Math.min(innerWidth - width - margin, aim.current.x - width * .65)),
+        y: Math.max(margin, Math.min(innerHeight - height - margin, aim.current.y + 28)),
+      };
+    };
+    const target = position();
+    const visible = Number(gsap.getProperty(card, "opacity")) > 0;
+    let x = visible ? Number(gsap.getProperty(box, "x")) : target.x;
+    let y = visible ? Number(gsap.getProperty(box, "y")) : target.y;
+    let last = 0, frame = 0, tilt = reduced ? 0 : Number(gsap.getProperty(card, "rotation"));
+    gsap.set(box, { x, y });
+    const moveX = gsap.quickSetter(box, "x", "px");
+    const moveY = gsap.quickSetter(box, "y", "px");
+    const rotate = gsap.quickSetter(card, "rotation", "deg");
     const tick = (time: number) => {
       const dt = Math.min(32, time - (last || time - 16));
       last = time;
-      const bounds = box.getBoundingClientRect();
-      const targetX = Math.max(12, Math.min(innerWidth - bounds.width - 12, aim.current.x + 22));
-      const targetY = Math.max(12, Math.min(innerHeight - bounds.height - 12, aim.current.y + 24));
-      const dx = targetX - x, dy = targetY - y;
-      const ease = reduced ? 1 : 1 - Math.exp(-dt / 65);
-      x += dx * ease; y += dy * ease;
-      box.style.left = `${x}px`; box.style.top = `${y}px`;
-      box.style.setProperty("--float-skew", `${reduced ? 0 : Math.max(-3, Math.min(3, dx * .035))}deg`);
-      box.style.setProperty("--float-stretch", String(reduced ? 1 : 1 + Math.min(.035, Math.hypot(dx, dy) / 2000)));
+      const target = position();
+      const dx = target.x - x;
+      const ease = reduced ? 1 : 1 - Math.exp(-dt / 85);
+      x += dx * ease;
+      y += (target.y - y) * ease;
+      tilt += ((reduced ? 0 : Math.max(-9, Math.min(9, dx * .12))) - tilt) * ease;
+      moveX(x); moveY(y); rotate(tilt);
       frame = requestAnimationFrame(tick);
     };
     frame = requestAnimationFrame(tick);
     const dismiss = () => setActive(null);
     const key = (event: KeyboardEvent) => { if (event.key === "Escape") dismiss(); };
+    const outside = (event: PointerEvent) => {
+      if (!(event.target instanceof Element) || !event.target.closest(".advantages__word button")) dismiss();
+    };
     window.addEventListener("keydown", key);
+    window.addEventListener("pointerdown", outside);
     window.addEventListener("scroll", dismiss, { passive: true });
-    return () => { cancelAnimationFrame(frame); gsap.killTweensOf(box); window.removeEventListener("keydown", key); window.removeEventListener("scroll", dismiss); };
+    window.addEventListener("resize", dismiss);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("keydown", key);
+      window.removeEventListener("pointerdown", outside);
+      window.removeEventListener("scroll", dismiss);
+      window.removeEventListener("resize", dismiss);
+    };
   }, [active]);
+
+  const reveal = (index: number, x: number, y: number) => {
+    aim.current = { x, y };
+    setActive(index);
+  };
 
   useEffect(() => () => {
     if (oldOverflow.current !== null) document.body.style.overflow = oldOverflow.current;
+    if (floatingCard.current) gsap.killTweensOf(floatingCard.current);
     if (panel.current) gsap.killTweensOf(panel.current);
     if (dialog.current) gsap.killTweensOf(dialog.current);
   }, []);
@@ -136,17 +235,54 @@ export default function Advantages() {
     <section ref={sectionRef} className="advantages" aria-labelledby="advantages-title">
       <div className="advantages__inner">
         <header ref={headerRef} className="advantages__header"><div><p className="advantages__eyebrow">Why GMC stands apart</p><h2 id="advantages-title">GMC’s unparalleled advantages</h2></div><p>A purpose-built legal, tax, banking and land tenure framework designed to give investors clarity and confidence before the destination fully matures.</p></header>
-        <div ref={wordsRef} className="advantages__words" onPointerLeave={() => setActive(null)}>
+        <div ref={wordsRef} className="advantages__words">
           {advantages.map(([label, title, description], index) => (
             <div className="advantages__word" key={label}>
-              <button type="button" aria-describedby={`advantage-description-${index}`} onPointerEnter={(event) => { if (event.pointerType !== "mouse") return; aim.current = { x: event.clientX, y: event.clientY }; setActive(index); }} onPointerMove={(event) => { if (event.pointerType === "mouse") aim.current = { x: event.clientX, y: event.clientY }; }} onFocus={(event) => { const rect = event.currentTarget.getBoundingClientRect(); aim.current = { x: rect.left, y: rect.bottom }; setActive(index); }} onBlur={() => setActive(null)} onClick={(event) => { const rect = event.currentTarget.getBoundingClientRect(); aim.current = { x: rect.left, y: rect.bottom }; setActive(index); }}><span>{label}</span><small>{String(index + 1).padStart(2, "0")}</small></button>
+              <button
+                type="button"
+                aria-label={label}
+                aria-describedby={`advantage-description-${index}`}
+                data-active={active === index || undefined}
+                onPointerEnter={(event) => { if (event.pointerType === "mouse") reveal(index, event.clientX, event.clientY); }}
+                onPointerMove={(event) => { if (event.pointerType === "mouse") aim.current = { x: event.clientX, y: event.clientY }; }}
+                onPointerLeave={(event) => { if (event.pointerType === "mouse") setActive(null); }}
+                onFocus={(event) => {
+                  if (!event.currentTarget.matches(":focus-visible")) return;
+                  const rect = event.currentTarget.getBoundingClientRect();
+                  reveal(index, rect.left + rect.width / 2, rect.bottom);
+                }}
+                onBlur={() => setActive(null)}
+                onClick={(event) => {
+                  if (event.detail > 0 && matchMedia("(hover: hover) and (pointer: fine)").matches) {
+                    reveal(index, event.clientX, event.clientY);
+                  } else {
+                    const rect = event.currentTarget.getBoundingClientRect();
+                    reveal(index, rect.left + rect.width / 2, rect.bottom);
+                  }
+                }}
+              >
+                <span className="advantages__label" aria-hidden="true">
+                  {["original", "clone"].map((face) => (
+                    <span className={`advantages__face advantages__face--${face}`} key={face}>
+                      {label.split(" ").map((word, wordIndex) => <span className="advantages__token" key={wordIndex}>{wordIndex > 0 && "\u00a0"}{Array.from(word).map((letter, letterIndex) => <span className="advantages__letter" key={letterIndex}>{letter}</span>)}</span>)}
+                    </span>
+                  ))}
+                </span>
+                <small aria-hidden="true">{String(index + 1).padStart(2, "0")}</small>
+              </button>
               <span className="advantages__sr" id={`advantage-description-${index}`}>{title}. {description}</span>
             </div>
           ))}
         </div>
         <footer ref={footerRef} className="advantages__footer"><p>Explore the advantages. Discover the framework behind them.</p><button ref={opener} type="button" onClick={open} className="button button--gold swap-button"><span className="swap-button__track"><span className="swap-button__face">View more <span className="swap-button__icon"><ArrowRight aria-hidden="true" /></span></span><span className="swap-button__face" aria-hidden="true">View more <span className="swap-button__icon"><ArrowRight /></span></span></span></button></footer>
       </div>
-      {active !== null && <div ref={floating} className="advantages__floating" aria-hidden="true"><span className="advantages__eyebrow">{String(active + 1).padStart(2, "0")} / Why GMC stands apart</span><h3>{advantages[active][1]}</h3><p>{advantages[active][2]}</p></div>}
+      <div ref={floating} className="advantages__floating" aria-hidden="true">
+        <div ref={floatingCard} className="advantages__floating-card">
+          <span className="advantages__eyebrow">{String(preview + 1).padStart(2, "0")} / Why GMC stands apart</span>
+          <h3>{advantages[preview][1]}</h3>
+          <p>{advantages[preview][2]}</p>
+        </div>
+      </div>
       <dialog ref={dialog} className="advantages-dialog" aria-labelledby="advantages-dialog-title" onCancel={(event) => { event.preventDefault(); close(); }} onClose={restore} onClick={(event) => { if (event.target === event.currentTarget) close(); }}>
         <div ref={panel} className="advantages-dialog__panel" data-lenis-prevent>
           <header className="advantages-dialog__header"><div><p className="advantages__eyebrow">The investor framework</p><h2 id="advantages-dialog-title">Clarity. Confidence. Opportunity.</h2></div><button type="button" onClick={close} aria-label="Close investor framework" autoFocus><X /></button></header>
