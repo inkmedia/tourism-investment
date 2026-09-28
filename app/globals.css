@@ -4251,3 +4251,339 @@ button {
     transform: translateY(0);
   }
 }
+
+/* Click-open covers: a second way to browse the investment opportunities. */
+.opportunity-books {
+  padding: 100px clamp(24px, 4vw, 80px);
+  background: #f4f0e9;
+  color: var(--ink);
+  scroll-margin-top: 90px;
+}
+.opportunity-books__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 32px;
+  margin-bottom: 36px;
+}
+.opportunity-books__header h2 {
+  margin: 12px 0 0;
+  font-family: var(--font-heading);
+  font-size: clamp(30px, 3.5vw, 56px);
+  font-weight: 400;
+}
+.opportunity-books__header > p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #59615e;
+}
+.opportunity-books__count {
+  margin: 24px 0;
+  font-size: 13px;
+  color: #59615e;
+}
+.opportunity-books__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 40px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.opportunity-book {
+  position: relative;
+  height: 410px;
+  perspective: 1200px;
+  perspective-origin: left center;
+  isolation: isolate;
+}
+.opportunity-book.is-open {
+  z-index: 2;
+}
+.opportunity-book__page {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 28px 20px 28px 50px;
+  background: #fffdf8;
+  box-shadow: 0 10px 26px #17251b14;
+  border: 1px solid #ded8cb;
+}
+.opportunity-book__page-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.opportunity-book__page-top > span {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #665934;
+}
+.opportunity-book__page-top button {
+  display: grid;
+  place-items: center;
+  flex: 0 0 36px;
+  height: 36px;
+  border: 1px solid #d7d0c3;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+.opportunity-book__page h3 {
+  font-family: var(--font-heading);
+  font-size: 23px;
+  font-weight: 400;
+  line-height: 1.3;
+  margin: 18px 0;
+}
+.opportunity-book__details {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  padding-right: 8px;
+  min-height: 0;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.opportunity-book__details dl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  margin: 0 0 22px;
+  padding: 16px 0;
+  border-block: 1px solid #ded8cb;
+}
+.opportunity-book__details dt {
+  font-size: 11px;
+  color: #696b60;
+}
+.opportunity-book__details dd {
+  font-size: 17px;
+  margin: 4px 0 0;
+}
+.opportunity-book__details h4 {
+  font-size: 13px;
+  margin: 18px 0 6px;
+}
+.opportunity-book__details p {
+  margin: 0 0 12px;
+}
+.opportunity-book__details ul {
+  padding-left: 18px;
+}
+.opportunity-book__details li {
+  margin-bottom: 8px;
+}
+.opportunity-book__enquire {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 20px 0 18px;
+  padding: 12px 14px;
+  border-radius: 3px;
+  color: #fff;
+  background: #94702e;
+  font-size: 12px;
+}
+.opportunity-book__enquire:hover { background: #765722; }
+.opportunity-book__enquire .swap-button__track { width: 100%; height: 20px; }
+.opportunity-book__enquire .swap-button__face { justify-content: space-between; }
+.opportunity-book__details .opportunity-book__legal {
+  font-size: 11px;
+  color: #727366;
+  line-height: 1.5;
+}
+.opportunity-book__cover {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  cursor: pointer;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  text-align: left;
+  font: inherit;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  backface-visibility: visible;
+  transition: transform 0.85s cubic-bezier(0.2, 0.7, 0.2, 1);
+  background: #253d32;
+  box-shadow: 6px 7px 0 #101b2210, 11px 13px 22px #17251b12;
+}
+.opportunity-book__cover img {
+  object-fit: cover;
+  z-index: 0;
+  border-radius: inherit;
+}
+.opportunity-book__cover::before {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  bottom: 0;
+  left: -18px;
+  width: 18px;
+  background: var(--category-color);
+  border-radius: 2px 0 0 2px;
+  box-shadow: inset -3px 0 6px #0003, -4px 0 8px #0002;
+}
+.opportunity-book__spine-label {
+  position: absolute;
+  z-index: 4;
+  top: 5%;
+  bottom: 5%;
+  left: -18px;
+  display: grid;
+  width: 18px;
+  place-items: center;
+  color: #fff;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+.opportunity-book__cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(0deg, #071c16d9 0%, #071c1675 48%, transparent 82%);
+  z-index: 1;
+  pointer-events: none;
+}
+.opportunity-book__cover-copy {
+  position: absolute;
+  z-index: 2;
+  bottom: 0;
+  inset-inline: 0;
+  padding: 24px;
+  color: white;
+}
+.opportunity-book__cover-copy > .opportunity-book__category {
+  display: inline-flex;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: var(--category-color);
+  color: #fff;
+  font-size: 8px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+.opportunity-book__cover-copy h3 {
+  font-family: var(--font-heading);
+  font-size: clamp(14px, 1vw, 18px);
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  font-weight: 400;
+  min-height: 2.5em;
+  margin: 14px 0 18px;
+  white-space: normal;
+}
+.opportunity-book__explore {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  font: inherit;
+  font-size: 11px;
+  background: transparent;
+  color: #d4a859;
+  border: 0;
+  cursor: pointer;
+}
+.opportunity-book__explore .swap-button__track { height: 20px; padding-right: 6px; }
+.opportunity-book__explore .swap-button__face { gap: 7px; }
+.opportunity-book__explore .swap-button__face svg { flex-shrink: 0; transition: transform .3s; }
+.opportunity-book__cover:hover .opportunity-book__explore .swap-button__face:first-child,
+.opportunity-book__cover:focus-visible .opportunity-book__explore .swap-button__face:first-child { transform: translateY(-120%); }
+.opportunity-book__cover:hover .opportunity-book__explore .swap-button__face:last-child,
+.opportunity-book__cover:focus-visible .opportunity-book__explore .swap-button__face:last-child { transform: translateY(0); }
+.opportunity-book__cover:hover .opportunity-book__explore .swap-button__face svg,
+.opportunity-book__cover:focus-visible .opportunity-book__explore .swap-button__face svg { transform: translateX(4px); }
+.opportunity-book.is-open .opportunity-book__cover {
+  transform: rotateY(-86deg);
+  pointer-events: none;
+}
+.opportunity-books button:focus-visible,
+.opportunity-books a:focus-visible,
+.opportunity-book__details:focus-visible {
+  outline: 3px solid #b48a39;
+  outline-offset: 4px;
+}
+.opportunity-books__more {
+  display: flex;
+  justify-content: center;
+  margin-top: 36px;
+}
+.opportunity-books__more button {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  padding: 16px 24px;
+  border: 1px solid #b7aa8d;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+@media (max-width: 1100px) {
+  .opportunity-books__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 650px) {
+  .opportunity-books {
+    padding-block: 64px;
+  }
+  .opportunity-books__header {
+    display: block;
+  }
+  .opportunity-books__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 26px;
+  }
+  .opportunity-book {
+    height: 550px;
+  }
+  .opportunity-book__cover-copy h3 {
+    font-size: 30px;
+    white-space: normal;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .opportunity-book__cover,
+  .opportunity-book.is-open .opportunity-book__cover {
+    transition: none;
+  }
+}
+.opportunity-books .available-investments__eyebrow {
+  color: #7c6029;
+}
+.opportunity-books .available-investments__pills button {
+  color: #4c554e;
+  border-color: #bcb6a8;
+}
+.opportunity-books .available-investments__pills button[aria-pressed="true"] {
+  color: #fff;
+  background: var(--category-color, #263f34);
+  border-color: var(--category-color, #263f34);
+}
+.opportunity-books .available-investments__pills button:hover {
+  color: #183127;
+  background: #e3dfd4;
+}
+.opportunity-books
+  .available-investments__pills
+  button[aria-pressed="true"]:hover {
+  color: #fff;
+  background: var(--category-color, #263f34);
+}

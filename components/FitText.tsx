@@ -16,7 +16,7 @@ export default function FitText({ children }: { children: ReactNode }) {
       const naturalWidth = element.scrollWidth;
       if (width > 0 && naturalWidth > width) {
         const size = parseFloat(getComputedStyle(element).fontSize);
-        element.style.fontSize = `${size * (width / naturalWidth) * .98}px`;
+        element.style.fontSize = `${size * (width / naturalWidth) * 0.98}px`;
       }
     };
     let lastWidth = -1;
@@ -36,5 +36,12 @@ export default function FitText({ children }: { children: ReactNode }) {
     };
   }, [children]);
 
-  return <span ref={ref} style={{ display: "block", width: "100%", whiteSpace: "nowrap" }}>{children}</span>;
+  return (
+    <span
+      ref={ref}
+      style={{ display: "block", width: "100%", whiteSpace: "nowrap" }}
+    >
+      {children}
+    </span>
+  );
 }
