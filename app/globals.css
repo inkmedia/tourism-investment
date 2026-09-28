@@ -4296,6 +4296,12 @@ button {
   perspective: 1200px;
   perspective-origin: left center;
   isolation: isolate;
+  animation: opportunity-book-enter 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--book-delay, 0ms);
+}
+@keyframes opportunity-book-enter {
+  from { opacity: 0; transform: translateY(18px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 .opportunity-book.is-open {
   z-index: 2;
@@ -4564,6 +4570,7 @@ button {
   .opportunity-book.is-open .opportunity-book__cover {
     transition: none;
   }
+  .opportunity-book { animation: none; }
 }
 .opportunity-books .available-investments__eyebrow {
   color: #7c6029;

@@ -51,7 +51,7 @@ function TwoLineTitle({ title }: { title: string }) {
   );
 }
 
-function BookCard({ item }: { item: (typeof opportunities)[number] }) {
+function BookCard({ item, index }: { item: (typeof opportunities)[number]; index: number }) {
   const [open, setOpen] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
   const close = useRef<HTMLButtonElement>(null);
@@ -66,9 +66,10 @@ function BookCard({ item }: { item: (typeof opportunities)[number] }) {
   return (
     <li
       className={`opportunity-book${open ? " is-open" : ""}`}
-      style={
-        { "--category-color": categories[item.category][1] } as CSSProperties
-      }
+      style={{
+        "--category-color": categories[item.category][1],
+        "--book-delay": `${(index % 4) * 70}ms`,
+      } as CSSProperties}
       onKeyDown={(event) => {
         if (event.key === "Escape" && open) toggle(false);
       }}
@@ -243,8 +244,8 @@ export default function OpportunityBooks() {
         {filtered.length} opportunities
       </p>
       <ul className="opportunity-books__grid">
-        {visible.map((item) => (
-          <BookCard key={`${category}-${item.id}`} item={item} />
+        {visible.map((item, index) => (
+          <BookCard key={`${category}-${item.id}`} item={item} index={index} />
         ))}
       </ul>
       {filtered.length > 8 && (
