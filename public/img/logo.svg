@@ -1,11 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="60 60 280 280">
 <title>Gelephu Mindfulness City Logo - Fully Animatable SVG</title>
 <desc>Vector recreation from the supplied PNG. No embedded raster. Each emblem region and each wordmark glyph is a separate SVG path for independent animation. Corrected orange curved boundary: solid orange fill with smooth vector curves and no mixed-colour tracing fragments.</desc>
 <metadata>
 Major groups: background, emblem, emblem-gray, emblem-blue, emblem-coral, emblem-maroon, emblem-orange, emblem-rose, emblem-yellow, wordmark, frame.
 </metadata>
 <style>
-  #emblem path, #wordmark path { fill-opacity: 0; }
+  #emblem path { fill-opacity: 1; }
+  #wordmark { display: none; }
 </style>
 <g id="background">
   <rect id="background-black" x="0" y="0" width="400" height="400" fill="none"/>

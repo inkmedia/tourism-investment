@@ -256,114 +256,35 @@ button {
   overflow: hidden;
   pointer-events: auto;
   isolation: isolate;
-  background: #091b25;
+  background: #fff;
 }
 .preloader__hero {
   position: absolute;
   top: 50%;
   left: 50%;
+  width: clamp(260px, 30.6vw, 520px);
+  height: clamp(173px, 20.4vw, 347px);
+  max-width: 100%;
   overflow: hidden;
-  transform: translate(-50%, -50%);
-  will-change: width, height;
+  border-radius: 3px;
+  transform: translate(-50%, -50%) scale(0);
+  will-change: transform, width, height;
 }
 .preloader__hero-image {
   position: absolute;
-  inset: -6%;
+  inset: -5%;
   background: url("/img/Hero-bg.webp") center 58% / cover no-repeat;
   will-change: transform;
 }
 .preloader__logo {
-  position: relative;
-  width: clamp(190px, 18vw, 260px);
-  aspect-ratio: 1;
-  overflow: hidden;
-}
-.preloader__logo object {
-  display: block;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-.preloader__stage {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: clamp(220px, 22vw, 300px);
-  opacity: 0;
-  aspect-ratio: 1;
+  inset: 0;
   display: grid;
   place-items: center;
-  transform: translate(-50%, -58%);
 }
-.preloader__wordmark {
-  position: absolute;
-  bottom: 4px;
-  left: 50%;
-  width: max-content;
-  color: #606a7d;
-  font-family: var(--font-body);
-  font-size: clamp(13px, 1.2vw, 18px);
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  line-height: 1;
-  transform: translateX(-50%);
-  white-space: nowrap;
-}
-.preloader__wordmark-char {
-  display: inline-block;
-}
-.preloader__wordmark-char:nth-child(-n + 7) {
-  color: #7f313c;
-}
-.preloader__meta {
-  position: absolute;
-  left: 50%;
-  bottom: clamp(34px, 5vh, 58px);
-  width: min(420px, calc(100vw - 48px));
-  transform: translateX(-50%);
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 18px;
-  color: rgba(255, 255, 255, 0.55);
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-}
-.preloader__meta b {
-  color: #d9ad59;
-  font-variant-numeric: tabular-nums;
-  font-weight: 600;
-}
-.preloader__progress {
-  height: 1px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.14);
-}
-.preloader__progress-fill {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, #a87835, #f2ce79);
-  box-shadow: 0 0 12px #d9ad59;
-}
-@media (max-width: 640px) {
-  .preloader__stage {
-    width: 220px;
-  }
-  .preloader__logo {
-    width: 190px;
-  }
-  .preloader__wordmark {
-    font-size: 12px;
-  }
-  .preloader__meta {
-    grid-template-columns: auto 1fr auto;
-    gap: 10px;
-    letter-spacing: 0.12em;
-    font-size: 8px;
-  }
+.preloader__logo img {
+  width: clamp(80px, 8vw, 130px);
+  height: auto;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2442,7 +2363,7 @@ button {
   position: relative;
   isolation: isolate;
   overflow: clip;
-  min-height: max(490px, 68svh);
+  min-height: max(500px, 60svh);
   padding: var(--footer-inset);
   display: flex;
   align-items: flex-end;
@@ -2803,15 +2724,6 @@ button {
   }
   .investment-card h3 {
     font-size: 24px;
-  }
-  .preloader__logo {
-    width: 178px;
-    height: 178px;
-  }
-  .preloader__wordmark {
-    bottom: 1px;
-    font-size: 11px;
-    letter-spacing: 0.055em;
   }
   .brand img {
     width: 46px;
@@ -4300,8 +4212,14 @@ button {
   animation-delay: var(--book-delay, 0ms);
 }
 @keyframes opportunity-book-enter {
-  from { opacity: 0; transform: translateY(18px) scale(0.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 .opportunity-book.is-open {
   z-index: 2;
@@ -4396,9 +4314,16 @@ button {
   background: #94702e;
   font-size: 12px;
 }
-.opportunity-book__enquire:hover { background: #765722; }
-.opportunity-book__enquire .swap-button__track { width: 100%; height: 20px; }
-.opportunity-book__enquire .swap-button__face { justify-content: space-between; }
+.opportunity-book__enquire:hover {
+  background: #765722;
+}
+.opportunity-book__enquire .swap-button__track {
+  width: 100%;
+  height: 20px;
+}
+.opportunity-book__enquire .swap-button__face {
+  justify-content: space-between;
+}
 .opportunity-book__details .opportunity-book__legal {
   font-size: 11px;
   color: #727366;
@@ -4420,7 +4345,9 @@ button {
   backface-visibility: visible;
   transition: transform 0.85s cubic-bezier(0.2, 0.7, 0.2, 1);
   background: #253d32;
-  box-shadow: 6px 7px 0 #101b2210, 11px 13px 22px #17251b12;
+  box-shadow:
+    6px 7px 0 #101b2210,
+    11px 13px 22px #17251b12;
 }
 .opportunity-book__cover img {
   object-fit: cover;
@@ -4437,7 +4364,9 @@ button {
   width: 18px;
   background: var(--category-color);
   border-radius: 2px 0 0 2px;
-  box-shadow: inset -3px 0 6px #0003, -4px 0 8px #0002;
+  box-shadow:
+    inset -3px 0 6px #0003,
+    -4px 0 8px #0002;
 }
 .opportunity-book__spine-label {
   position: absolute;
@@ -4462,7 +4391,12 @@ button {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(0deg, #071c16d9 0%, #071c1675 48%, transparent 82%);
+  background: linear-gradient(
+    0deg,
+    #071c16d9 0%,
+    #071c1675 48%,
+    transparent 82%
+  );
   z-index: 1;
   pointer-events: none;
 }
@@ -4505,15 +4439,43 @@ button {
   border: 0;
   cursor: pointer;
 }
-.opportunity-book__explore .swap-button__track { height: 20px; padding-right: 6px; }
-.opportunity-book__explore .swap-button__face { gap: 7px; }
-.opportunity-book__explore .swap-button__face svg { flex-shrink: 0; transition: transform .3s; }
-.opportunity-book__cover:hover .opportunity-book__explore .swap-button__face:first-child,
-.opportunity-book__cover:focus-visible .opportunity-book__explore .swap-button__face:first-child { transform: translateY(-120%); }
-.opportunity-book__cover:hover .opportunity-book__explore .swap-button__face:last-child,
-.opportunity-book__cover:focus-visible .opportunity-book__explore .swap-button__face:last-child { transform: translateY(0); }
-.opportunity-book__cover:hover .opportunity-book__explore .swap-button__face svg,
-.opportunity-book__cover:focus-visible .opportunity-book__explore .swap-button__face svg { transform: translateX(4px); }
+.opportunity-book__explore .swap-button__track {
+  height: 20px;
+  padding-right: 6px;
+}
+.opportunity-book__explore .swap-button__face {
+  gap: 7px;
+}
+.opportunity-book__explore .swap-button__face svg {
+  flex-shrink: 0;
+  transition: transform 0.3s;
+}
+.opportunity-book__cover:hover
+  .opportunity-book__explore
+  .swap-button__face:first-child,
+.opportunity-book__cover:focus-visible
+  .opportunity-book__explore
+  .swap-button__face:first-child {
+  transform: translateY(-120%);
+}
+.opportunity-book__cover:hover
+  .opportunity-book__explore
+  .swap-button__face:last-child,
+.opportunity-book__cover:focus-visible
+  .opportunity-book__explore
+  .swap-button__face:last-child {
+  transform: translateY(0);
+}
+.opportunity-book__cover:hover
+  .opportunity-book__explore
+  .swap-button__face
+  svg,
+.opportunity-book__cover:focus-visible
+  .opportunity-book__explore
+  .swap-button__face
+  svg {
+  transform: translateX(4px);
+}
 .opportunity-book.is-open .opportunity-book__cover {
   transform: rotateY(-86deg);
   pointer-events: none;
@@ -4570,7 +4532,9 @@ button {
   .opportunity-book.is-open .opportunity-book__cover {
     transition: none;
   }
-  .opportunity-book { animation: none; }
+  .opportunity-book {
+    animation: none;
+  }
 }
 .opportunity-books .available-investments__eyebrow {
   color: #7c6029;
