@@ -99,7 +99,7 @@ export default function WhyInvestNow() {
               <Image src={milestone.image} alt="" fill sizes={index < 2 ? "(max-width: 640px) 100vw, 50vw" : "(max-width: 640px) 100vw, (max-width: 1000px) 50vw, 33vw"} className="invest-now__image" />
               <div className="invest-now__copy">
                 <span className="invest-now__timing">{milestone.timing}</span>
-                <h3><FitText>{milestone.title}</FitText></h3>
+                <h3><FitText singleLine>{milestone.title}</FitText></h3>
                 <p>{milestone.description}</p>
               </div>
             </article>

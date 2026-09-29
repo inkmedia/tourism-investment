@@ -279,7 +279,7 @@ export default function PlannedAttractions() {
                   </span>
                   <b aria-hidden="true">{String(index + 1).padStart(2, "0")}</b>
                   <strong>
-                    <FitText>{attraction}</FitText>
+                    <FitText singleLine>{attraction}</FitText>
                   </strong>
                 </li>
               ))}

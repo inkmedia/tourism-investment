@@ -1,5 +1,7 @@
 "use client";
 
+import FitText from "@/components/FitText";
+
 import { useRef, useState, type CSSProperties } from "react";
 import Image from "next/image";
 import { ArrowRight, X } from "lucide-react";
@@ -19,35 +21,6 @@ function SwapLabel({ text }: { text: string }) {
         {text} <ArrowRight size={15} />
       </span>
     </span>
-  );
-}
-
-function TwoLineTitle({ title }: { title: string }) {
-  const words = title.split(" ");
-  let firstLine = "";
-  let secondLine = "";
-  const midpoint = title.length / 2;
-
-  words.forEach((word) => {
-    if (!secondLine && `${firstLine} ${word}`.trim().length <= midpoint) {
-      firstLine = `${firstLine} ${word}`.trim();
-    } else {
-      secondLine = `${secondLine} ${word}`.trim();
-    }
-  });
-
-  if (!secondLine) {
-    const splitAt = Math.ceil(words.length / 2);
-    firstLine = words.slice(0, splitAt).join(" ");
-    secondLine = words.slice(splitAt).join(" ");
-  }
-
-  return (
-    <>
-      {firstLine}
-      <br />
-      {secondLine}
-    </>
   );
 }
 
@@ -92,7 +65,7 @@ function BookCard({ item, index }: { item: (typeof opportunities)[number]; index
             <X size={18} />
           </button>
         </div>
-        <h3>{item.title}</h3>
+        <h3><FitText singleLine>{item.title}</FitText></h3>
         <div
           className="opportunity-book__details"
           data-lenis-prevent
@@ -171,7 +144,7 @@ function BookCard({ item, index }: { item: (typeof opportunities)[number]; index
             {categories[item.category][0]}
           </span> */}
           <h3>
-            <TwoLineTitle title={item.title} />
+            <FitText singleLine>{item.title}</FitText>
           </h3>
           <span className="opportunity-book__explore swap-button">
             <SwapLabel text="Explore" />

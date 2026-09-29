@@ -1,5 +1,7 @@
 "use client";
 
+import FitText from "@/components/FitText";
+
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Image from "next/image";
 import {
@@ -111,7 +113,7 @@ function InvestmentCard({
           </div>
           <div className="available-card__body">
             <span className="available-card__category">{category}</span>
-            <h3>{item.title}</h3>
+            <h3><FitText singleLine>{item.title}</FitText></h3>
             <div className="available-card__bottom">
               <div>
                 <span className="available-card__label">Investment</span>
@@ -136,7 +138,7 @@ function InvestmentCard({
               <span className="available-card__category">{category}</span>
               <RotateCw size={16} aria-hidden="true" />
             </div>
-            <h3>{item.title}</h3>
+            <h3><FitText singleLine>{item.title}</FitText></h3>
           </div>
           <div
             ref={backRef}

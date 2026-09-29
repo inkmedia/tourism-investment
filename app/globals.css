@@ -1474,7 +1474,16 @@ button {
   z-index: 15;
   pointer-events: none;
   border-radius: 9px;
+  overflow: hidden;
+  will-change: left, top, width, height;
+}
+.airport-story__transfer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
   background: url("/img/International-Airport.png") center / cover;
+  transform: translateY(var(--transfer-drift, 0%)) scale(var(--transfer-scale, 1));
+  will-change: transform;
 }
 .airport-story__transfer::after {
   content: "";
@@ -4738,4 +4747,20 @@ section[id] {
   .site-footer__inner {
     padding-inline: 18px;
   }
+}
+
+/* Intrinsic text measurement sets a smaller font only when a card needs it. */
+.fit-text--single-line > span {
+  display: inline-block;
+  /* Wrap safely until the measured font size is applied. */
+  white-space: normal;
+  overflow-wrap: normal;
+}
+.opportunity-book__cover-copy h3 {
+  min-height: 0;
+}
+.fit-text--single-line,
+.fit-text--single-line > span {
+  /* Override the universal reduced-motion duration during measurement. */
+  transition: none !important;
 }

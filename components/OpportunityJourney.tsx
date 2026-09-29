@@ -1,5 +1,7 @@
 "use client";
 
+import FitText from "@/components/FitText";
+
 import { useEffect, useRef, useState } from "react";
 import { ArrowDown, ArrowLeft, ArrowRight } from "lucide-react";
 
@@ -161,7 +163,7 @@ export default function OpportunityJourney({ items }: { items: Item[] }) {
                   dangerouslySetInnerHTML={{ __html: item.artwork }}
                 />
                 <div className="opportunity-card__copy">
-                  <h3>{item.title}</h3>
+                  <h3><FitText singleLine>{item.title}</FitText></h3>
                   <p>{item.description}</p>
                 </div>
                 <div className="opportunity-card__rule" aria-hidden="true" />

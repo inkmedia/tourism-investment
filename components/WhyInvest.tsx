@@ -1,5 +1,7 @@
 "use client";
 
+import FitText from "@/components/FitText";
+
 import {
   Crown,
   DraftingCompass,
@@ -145,7 +147,7 @@ export default function WhyInvest() {
                 <span className="investment-card__number">{number}</span>
               </div>
               <div className="investment-card__copy">
-                <h3>{title}</h3>
+                <h3><FitText singleLine>{title}</FitText></h3>
                 <p>{description}</p>
               </div>
             </article>

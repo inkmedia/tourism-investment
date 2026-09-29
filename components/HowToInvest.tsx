@@ -1,5 +1,7 @@
 "use client";
 
+import FitText from "@/components/FitText";
+
 import { ArrowRight } from "lucide-react";
 import { useEffect, useRef, type CSSProperties } from "react";
 
@@ -66,7 +68,7 @@ export default function HowToInvest() {
               <li className={`how-to-invest__step how-to-invest__step--${step.number}`} style={{ "--step-index": index } as CSSProperties} key={step.number}>
                 <div className="how-to-invest__card">
                 <span className="how-to-invest__number">{step.number}</span>
-                <h3>{step.title}</h3>
+                <h3><FitText singleLine>{step.title}</FitText></h3>
                 <p>{step.description}</p>
                 </div>
                 {index < steps.length - 1 && <ArrowRight className="how-to-invest__connector" aria-hidden="true" />}
