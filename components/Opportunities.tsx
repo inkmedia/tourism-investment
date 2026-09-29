@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import OpportunityJourney from "./OpportunityJourney";
+import OpportunityMosaic from "./OpportunityMosaic";
 
 const areas = [
   [
@@ -53,5 +54,8 @@ export default async function Opportunities() {
       return { title, description, artwork };
     }),
   );
-  return <OpportunityJourney items={items} />;
+  return <>
+    <OpportunityJourney items={items} />
+    <OpportunityMosaic items={items} />
+  </>;
 }

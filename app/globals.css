@@ -4764,3 +4764,136 @@ section[id] {
   /* Override the universal reduced-motion duration during measurement. */
   transition: none !important;
 }
+
+/* Alternative tourism opportunity layout with a featured category and six cards. */
+.opportunity-mosaic {
+  padding: clamp(28px, 3vw, 44px) clamp(24px, 4vw, 80px);
+  scroll-margin-top: 90px;
+  background: #fff;
+  color: var(--ink);
+}
+.opportunity-mosaic__inner {
+  width: min(100%, 1600px);
+  margin: auto;
+  display: grid;
+  gap: clamp(20px, 2vw, 30px);
+}
+.opportunity-mosaic__grid {
+  --mosaic-gap: clamp(8px, 0.8vw, 14px);
+  position: relative;
+  height: clamp(360px, 30vw, 440px);
+}
+.opportunity-mosaic__card {
+  position: absolute;
+  display: block;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--step-color) 18%, white);
+  border-radius: clamp(12px, 1.4vw, 22px);
+  background: color-mix(in srgb, var(--step-color) 9%, white);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 200ms;
+}
+.opportunity-mosaic__card[data-position="0"] { left: 0; top: 0; width: calc(40% - var(--mosaic-gap) * .6); height: 100%; }
+.opportunity-mosaic__card[data-position="1"] { left: calc(40% + var(--mosaic-gap) * 0.4); top: 0; width: calc(20% - var(--mosaic-gap) * .8); height: calc(50% - var(--mosaic-gap) / 2); }
+.opportunity-mosaic__card[data-position="2"] { left: calc(60% + var(--mosaic-gap) * 0.6); top: 0; width: calc(20% - var(--mosaic-gap) * .8); height: calc(50% - var(--mosaic-gap) / 2); }
+.opportunity-mosaic__card[data-position="3"] { left: calc(80% + var(--mosaic-gap) * 0.8); top: 0; width: calc(20% - var(--mosaic-gap) * .8); height: calc(50% - var(--mosaic-gap) / 2); }
+.opportunity-mosaic__card[data-position="4"] { left: calc(40% + var(--mosaic-gap) * 0.4); top: calc(50% + var(--mosaic-gap) / 2); width: calc(20% - var(--mosaic-gap) * .8); height: calc(50% - var(--mosaic-gap) / 2); }
+.opportunity-mosaic__card[data-position="5"] { left: calc(60% + var(--mosaic-gap) * 0.6); top: calc(50% + var(--mosaic-gap) / 2); width: calc(20% - var(--mosaic-gap) * .8); height: calc(50% - var(--mosaic-gap) / 2); }
+.opportunity-mosaic__card[data-position="6"] { left: calc(80% + var(--mosaic-gap) * 0.8); top: calc(50% + var(--mosaic-gap) / 2); width: calc(20% - var(--mosaic-gap) * .8); height: calc(50% - var(--mosaic-gap) / 2); }
+.opportunity-mosaic__copy {
+  position: absolute;
+  bottom: clamp(16px, 1.6vw, 24px);
+  left: clamp(16px, 1.6vw, 24px);
+  right: clamp(16px, 1.6vw, 24px);
+}
+.opportunity-mosaic__title {
+  display: block;
+  font-size: clamp(14px, 1.2vw, 20px);
+  font-weight: 500;
+  line-height: 1.2;
+}
+.opportunity-mosaic__description {
+  display: grid;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  color: var(--brand-slate);
+  font-size: clamp(13px, 1.1vw, 17px);
+  line-height: 1.6;
+}
+.opportunity-mosaic__card[data-position="0"] .opportunity-mosaic__title { font-size: clamp(28px, 3vw, 48px); font-weight: 400; }
+.opportunity-mosaic__card[data-position="0"] .opportunity-mosaic__description { max-height: 180px; margin-top: 12px; opacity: 1; }
+.opportunity-mosaic__card:hover { border-color: color-mix(in srgb, var(--step-color) 55%, white); }
+.opportunity-mosaic__card:focus-visible { outline: 2px solid var(--step-color); outline-offset: 3px; z-index: 2; }
+@media (max-width: 700px) {
+  .opportunity-mosaic__grid { aspect-ratio: auto; height: 684px; }
+  .opportunity-mosaic__card[data-position="0"] { left: 0; top: 0; width: 100%; height: 300px; }
+  .opportunity-mosaic__card[data-position="1"] { left: 0; top: 308px; width: calc(50% - 4px); height: 120px; }
+  .opportunity-mosaic__card[data-position="2"] { left: calc(50% + 4px); top: 308px; width: calc(50% - 4px); height: 120px; }
+  .opportunity-mosaic__card[data-position="3"] { left: 0; top: 436px; width: calc(50% - 4px); height: 120px; }
+  .opportunity-mosaic__card[data-position="4"] { left: calc(50% + 4px); top: 436px; width: calc(50% - 4px); height: 120px; }
+  .opportunity-mosaic__card[data-position="5"] { left: 0; top: 564px; width: calc(50% - 4px); height: 120px; }
+  .opportunity-mosaic__card[data-position="6"] { left: calc(50% + 4px); top: 564px; width: calc(50% - 4px); height: 120px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .opportunity-mosaic__card, .opportunity-mosaic__title, .opportunity-mosaic__description,
+  .opportunity-mosaic__card[data-position="0"] .opportunity-mosaic__description { transition: none; }
+}
+
+.opportunity-mosaic__art {
+  position: absolute;
+  inset: 12px 12px 58px;
+  height: auto;
+  margin: 0;
+  opacity: .8;
+}
+.opportunity-mosaic__art svg { width: min(75%, 110px); height: 100%; max-height: 110px; }
+.opportunity-mosaic__card[data-position="0"] .opportunity-mosaic__art { inset: 18px 24px auto; height: 145px; }
+.opportunity-mosaic__card[data-position="0"] .opportunity-mosaic__art svg { width: min(80%, 180px); max-height: 145px; }
+.opportunity-mosaic__title { font-size: clamp(14px, 1.2vw, 19px); }
+.opportunity-mosaic__card[data-position="0"] .opportunity-mosaic__title { font-size: clamp(24px, 2.2vw, 34px); }
+.opportunity-mosaic__description { font-size: clamp(13px, 1vw, 16px); }
+@media (min-width: 701px) and (max-width: 1100px) {
+  .opportunity-mosaic__grid { aspect-ratio: auto; height: 430px; }
+  .opportunity-mosaic__card[data-position="0"] .opportunity-mosaic__art { height: 120px; }
+}
+@media (max-width: 700px) {
+  .opportunity-mosaic__card[data-position="0"] .opportunity-mosaic__art { inset: 12px 20px auto auto; width: 65px; height: 65px; }
+  .opportunity-mosaic__card[data-position="0"] .opportunity-mosaic__description { max-height: 210px; }
+  .opportunity-mosaic__art { inset: 8px 20px 52px; }
+}
+@media (max-width: 700px) {
+  .opportunity-mosaic__art { place-items: start center; }
+  .opportunity-mosaic__art svg { width: 52px; height: 52px; }
+  .opportunity-mosaic__card[data-position="0"] .opportunity-mosaic__art svg { width: 65px; height: 65px; }
+}
+
+/* Larger featured artwork, retaining the original bottom-aligned copy. */
+@media (min-width: 701px) {
+  .opportunity-mosaic__card[data-position="0"] .opportunity-mosaic__art {
+    inset: 12px 24px auto;
+    height: 220px;
+  }
+  .opportunity-mosaic__card[data-position="0"] .opportunity-mosaic__art svg {
+    width: 280px;
+    height: 220px;
+    max-height: 220px;
+  }
+}
+@media (min-width: 701px) and (max-width: 1100px) {
+  .opportunity-mosaic__card[data-position="0"] .opportunity-mosaic__art,
+  .opportunity-mosaic__card[data-position="0"] .opportunity-mosaic__art svg {
+    height: 180px;
+    max-height: 180px;
+  }
+}
+
+.opportunity-mosaic__word { display: inline-block; }
+.opportunity-mosaic__art svg { transition: none; }
+.opportunity-mosaic__art [data-part],
+.opportunity-mosaic__art [data-part="cup"] > .accent { animation: none; }
