@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1600 520"
+     width="1600"
+     height="520"
+     fill="none"
+     role="img"
+     aria-labelledby="title desc">
+  <title id="title">Investment journey curve</title>
+  <desc id="desc">A clean, smooth, fully animatable journey curve with five hidden stage anchors.</desc>
+
+  <!--
+    Developer-ready structure:
+    #journey-curve  = the visible curve
+    #stage-01 ... #stage-05 = invisible anchor points for future dots / glows / labels
+
+    No colour state, glow, active dot, gradient or styling is baked into the asset.
+    The curve inherits CSS currentColor so colour can be controlled externally.
+  -->
+
+  <path
+    id="journey-curve"
+    d="M 50 430
+       C 230 330, 455 270, 760 252
+       C 1030 236, 1280 230, 1550 115"
+    pathLength="100"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    vector-effect="non-scaling-stroke" />
+
+  <!-- Invisible stage anchors: ready for GSAP / CSS-generated dots later -->
+  <g id="stage-anchors" fill="none" stroke="none" pointer-events="none">
+    <circle id="stage-01" cx="82" cy="413" r="10" />
+    <circle id="stage-02" cx="405" cy="282" r="10" />
+    <circle id="stage-03" cx="790" cy="250" r="10" />
+    <circle id="stage-04" cx="1165" cy="225" r="10" />
+    <circle id="stage-05" cx="1490" cy="138" r="10" />
+  </g>
+</svg>

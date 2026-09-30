@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<style>
+  .primary { fill: none; stroke: #111111; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .secondary { fill: none; stroke: #8A8A8A; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+</style>
+  <!-- ASSESS: document + magnifier + check -->
+  <g id="document" class="secondary">
+    <path d="M36 22h39l17 17v40"/>
+    <path d="M75 22v18h17"/>
+    <path d="M36 22v82h48"/>
+    <path d="M48 52h24M48 64h18"/>
+  </g>
+  <g id="magnifier" class="primary">
+    <circle cx="79" cy="82" r="17"/>
+    <path d="m91 94 14 14"/>
+  </g>
+  <g id="checkmark" class="primary">
+    <path d="m70 82 6 6 12-14"/>
+  </g>
+</svg>

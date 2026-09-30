@@ -1,3 +1,5 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import Header from "@/components/Header";
 import HeroIntro from "@/components/HeroIntro";
 import Footer from "@/components/Footer";
@@ -5,6 +7,7 @@ import WhyInvest from "@/components/WhyInvest";
 import Opportunities from "@/components/Opportunities";
 import InvestorEnquiries from "@/components/InvestorEnquiries";
 import HowToInvest from "@/components/HowToInvest";
+import InvestmentJourney from "@/components/InvestmentJourney";
 import OpportunityBooks from "@/components/OpportunityBooks";
 import AvailableInvestments from "@/components/AvailableInvestments";
 import PlannedAttractions from "@/components/PlannedAttractions";
@@ -16,7 +19,34 @@ import { ArrowRight } from "lucide-react";
 
 const heading = ["A new destination.", "A rare hospitality", "opportunity."];
 
-export default function Home() {
+export default async function Home() {
+  // Use the supplied asset for both the track and its animated stroke.
+  const journeySvg = await readFile(
+    path.join(process.cwd(), "public/img/investment-path-clean.svg"),
+    "utf8",
+  );
+  const investmentCurve =
+    journeySvg.match(
+      /<path\b[^>]*\bid="journey-curve"[^>]*\bd="([^"]+)"/,
+    )?.[1] ?? "";
+  const journeyIcons = await Promise.all(
+    [
+      "01_explore.svg",
+      "02_connect.svg",
+      "03_assess.svg",
+      "04_structure.svg",
+      "05_develop.svg",
+    ].map(async (filename) => {
+      const svg = await readFile(
+        path.join(process.cwd(), "public/img/svg", filename),
+        "utf8",
+      );
+      // Scope the supplied artwork's styles and parts to this component.
+      return svg
+        .replace(/<style\b[^>]*>[\s\S]*?<\/style>/g, "")
+        .replace(/\bid="([^"]+)"/g, 'data-icon-part="$1"');
+    }),
+  );
   return (
     <main id="top">
       <HeroIntro />
@@ -99,7 +129,8 @@ export default function Home() {
       <WhyInvestNow />
       <AirportStory />
       <Advantages />
-      <HowToInvest />
+      {/* <HowToInvest /> */}
+      <InvestmentJourney curve={investmentCurve} icons={journeyIcons} />
       <InvestorEnquiries />
       <Footer />
     </main>

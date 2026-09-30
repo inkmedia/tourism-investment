@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<style>
+  .primary { fill: none; stroke: #111111; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .secondary { fill: none; stroke: #8A8A8A; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+</style>
+  <!-- EXPLORE: compass + destination point -->
+  <g id="compass-ring" class="secondary">
+    <circle cx="64" cy="64" r="40"/>
+    <path d="M64 20v8M64 100v8M20 64h8M100 64h8"/>
+  </g>
+  <g id="compass-needle" class="primary">
+    <path d="M78 50 68 69 49 79 59 60Z"/>
+    <circle cx="64" cy="64" r="3"/>
+  </g>
+  <g id="destination-dot" class="secondary">
+    <circle cx="91" cy="37" r="4"/>
+  </g>
+</svg>

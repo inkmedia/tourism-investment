@@ -1493,12 +1493,10 @@ button {
   background: linear-gradient(transparent, #101113);
   opacity: var(--transfer-shade, 0);
 }
-.airport-story--animated .airport-story__journey {
-  height: 155vh;
-}
-.airport-story--animated .airport-story__stage {
-  position: sticky;
-  top: 100px;
+/* Reserve the scroll chapter before JS measures downstream pin positions. */
+@media (min-width: 1001px) and (min-height: 740px) and (prefers-reduced-motion: no-preference) {
+  .airport-story__journey { height: 155vh; }
+  .airport-story__stage { position: sticky; top: 100px; }
 }
 @media (max-width: 1000px) {
   .airport-story__caption {
@@ -4897,3 +4895,109 @@ section[id] {
 .opportunity-mosaic__art svg { transition: none; }
 .opportunity-mosaic__art [data-part],
 .opportunity-mosaic__art [data-part="cup"] > .accent { animation: none; }
+
+/* Investment journey: an editorial alternative to the original process cards. */
+.investment-journey {
+  scroll-margin-top: 82px;
+  background: #fff;
+  color: var(--ink);
+  padding: 60px;
+}
+.investment-journey__inner { max-width: 1600px; margin: auto; }
+.investment-journey--animated .investment-journey__stages { --journey-progress: 0; }
+.investment-journey--animated .investment-journey__stage { --stage-reveal: .5; }
+.investment-journey__landscape { position: relative; aspect-ratio: 1600 / 650; min-height: 455px; margin: 54px 0 24px; }
+.investment-journey__curve { position: absolute; width: 100%; height: auto; left: 0; top: 0; overflow: visible; }
+.investment-journey__track { color: #d3cec4; }
+.investment-journey__progress { color: var(--brand-indigo); }
+.investment-journey__dot { fill: #fff; stroke: #b9852d; stroke-width: 1.5; }
+/* The stage layer shares the SVG's aspect ratio, so coordinates stay aligned. */
+.investment-journey__stages { position: absolute; inset: 0 0 auto; aspect-ratio: 1600 / 520; padding: 0; margin: 0; list-style: none; }
+.investment-journey__stage {
+  --stage-gap: clamp(28px, 2.2vw, 36px);
+  position: absolute;
+  left: var(--anchor-x);
+  top: var(--anchor-y);
+  width: 18%;
+  translate: -50% var(--stage-gap);
+}
+.investment-journey__stage:nth-child(even) { translate: -50% calc(-100% - var(--stage-gap)); }
+.investment-journey__stage:first-child { translate: -15% var(--stage-gap); }
+.investment-journey__stage:last-child { translate: -85% var(--stage-gap); }
+.investment-journey__number { font-family: Georgia, serif; font-size: clamp(24px, 1.7vw, 30px); font-weight: 400; line-height: 1; color: var(--stage-color); }
+.investment-journey__stage-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.investment-journey__icon { position: relative; display: block; flex: 0 0 auto; width: clamp(48px, 3.8vw, 60px); height: clamp(48px, 3.8vw, 60px); }
+.investment-journey__icon-preview,
+.investment-journey__icon-draw { position: absolute; inset: 0; }
+.investment-journey__icon-preview { display: none; }
+.investment-journey--animated .investment-journey__icon-preview { display: block; }
+.investment-journey__icon svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.investment-journey__icon .primary,
+.investment-journey__icon .secondary { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.investment-journey__icon .primary { stroke: #111111; }
+.investment-journey__icon .secondary { stroke: #8a8a8a; }
+.investment-journey__icon-draw .primary,
+.investment-journey__icon-draw .secondary { stroke: var(--stage-color); }
+.investment-journey__icon-draw .secondary { stroke-opacity: .65; }
+.investment-journey__icon-preview .primary,
+.investment-journey__icon-preview .secondary { stroke: #939b9e; }
+.investment-journey__stage h3 { margin: 9px 0 10px; font-family: var(--font-body); font-weight: 400; font-size: clamp(18px, 1.35vw, 22px); letter-spacing: -.025em; }
+.investment-journey__letter-mask { display: inline-block; overflow: hidden; vertical-align: bottom; padding-top: .12em; }
+.investment-journey__letter { display: inline-block; }
+.investment-journey__stage p { margin: 0; font-size: clamp(13px, .85vw, 14px); line-height: 1.6; color: #77828a; }
+.investment-journey__footer { margin-top: 24px; }
+@media (max-width: 1100px) {
+  .investment-journey__landscape { aspect-ratio: auto; min-height: 0; margin: 48px 0; }
+  .investment-journey__curve { display: none; }
+  .investment-journey__stages { position: relative; aspect-ratio: auto; padding-left: 30px; }
+  .investment-journey__stages::before,
+  .investment-journey__stages::after { content: ''; position: absolute; left: 6px; top: 14px; height: var(--journey-track-height); width: 1px; background: #d3cec4; }
+  .investment-journey__stages::after { background: var(--brand-indigo); clip-path: inset(0 0 calc(100% - var(--journey-progress, 1) * 100%) 0); }
+  .investment-journey__stage,
+  .investment-journey__stage:nth-child(even),
+  .investment-journey__stage:first-child,
+  .investment-journey__stage:last-child { position: relative; left: auto; top: auto; width: 100%; translate: none; z-index: 1; padding: 0 0 32px 14px; }
+  .investment-journey__stage::before { content: ''; position: absolute; left: -30px; top: 8px; width: 12px; height: 12px; border: 1.5px solid var(--marker-color, var(--stage-color)); background: #fff; border-radius: 50%; opacity: var(--stage-reveal, 1); }
+  .investment-journey__stage:last-child { padding-bottom: 0; }
+  .investment-journey__stage p { font-size: 14px; max-width: 440px; }
+  .investment-journey__footer { margin-top: 0; }
+}
+
+/* A viewport-sized scene stays in place until the scroll sequence completes. */
+.investment-journey--pinned {
+  height: calc(100svh - var(--pin-offset, 82px));
+}
+.investment-journey--pinned .investment-journey__inner {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.investment-journey--pinned .how-to-invest__header,
+.investment-journey--pinned .investment-journey__footer { flex-shrink: 0; }
+.investment-journey--pinned .investment-journey__landscape {
+  flex: 1;
+  min-height: 0;
+  aspect-ratio: auto;
+  margin: 20px 0 24px;
+}
+.investment-journey--pinned .investment-journey__curve,
+.investment-journey--pinned .investment-journey__stages {
+  top: 20%;
+  height: 54%;
+  aspect-ratio: auto;
+}
+.investment-journey--pinned .investment-journey__stage { --stage-gap: clamp(18px, 2.8vh, 28px); }
+.investment-journey--pinned .investment-journey__footer { margin-top: 0; }
+/* On narrow or short screens, move the vertical journey within the pinned scene. */
+.investment-journey--compact .investment-journey__landscape { overflow: hidden; }
+.investment-journey--compact .investment-journey__curve { display: none; }
+.investment-journey--compact .investment-journey__stages { position: relative; top: 0; height: auto; padding-left: 30px; }
+.investment-journey--compact .investment-journey__stages::before,
+.investment-journey--compact .investment-journey__stages::after { content: ''; position: absolute; left: 6px; top: 14px; height: var(--journey-track-height); width: 1px; background: #d3cec4; }
+.investment-journey--compact .investment-journey__stages::after { background: var(--brand-indigo); clip-path: inset(0 0 calc(100% - var(--journey-progress, 1) * 100%) 0); }
+.investment-journey--compact .investment-journey__stage,
+.investment-journey--compact .investment-journey__stage:nth-child(even),
+.investment-journey--compact .investment-journey__stage:first-child,
+.investment-journey--compact .investment-journey__stage:last-child { position: relative; left: auto; top: auto; width: 100%; translate: none; z-index: 1; padding: 0 0 32px 14px; }
+.investment-journey--compact .investment-journey__stage::before { content: ''; position: absolute; left: -30px; top: 8px; width: 12px; height: 12px; border: 1.5px solid var(--marker-color, var(--stage-color)); background: #fff; border-radius: 50%; opacity: var(--stage-reveal, 1); }
+.investment-journey--compact .investment-journey__stage:last-child { padding-bottom: 0; }

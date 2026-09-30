@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<style>
+  .primary { fill: none; stroke: #111111; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .secondary { fill: none; stroke: #8A8A8A; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+</style>
+  <!-- DEVELOP: rising built form + growth arrow -->
+  <g id="building" class="secondary">
+    <path d="M28 104V55h24v49"/>
+    <path d="M52 104V36h25v68"/>
+    <path d="M77 104V61h23v43"/>
+    <path d="M36 66h8M36 78h8M36 90h8"/>
+    <path d="M61 49h8M61 63h8M61 77h8M61 91h8"/>
+    <path d="M85 73h7M85 86h7"/>
+  </g>
+  <g id="growth-arrow" class="primary">
+    <path d="M24 96 44 76 60 84 88 50"/>
+    <path d="M78 50h10v10"/>
+  </g>
+  <g id="ground" class="secondary">
+    <path d="M20 104h88"/>
+  </g>
+</svg>

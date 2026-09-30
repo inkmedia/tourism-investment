@@ -38,9 +38,12 @@ export default function AirportStory() {
       lastTime = time;
       const smoothing = 1 - Math.exp(-delta / 110);
       displayedProgress += (progress - displayedProgress) * smoothing;
+      // The fixed image must finish within this chapter, even after a fast
+      // scroll or an anchor jump. Only smooth while inside the transfer range.
+      if (progress === 0 || progress === 1) displayedProgress = progress;
       if (Math.abs(progress - displayedProgress) < .001) displayedProgress = progress;
       const eased = displayedProgress * displayedProgress * (3 - 2 * displayedProgress);
-      const transferring = displayedProgress > 0 && displayedProgress < 1;
+      const transferring = progress > 0 && progress < 1;
       transfer.style.display = transferring ? "block" : "none";
       hero.style.visibility = displayedProgress < 1 ? "hidden" : "visible";
       if (transferring) {
@@ -57,6 +60,7 @@ export default function AirportStory() {
       }
       const story = clamp((100 - sectionTop) / (innerHeight * .48));
       displayedStory += (story - displayedStory) * smoothing;
+      if (story === 0 || story === 1) displayedStory = story;
       if (Math.abs(story - displayedStory) < .001) displayedStory = story;
       section.style.setProperty("--airport-reveal", String(displayedStory));
       section.style.setProperty("--airport-lift", `${(1 - displayedStory) * 24}px`);
@@ -71,7 +75,6 @@ export default function AirportStory() {
       lastTime = 0;
       displayedProgress = 0;
       displayedStory = 0;
-      section.classList.toggle("airport-story--animated", media.matches);
       hero.style.visibility = "";
       transfer.style.display = "none";
       section.style.removeProperty("--airport-reveal");

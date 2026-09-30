@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<style>
+  .primary { fill: none; stroke: #111111; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .secondary { fill: none; stroke: #8A8A8A; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+</style>
+  <!-- STRUCTURE: framework / modular grid -->
+  <g id="outer-frame" class="secondary">
+    <rect x="25" y="24" width="78" height="80" rx="4"/>
+  </g>
+  <g id="grid-lines" class="secondary">
+    <path d="M25 50h78M25 78h78"/>
+    <path d="M51 24v80M78 24v80"/>
+  </g>
+  <g id="active-module" class="primary">
+    <rect x="51" y="50" width="27" height="28" rx="2"/>
+    <path d="M57 64h15"/>
+  </g>
+</svg>

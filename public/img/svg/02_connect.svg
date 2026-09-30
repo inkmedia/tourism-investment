@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<style>
+  .primary { fill: none; stroke: #111111; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .secondary { fill: none; stroke: #8A8A8A; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+</style>
+  <!-- CONNECT: linked nodes -->
+  <g id="connection-lines" class="secondary">
+    <path d="M39 42 64 64 90 39"/>
+    <path d="M64 64 89 89"/>
+    <path d="M64 64 38 91"/>
+  </g>
+  <g id="main-node" class="primary">
+    <circle cx="64" cy="64" r="11"/>
+  </g>
+  <g id="outer-nodes" class="primary">
+    <circle cx="35" cy="39" r="8"/>
+    <circle cx="94" cy="35" r="8"/>
+    <circle cx="94" cy="94" r="8"/>
+    <circle cx="34" cy="96" r="8"/>
+  </g>
+</svg>
