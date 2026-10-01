@@ -4796,7 +4796,7 @@ section[id] {
   margin: 0;
   padding: 0;
   border: 1px solid color-mix(in srgb, var(--step-color) 18%, white);
-  border-radius: clamp(12px, 1.4vw, 22px);
+  /* border-radius: clamp(12px, 1.4vw, 22px); */
   background: color-mix(in srgb, var(--step-color) 9%, white);
   color: var(--ink);
   font: inherit;
