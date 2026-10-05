@@ -112,6 +112,8 @@ export default function InvestmentJourney({ curve, icons }: { curve: string; ico
         const timeline = gsap.timeline({
           defaults: { ease: "power3.out" },
           scrollTrigger: {
+            id: "investment-journey",
+            refreshPriority: 0,
             trigger: section,
             start: () => `top ${headerOffset()}px`,
             end: () => `+=${Math.max(1800, window.innerHeight * 2.8)}`,
@@ -186,7 +188,7 @@ export default function InvestmentJourney({ curve, icons }: { curve: string; ico
   }, [curve, icons]);
 
   return (
-    <section ref={sectionRef} className="investment-journey" id="investment-journey" aria-labelledby="investment-journey-title">
+    <section ref={sectionRef} className="investment-journey" id="how-to-invest" aria-labelledby="investment-journey-title">
       <div className="investment-journey__inner">
         <header className="how-to-invest__header">
           <p className="how-to-invest__eyebrow">How to invest</p>

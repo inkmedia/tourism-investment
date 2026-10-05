@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import BhutanInteractiveMap from "./bhutan-map/BhutanInteractiveMap";
 
 export default function SiteContext() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -24,6 +25,7 @@ export default function SiteContext() {
 
   return (
     <section
+      id="investment-map"
       ref={sectionRef}
       className="site-context"
       aria-labelledby="site-context-title"
@@ -39,13 +41,7 @@ export default function SiteContext() {
             purposes only. Not to scale.
           </p>
         </header>
-        <div className="site-context__image-wrap">
-          <img
-            className="site-context__image"
-            src="/img/site-context.png"
-            alt="Development landscape showing planned infrastructure, attractions and urban districts"
-          />
-        </div>
+        <BhutanInteractiveMap />
       </div>
     </section>
   );

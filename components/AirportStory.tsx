@@ -2,7 +2,8 @@
 
 import FitText from "@/components/FitText";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function AirportStory() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -12,13 +13,15 @@ export default function AirportStory() {
   const growthRef = useRef<HTMLElement>(null);
   const startCountersRef = useRef<() => void>(() => {});
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const section = sectionRef.current!;
     const hero = imageRef.current!;
     const transfer = transferRef.current!;
     const source = document.getElementById("airport-origin");
     if (!source) return;
-    const media = matchMedia("(min-width: 1001px) and (min-height: 740px) and (prefers-reduced-motion: no-preference)");
+    const media = matchMedia(
+      "(min-width: 1001px) and (min-height: 740px) and (prefers-reduced-motion: no-preference)",
+    );
     let frame = 0;
     let displayedProgress = 0;
     let displayedStory = 0;
@@ -27,22 +30,28 @@ export default function AirportStory() {
     const clamp = (n: number) => Math.max(0, Math.min(1, n));
     const update = (time: number) => {
       frame = 0;
-      if (!media.matches) return;
+      if (disposed || !media.matches) return;
+      const offset = Math.ceil(document.querySelector(".site-header")?.getBoundingClientRect().height ?? 82) + 18;
+      section.style.setProperty("--airport-pin-offset", `${offset}px`);
       const origin = source.getBoundingClientRect();
       const destination = hero.getBoundingClientRect();
       const sectionTop = section.getBoundingClientRect().top;
       const start = window.scrollY + origin.top - 160;
-      const end = window.scrollY + sectionTop - 100;
-      const progress = clamp((window.scrollY - start) / Math.max(1, end - start));
+      const end = window.scrollY + sectionTop - offset;
+      const progress = clamp(
+        (window.scrollY - start) / Math.max(1, end - start),
+      );
       const delta = lastTime ? Math.min(64, time - lastTime) : 16;
       lastTime = time;
       const smoothing = 1 - Math.exp(-delta / 110);
       displayedProgress += (progress - displayedProgress) * smoothing;
-      // The fixed image must finish within this chapter, even after a fast
-      // scroll or an anchor jump. Only smooth while inside the transfer range.
+      // Finish the handoff within this chapter, including fast scrolls and
+      // anchor jumps, so the fixed image cannot linger over later sections.
       if (progress === 0 || progress === 1) displayedProgress = progress;
-      if (Math.abs(progress - displayedProgress) < .001) displayedProgress = progress;
-      const eased = displayedProgress * displayedProgress * (3 - 2 * displayedProgress);
+      if (Math.abs(progress - displayedProgress) < 0.001)
+        displayedProgress = progress;
+      const eased =
+        displayedProgress * displayedProgress * (3 - 2 * displayedProgress);
       const transferring = progress > 0 && progress < 1;
       transfer.style.display = transferring ? "block" : "none";
       hero.style.visibility = displayedProgress < 1 ? "hidden" : "visible";
@@ -53,22 +62,28 @@ export default function AirportStory() {
         transfer.style.width = `${mix(origin.width, destination.width)}px`;
         transfer.style.height = `${mix(origin.height, destination.height)}px`;
         transfer.style.setProperty("--transfer-shade", String(.45 * (1 - eased)));
-        // Expand the image within its frame, returning to the exact destination crop.
         const expansion = Math.sin(Math.PI * eased);
         transfer.style.setProperty("--transfer-scale", String(1 + .09 * expansion));
         transfer.style.setProperty("--transfer-drift", `${-2.5 * expansion}%`);
       }
-      const story = clamp((100 - sectionTop) / (innerHeight * .48));
+      const story = clamp((offset - sectionTop) / (innerHeight * 0.48));
       displayedStory += (story - displayedStory) * smoothing;
       if (story === 0 || story === 1) displayedStory = story;
-      if (Math.abs(story - displayedStory) < .001) displayedStory = story;
+      if (Math.abs(story - displayedStory) < 0.001) displayedStory = story;
       section.style.setProperty("--airport-reveal", String(displayedStory));
-      section.style.setProperty("--airport-lift", `${(1 - displayedStory) * 24}px`);
+      section.style.setProperty(
+        "--airport-lift",
+        `${(1 - displayedStory) * 24}px`,
+      );
       section.style.setProperty("--airport-progress", String(displayedStory));
-      if (displayedProgress === 1 && displayedStory === 1) startCountersRef.current();
-      if (displayedProgress !== progress || displayedStory !== story) schedule();
+      if (displayedProgress === 1 && displayedStory === 1)
+        startCountersRef.current();
+      if (displayedProgress !== progress || displayedStory !== story)
+        schedule();
     };
-    const schedule = () => { if (!disposed && !frame) frame = requestAnimationFrame(update); };
+    const schedule = () => {
+      if (!disposed && !frame) frame = requestAnimationFrame(update);
+    };
     const setup = () => {
       cancelAnimationFrame(frame);
       frame = 0;
@@ -80,11 +95,15 @@ export default function AirportStory() {
       section.style.removeProperty("--airport-reveal");
       section.style.removeProperty("--airport-lift");
       section.style.removeProperty("--airport-progress");
+      section.style.removeProperty("--airport-pin-offset");
       schedule();
     };
     media.addEventListener("change", setup);
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
+    // Earlier GSAP pins can change both endpoints without a scroll event or
+    // changing the hero's size. Re-measure the flight when layout is refreshed.
+    ScrollTrigger.addEventListener("refresh", schedule);
     const resize = new ResizeObserver(schedule);
     resize.observe(hero);
     document.fonts.ready.then(schedule);
@@ -95,7 +114,11 @@ export default function AirportStory() {
       media.removeEventListener("change", setup);
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
+      ScrollTrigger.removeEventListener("refresh", schedule);
       resize.disconnect();
+      hero.style.visibility = "";
+      transfer.style.display = "none";
+      ["--airport-reveal", "--airport-lift", "--airport-progress", "--airport-pin-offset"].forEach((property) => section.style.removeProperty(property));
     };
   }, []);
 
@@ -114,7 +137,10 @@ export default function AirportStory() {
     const start = () => {
       if (started) return;
       started = true;
-      if (reducedMotion.matches) { render(1); return; }
+      if (reducedMotion.matches) {
+        render(1);
+        return;
+      }
       const began = performance.now();
       const tick = (time: number) => {
         const progress = Math.min(1, (time - began) / 1450);
@@ -124,11 +150,16 @@ export default function AirportStory() {
       frame = requestAnimationFrame(tick);
     };
     startCountersRef.current = start;
-    const animated = matchMedia("(min-width: 1001px) and (min-height: 740px) and (prefers-reduced-motion: no-preference)");
-    const observer = new IntersectionObserver(([entry]) => {
-      // Desktop counters are driven by completion of the transfer and caption reveal.
-      if (entry.isIntersecting && !animated.matches) start();
-    }, { threshold: 0.34 });
+    const animated = matchMedia(
+      "(min-width: 1001px) and (min-height: 740px) and (prefers-reduced-motion: no-preference)",
+    );
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Desktop counters follow completion of the flight and caption reveal.
+        if (entry.isIntersecting && !animated.matches) start();
+      },
+      { threshold: 0.34 },
+    );
     const observe = () => {
       observer.disconnect();
       observer.observe(hero);
@@ -144,28 +175,102 @@ export default function AirportStory() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="airport-story" aria-labelledby="airport-story-title">
+    <section
+      ref={sectionRef}
+      className="airport-story"
+      aria-labelledby="airport-story-title"
+    >
       <div ref={transferRef} className="airport-story__transfer" aria-hidden="true" />
       <div className="airport-story__journey">
         <div className="airport-story__stage">
           <header className="airport-story__header">
-            <div><p className="airport-story__eyebrow">Infrastructure &amp; access</p><h2 id="airport-story-title">Improved connectivity<br /><em>opening GMC to the world.</em></h2></div>
-            <p className="airport-story__chapter"><span>01 — The gateway</span><span className="airport-story__track"><span /></span></p>
+            <div>
+              <p className="airport-story__eyebrow">
+                Infrastructure &amp; access
+              </p>
+              <h2 id="airport-story-title">
+                Improved connectivity
+                <br />
+                <em>opening GMC to the world.</em>
+              </h2>
+            </div>
+            <p className="airport-story__chapter">
+              <span>01 — The gateway</span>
+              <span className="airport-story__track">
+                <span />
+              </span>
+            </p>
           </header>
           <div ref={imageRef} className="airport-story__hero">
-            <img src="/img/International-Airport.png" alt="Artist’s impression of Gelephu International Airport, with a series of timber-inspired terminal roofs" width={1600} height={900} loading="lazy" />
+            <img
+              src="/img/img/36.jpg"
+              alt="Artist’s impression of Gelephu International Airport, with a series of timber-inspired terminal roofs"
+              width={1600}
+              height={900}
+              loading="lazy"
+            />
             <div className="airport-story__caption">
-              <div><span className="invest-now__timing">Operational by December 2029</span><h3><FitText singleLine>Gelephu International Airport</FitText></h3><p>Artist’s impression</p></div>
-              <dl className="airport-story__stats"><div><dt>Passengers by 2044</dt><dd ref={passengersRef}>0.0M</dd></div><div><dt>CAGR 2030–2044</dt><dd ref={growthRef}>0%</dd></div></dl>
+              <div>
+                <span className="invest-now__timing">
+                  Operational by December 2029
+                </span>
+                <h3>
+                  <FitText singleLine>Gelephu International Airport</FitText>
+                </h3>
+                <p>Artist’s impression</p>
+              </div>
+              <dl className="airport-story__stats">
+                <div>
+                  <dt>Passengers by 2044</dt>
+                  <dd ref={passengersRef}>0.0M</dd>
+                </div>
+                <div>
+                  <dt>CAGR 2030–2044</dt>
+                  <dd ref={growthRef}>0%</dd>
+                </div>
+              </dl>
             </div>
           </div>
         </div>
       </div>
       <div className="airport-story__details">
-        <article><p className="airport-story__eyebrow">02 — Gateway to South Asia</p><h3><FitText singleLine>A region within reach.</FitText></h3><p>Within a short flight radius lies one of the largest concentrations of population and economic activity on Earth — northern India, Bangladesh, Nepal, western China, and portions of Southeast Asia.</p><p>This may ultimately position GMC not merely as a Bhutanese destination, but as a Himalayan interface between South Asia, Southeast Asia, and environmentally aligned global capital.</p></article>
-        <article><p className="airport-story__eyebrow">03 — Railway connectivity</p><h3><FitText singleLine>69-km Kokrajhar–Gelephu Rail Line</FitText></h3><p>India’s first-ever railway link to Bhutan, declared a Special Railway Project by Indian Railways and backed by the Government of India.</p><p>Improved rail access will fundamentally reduce travel friction, providing a seamless entry corridor from India and materially increasing long-term confidence in regional integration.</p></article>
+        <article>
+          <p className="airport-story__eyebrow">02 — Gateway to South Asia</p>
+          <h3>
+            <FitText singleLine>A region within reach.</FitText>
+          </h3>
+          <p>
+            Within a short flight radius lies one of the largest concentrations
+            of population and economic activity on Earth — northern India,
+            Bangladesh, Nepal, western China, and portions of Southeast Asia.
+          </p>
+          <p>
+            This may ultimately position GMC not merely as a Bhutanese
+            destination, but as a Himalayan interface between South Asia,
+            Southeast Asia, and environmentally aligned global capital.
+          </p>
+        </article>
+        <article>
+          <p className="airport-story__eyebrow">03 — Railway connectivity</p>
+          <h3>
+            <FitText singleLine>69-km Kokrajhar–Gelephu Rail Line</FitText>
+          </h3>
+          <p>
+            India’s first-ever railway link to Bhutan, declared a Special
+            Railway Project by Indian Railways and backed by the Government of
+            India.
+          </p>
+          <p>
+            Improved rail access will fundamentally reduce travel friction,
+            providing a seamless entry corridor from India and materially
+            increasing long-term confidence in regional integration.
+          </p>
+        </article>
       </div>
-      <p className="airport-story__note">Traffic forecasts benchmarked against comparable regional airports. Railway timeline subject to Government of India approvals.</p>
+      <p className="airport-story__note">
+        Traffic forecasts benchmarked against comparable regional airports.
+        Railway timeline subject to Government of India approvals.
+      </p>
     </section>
   );
 }

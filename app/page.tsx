@@ -6,7 +6,6 @@ import Footer from "@/components/Footer";
 import WhyInvest from "@/components/WhyInvest";
 import Opportunities from "@/components/Opportunities";
 import InvestorEnquiries from "@/components/InvestorEnquiries";
-import HowToInvest from "@/components/HowToInvest";
 import InvestmentJourney from "@/components/InvestmentJourney";
 import OpportunityBooks from "@/components/OpportunityBooks";
 import AvailableInvestments from "@/components/AvailableInvestments";
@@ -129,7 +128,6 @@ export default async function Home() {
       <WhyInvestNow />
       <AirportStory />
       <Advantages />
-      {/* <HowToInvest /> */}
       <InvestmentJourney curve={investmentCurve} icons={journeyIcons} />
       <InvestorEnquiries />
       <Footer />
