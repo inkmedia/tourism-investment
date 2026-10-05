@@ -2393,7 +2393,7 @@ button {
 .site-footer__background {
   background: url(/img/Hero-bg.webp) 50% 57% / cover no-repeat;
   inset: -4%;
-  background-position: top;
+  background-position: center bottom;
   transform: scale(1.03);
 }
 .site-footer__overlay {
@@ -2401,19 +2401,21 @@ button {
   background:
     linear-gradient(
       180deg,
-      rgba(7, 19, 27, 0.12) 0%,
-      rgba(7, 19, 27, 0.2) 43%,
-      rgba(7, 19, 27, 0.48) 100%
+      rgba(7, 19, 27, 0.02) 0%,
+      rgba(7, 19, 27, 0.04) 43%,
+      rgba(7, 19, 27, 0.12) 100%
     ),
-    linear-gradient(90deg, rgba(9, 24, 33, 0.22), transparent 58%);
+    linear-gradient(90deg, rgba(9, 24, 33, 0.06), transparent 58%);
 }
 .site-footer__inner {
   bottom: var(--footer-inset);
   -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
-  /* background: #101b229e; */
-  background: #00000021;
-  border: 1px solid #ffffff1f;
+  background:
+    radial-gradient(at 0 0, #ffffff1f, #0000 45%),
+    linear-gradient(160deg, #0b11161f, #080e1333);
+  border: 1px solid #ffffff4d;
+  border-radius: 0;
   flex-direction: column;
   justify-content: space-between;
   width: min(100%, 1600px);
@@ -2422,7 +2424,12 @@ button {
   padding: 26px clamp(24px, 2vw, 38px) 20px;
   display: flex;
   position: sticky;
-  box-shadow: 0 22px 65px #0003;
+  box-shadow: none;
+}
+.site-footer__main,
+.site-footer__legal {
+  position: relative;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
 }
 .site-footer__main {
   display: grid;
@@ -2531,7 +2538,7 @@ button {
   justify-content: space-between;
   gap: 32px;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.65);
   font-size: 12px;
   line-height: 1.6;
 }
