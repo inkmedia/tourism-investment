@@ -37,10 +37,11 @@
   --brand-coral: #ff5b4f;
   --brand-indigo: #3f4a75;
   --brand-slate: #5c6a80;
+  --brand-yellow: #ffd117;
   --ink: #101b22;
   --cream: #f4f0e9;
   --gold: #cda34d;
-  --gold-light: #ffd117;
+  --gold-light: #e0b713;
   --font-heading: "Trajans", "Times New Roman", serif;
   --font-body: "DM Sans", Arial, sans-serif;
 }
@@ -1483,7 +1484,8 @@ button {
   position: absolute;
   inset: 0;
   background: url("/img/img/36.jpg") center / cover;
-  transform: translateY(var(--transfer-drift, 0%)) scale(var(--transfer-scale, 1));
+  transform: translateY(var(--transfer-drift, 0%))
+    scale(var(--transfer-scale, 1));
   will-change: transform;
 }
 .airport-story__transfer::after {
@@ -2167,7 +2169,7 @@ button {
 .enquiries {
   position: relative;
   overflow: hidden;
-  padding: clamp(74px, 9vw, 145px) clamp(24px, 4vw, 80px);
+  padding: clamp(48px, 5vw, 80px) clamp(24px, 4vw, 80px);
   color: var(--ink);
   background: #f7f4ee;
 }
@@ -2191,7 +2193,7 @@ button {
   width: min(100%, 1600px);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(300px, 0.83fr) minmax(560px, 1.17fr);
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
   gap: clamp(60px, 10vw, 190px);
 }
 .enquiries__intro {
@@ -2681,7 +2683,7 @@ button {
     display: none;
   }
   .enquiries {
-    padding: 70px 28px;
+    padding: 52px 28px;
   }
   .enquiries__inner {
     grid-template-columns: 1fr;
@@ -2793,7 +2795,7 @@ button {
     justify-content: space-between;
   }
   .enquiries {
-    padding: 58px 22px;
+    padding: 44px 22px;
   }
   .enquiries__intro h2 {
     margin-top: 15px;
@@ -5399,7 +5401,9 @@ section[id] {
   animation: bhutan-map-spin 1.1s linear infinite;
 }
 @keyframes bhutan-map-spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 .bhutan-map__artwork {
   z-index: 1;
@@ -5410,7 +5414,8 @@ section[id] {
   z-index: 1;
   opacity: 1;
 }
-.bhutan-map[data-ready="false"] :is(.bhutan-map__caption, .bhutan-map__progress) {
+.bhutan-map[data-ready="false"]
+  :is(.bhutan-map__caption, .bhutan-map__progress) {
   visibility: hidden;
 }
 .bhutan-map__camera {
@@ -5435,7 +5440,7 @@ section[id] {
   z-index: 3;
   pointer-events: none;
   opacity: 0;
-  transition: opacity .5s;
+  transition: opacity 0.5s;
 }
 .bhutan-map[data-ready="true"] .bhutan-map__clouds {
   opacity: 1;
@@ -5452,15 +5457,21 @@ section[id] {
   stroke: #d4bb80;
   stroke-width: 3;
 }
-.bhutan-map-stage .city:focus { outline: none; }
-.bhutan-map-stage[data-mode="explore"] .city[data-emphasized="true"] .city-label {
+.bhutan-map-stage .city:focus {
+  outline: none;
+}
+.bhutan-map-stage[data-mode="explore"]
+  .city[data-emphasized="true"]
+  .city-label {
   fill: #f1dbab;
 }
 .bhutan-map .city-label {
-  transition: fill .25s;
+  transition: fill 0.25s;
 }
-.bhutan-map-stage[data-mode="story"] .city[data-hierarchy="secondary"] .city-label {
-  opacity: .78;
+.bhutan-map-stage[data-mode="story"]
+  .city[data-hierarchy="secondary"]
+  .city-label {
+  opacity: 0.78;
 }
 .bhutan-map__clouds canvas {
   pointer-events: none;
@@ -5620,7 +5631,9 @@ section[id] {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .bhutan-map .city-label { transition: none; }
+  .bhutan-map .city-label {
+    transition: none;
+  }
   .bhutan-map__artwork,
   .bhutan-map__clouds {
     transition: none;
@@ -5651,4 +5664,141 @@ section[id] {
     .city-label {
     visibility: hidden;
   }
+}
+
+/* Compact investor CTA and animated enquiry sheet. */
+.enquiries__inner { align-items: center; }
+.enquiries__invitation {
+  padding: 8px 0 8px clamp(28px, 4vw, 64px);
+  border-left: 1px solid rgb(23 36 44 / .14);
+}
+.enquiries__start {
+  color: #fff;
+  margin-top: 30px;
+  min-height: 52px;
+  cursor: pointer;
+}
+.enquiry-dialog {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  overflow: hidden;
+}
+.enquiry-dialog[open] { display: flex; align-items: end; justify-content: center; }
+.enquiry-dialog::backdrop {
+  background: rgb(15 25 30 / calc(var(--backdrop-opacity, 0) * .6));
+  backdrop-filter: blur(5px);
+}
+.enquiry-dialog__panel {
+  width: min(980px, calc(100% - 48px));
+  max-height: 92dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: clamp(24px, 3vw, 44px);
+  padding-bottom: max(28px, env(safe-area-inset-bottom));
+  border-radius: 24px 24px 0 0;
+  background: #f7f4ee;
+  box-shadow: 0 -20px 80px #0003;
+  transform-origin: center bottom;
+}
+.enquiry-dialog__header { display: flex; justify-content: space-between; gap: 24px; margin-bottom: 30px; }
+.enquiry-dialog__header h2 {
+  margin: 12px 0;
+  font-family: var(--font-heading);
+  font-size: clamp(32px, 3.2vw, 48px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -.04em;
+}
+.enquiry-dialog__header > div > p:last-child { margin: 0; color: #66717a; font-size: 14px; line-height: 1.5; }
+.enquiry-dialog__close {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #17242c25;
+  border-radius: 50%;
+  color: #17242c;
+  background: transparent;
+  cursor: pointer;
+  transition: background .2s;
+}
+.enquiry-dialog__close:hover { background: #e9e2d6; }
+.enquiry-dialog__close:focus-visible, .enquiries__start:focus-visible { outline: 2px solid #ad7b25; outline-offset: 4px; }
+.enquiry-dialog .enquiries__form { margin: 0; padding: 0; border: 0; background: transparent; box-shadow: none; }
+@media (max-width: 1000px) {
+  .enquiries__invitation { padding: 30px 0 0; border-left: 0; border-top: 1px solid rgb(23 36 44 / .14); }
+}
+@media (max-width: 600px) {
+  .enquiry-dialog__panel { width: 100%; max-height: 94dvh; padding: 28px 22px max(28px, env(safe-area-inset-bottom)); }
+  .enquiry-dialog__header { gap: 16px; }
+  .enquiries__start { width: 100%; }
+  .enquiries__start .swap-button__track { width: 100%; }
+  .enquiries__start .swap-button__face { justify-content: space-between; }
+}
+
+/* A drawn brand emblem gives the invitation its own quiet identity. */
+.enquiries {
+  background: linear-gradient(115deg, #f8f5ef 0%, #f6f2e9 55%, #eee7d8 100%);
+}
+.enquiries::before {
+  top: auto;
+  bottom: -36vw;
+  right: -8vw;
+  background: radial-gradient(circle, rgb(205 163 77 / .17), transparent 68%);
+}
+.enquiries__artwork {
+  position: absolute;
+  width: clamp(540px, 58vw, 1000px);
+  aspect-ratio: 1;
+  right: -8%;
+  top: 50%;
+  transform: translateY(-50%) rotate(-12deg);
+  color: #aa7e35;
+  opacity: .22;
+  pointer-events: none;
+  mask-image: linear-gradient(110deg, transparent 5%, #000 45%, #000 100%);
+}
+.enquiries__artwork svg { display: block; width: 100%; height: 100%; }
+.enquiries__inner { z-index: 1; }
+.enquiries__intro .enquiries__eyebrow { display: flex; align-items: center; gap: 12px; }
+.enquiries__intro .enquiries__eyebrow::before {
+  content: "";
+  width: 26px;
+  height: 1px;
+  background: currentColor;
+}
+.enquiries__invitation { border-left-color: rgb(173 123 37 / .25); }
+.enquiries__start {
+  min-height: 56px;
+  padding-inline: 26px;
+  background: #b98a38;
+  box-shadow: 0 8px 24px rgb(123 83 24 / .12);
+  border: 1px solid rgb(255 255 255 / .22);
+  transition: background .25s, box-shadow .25s, transform .25s;
+}
+.enquiries__start:hover, .enquiries__start:focus-visible {
+  background: #a8782d;
+  box-shadow: 0 12px 30px rgb(123 83 24 / .22);
+  transform: translateY(-2px);
+}
+@media (max-width: 1000px) {
+  .enquiries__artwork { right: -25%; top: 66%; opacity: .15; }
+  .enquiries__invitation { border-top-color: rgb(173 123 37 / .25); }
+}
+@media (max-width: 600px) {
+  .enquiries__artwork { width: 620px; right: -100%; top: 68%; opacity: .14; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .enquiries__start { transition: none; }
+  .enquiries__start:hover, .enquiries__start:focus-visible { transform: none; }
 }
