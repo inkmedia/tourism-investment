@@ -17,8 +17,8 @@ export const MAP_SELECTORS = {
 
 export const MAP_ANIMATION = {
   descent: .12, descentDuration: .48, satellite: .15, approach: .12,
-  boundary: .5, forests: .54, corridors: .58, rivers: .61, dams: .65,
-  trail: .68, trailDuration: .15, cities: .79, airports: .8, sites: .85,
+  boundary: .34, forests: .43, corridors: .49, rivers: .54, dams: .76,
+  trail: .65, trailDuration: .14, cities: .78, airports: .82, sites: .86,
   controls: .94, legend: .90, interaction: .94,
 } as const;
 
@@ -32,4 +32,8 @@ export const MAP_LAYERS = [
   { key: "sites", label: "Religious sites", color: "#ce0901" },
 ] as const;
 export type LayerKey = typeof MAP_LAYERS[number]["key"];
-export type CloudState = { opacity: number; descent: number };
+export const MAP_INTERACTION = {
+  radius: 140, markerScale: .07, tiltDegrees: .55, infrastructureRadius: 190,
+  majorCities: ["city-thimphu", "city-paro", "city-gelephu", "city-jakar", "city-punakha"],
+} as const;
+export type CloudState = { opacity: number; descent: number; pointerX: number; pointerY: number; ambient: number };
