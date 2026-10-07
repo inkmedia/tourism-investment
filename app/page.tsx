@@ -46,9 +46,23 @@ export default async function Home() {
         .replace(/\bid="([^"]+)"/g, 'data-icon-part="$1"');
     }),
   );
+  const logoColours: Record<string, string> = {
+    navy: "#3F4A75", slate: "#5C6A7F", burgundy: "#8B2939",
+    orange: "#FF7E45", coral: "#FF5C4F", yellow: "#FFD217",
+  };
+  // Inline the local vector so GSAP can animate its individual shapes.
+  const preloaderLogo = (await readFile(
+    path.join(process.cwd(), "public/img/logo.svg"), "utf8",
+  ))
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/g, "")
+    .replace(/aria-labelledby="[^"]*"/g, 'aria-hidden="true"')
+    .replace(/\bid="([^"]+)"/g, 'data-logo-part="$1"')
+    .replace(/class="piece (\w+)"/g, (_, colour: string) =>
+      `class="preloader__piece" fill="${logoColours[colour]}"`);
+
   return (
     <main id="top">
-      <HeroIntro />
+      <HeroIntro logoSvg={preloaderLogo} />
       <Header />
       <section className="hero" aria-labelledby="hero-title">
         <div className="hero__scene" aria-hidden="true" />

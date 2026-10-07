@@ -56,6 +56,17 @@ export default function BhutanInteractiveMap() {
   const [hiddenLayers, setHiddenLayers] = useState<LayerKey[]>([]);
 
   useLayoutEffect(() => {
+    const controls = controlsRef.current!;
+    const map = stageRef.current!.parentElement!;
+    // Reserve the actual controls height, including category rows that wrap.
+    const measureControls = () => map.style.setProperty("--map-controls-height", `${controls.getBoundingClientRect().height}px`);
+    measureControls();
+    const observer = new ResizeObserver(measureControls);
+    observer.observe(controls);
+    return () => observer.disconnect();
+  }, []);
+
+  useLayoutEffect(() => {
     const stage = stageRef.current!, artwork = artworkRef.current!, camera = cameraRef.current!;
     const controls = controlsRef.current!, caption = captionRef.current!, progress = progressRef.current!;
     const abort = new AbortController();

@@ -41,8 +41,8 @@ export default function SiteContext() {
             purposes only. Not to scale.
           </p>
         </header>
-        <BhutanInteractiveMap />
       </div>
+      <BhutanInteractiveMap />
     </section>
   );
 }

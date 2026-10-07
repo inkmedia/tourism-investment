@@ -7,7 +7,17 @@ import { Flip } from "gsap/Flip";
 
 gsap.registerPlugin(Flip);
 type Item = { title: string; description: string; artwork: string };
-const colors = ["var(--brand-orange)", "var(--brand-burgundy)", "var(--brand-coral)", "var(--brand-indigo)", "#4e7966", "var(--gold)", "var(--brand-slate)"];
+// Brand colours are softened into pastel card backgrounds in CSS.
+const colors = [
+  { background: "#c4562f", foreground: "#101b22" }, // Earth Ember
+  { background: "#5f603f", foreground: "#101b22" }, // Moss Bronze
+  { background: "#939365", foreground: "#101b22" }, // Harvest Ochre
+  { background: "#f8f4e9", foreground: "#101b22" }, // Ivory Mist
+  { background: "#b69a59", foreground: "#101b22" }, // Golden Clay
+  { background: "#1776b2", foreground: "#101b22" }, // Himalayan Azure
+  { background: "#386d35", foreground: "#101b22" }, // Sacred Forest
+];
+const iconAccents = ["#c4562f", "#5f603f", "#939365", "#b69a59", "#b69a59", "#c4562f", "#5f603f"];
 
 export default function OpportunityMosaic({ items }: { items: Item[] }) {
   const [positions, setPositions] = useState(() => items.map((_, index) => index));
@@ -17,6 +27,60 @@ export default function OpportunityMosaic({ items }: { items: Item[] }) {
   const swapping = useRef<number[]>([]);
   const movement = useRef<gsap.core.Timeline | null>(null);
   const reveal = useRef<gsap.core.Timeline | null>(null);
+
+  useLayoutEffect(() => {
+    const titles = Array.from(gridRef.current!.querySelectorAll<HTMLElement>(".opportunity-mosaic__title"));
+    let frame = 0;
+    let active = true;
+    const fit = () => {
+      frame = 0;
+      if (!active) return;
+      const visible = titles.filter((title) => title.clientWidth > 0);
+      if (!visible.length) return;
+      // Fit the longest title to the narrowest card, even when it is featured.
+      // Selection must not change the shared size for the collection.
+      visible.forEach((title) => { title.style.fontSize = ""; });
+      let size = Math.min(...visible.map((title) => parseFloat(getComputedStyle(title).fontSize)));
+      const apply = () => visible.forEach((title) => { title.style.fontSize = `${size}px`; });
+      apply();
+      const available = Math.max(1, Math.min(...visible.map((title) => title.clientWidth)) - 2);
+      const textWidth = (title: HTMLElement) => {
+        const range = document.createRange();
+        range.selectNodeContents(title);
+        const layoutWidth = parseFloat(getComputedStyle(title).width);
+        const scale = title.getBoundingClientRect().width / layoutWidth;
+        return range.getBoundingClientRect().width / (scale || 1);
+      };
+      size *= Math.min(1, available / Math.max(1, ...visible.map(textWidth)));
+      size = Math.floor(size * 4) / 4;
+      apply();
+      while (size > 1 && visible.some((title) => textWidth(title) > available)) {
+        size -= 0.25;
+        apply();
+      }
+    };
+    const schedule = () => {
+      if (active && !frame) frame = requestAnimationFrame(fit);
+    };
+    const widths = new WeakMap<Element, number>();
+    const observer = new ResizeObserver((entries) => {
+      if (entries.some((entry) => {
+        const changed = widths.get(entry.target) !== entry.contentRect.width;
+        widths.set(entry.target, entry.contentRect.width);
+        return changed;
+      })) schedule();
+    });
+    titles.forEach((title) => observer.observe(title));
+    fit();
+    document.fonts.ready.then(schedule);
+    document.fonts.addEventListener("loadingdone", schedule);
+    return () => {
+      active = false;
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      document.fonts.removeEventListener("loadingdone", schedule);
+    };
+  }, [positions]);
 
   useEffect(() => {
     const finish = () => {
@@ -106,7 +170,12 @@ export default function OpportunityMosaic({ items }: { items: Item[] }) {
               type="button"
               key={step.title}
               className="opportunity-mosaic__card"
-              style={{ "--step-color": colors[index] } as CSSProperties}
+              style={{
+                "--step-color": colors[index % colors.length].background,
+                "--step-ink": colors[index % colors.length].foreground,
+                "--step-tint": index % colors.length === 3 ? "100%" : "22%",
+                "--step-accent": iconAccents[index % iconAccents.length],
+              } as CSSProperties}
               data-position={positions[index]}
               aria-pressed={positions[index] === 0}
               aria-label={`${step.title}: ${step.description}`}

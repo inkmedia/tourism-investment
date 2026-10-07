@@ -25,7 +25,7 @@ export default function Header() {
   return (
     <header className={`site-header ${scrolled || menuOpen ? "site-header--solid" : ""}`}>
       <a className="brand" href="#top" aria-label="Tourism Investment — home">
-        <Image src="/img/Logo.png" alt="Gelephu Mindfulness City logo" width={56} height={56} priority />
+        <Image src="/img/logo-white-2.png" alt="Gelephu Mindfulness City logo" width={56} height={56} priority />
         <span className="brand__copy">
           <strong>Tourism Investment</strong>
           <small>Gelephu Mindfulness City</small>

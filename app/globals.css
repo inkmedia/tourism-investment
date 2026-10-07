@@ -1,35 +1,3 @@
-@font-face {
-  font-family: "Trajans";
-  src: url("/fonts/Trajans.ttf") format("truetype");
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "DM Sans";
-  src: url("/fonts/DMSans-Regular.ttf") format("truetype");
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "DM Sans";
-  src: url("/fonts/DMSans-SemiBold.ttf") format("truetype");
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "DM Sans";
-  src: url("/fonts/DMSans-Bold.ttf") format("truetype");
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-}
-
 :root {
   /* Brand colors extracted from the logo. */
   --brand-orange: #ff7d45;
@@ -42,8 +10,15 @@
   --cream: #f4f0e9;
   --gold: #cda34d;
   --gold-light: #e0b713;
-  --font-heading: "Trajans", "Times New Roman", serif;
-  --font-body: "DM Sans", Arial, sans-serif;
+  --font-heading: "Lora", "Times New Roman", serif;
+  --font-body: "Roboto", Arial, sans-serif;
+  /* Page 30 brand scale, adapted for responsive web reading. */
+  --type-display: clamp(30px, 4vw, 40px);
+  --type-section: clamp(28px, 3.75vw, 40px);
+  --type-subheading: clamp(22px, 2vw, 28px);
+  --type-small-heading: 14px;
+  --type-body: 14px;
+  --type-label: 14px;
 }
 
 * {
@@ -60,6 +35,8 @@ body {
   background: var(--ink);
   color: #fff;
   font-family: var(--font-body);
+  font-size: var(--type-body);
+  font-weight: 300;
 }
 h1,
 h2,
@@ -68,6 +45,7 @@ h4,
 h5,
 h6 {
   font-family: var(--font-heading);
+  text-transform: uppercase;
 }
 a {
   color: inherit;
@@ -151,7 +129,7 @@ button {
   height: 1.4em;
   overflow: hidden;
   color: rgba(255, 255, 255, 0.73);
-  font-size: clamp(12px, 0.86vw, 16px);
+  font-size: var(--type-label);
   font-weight: 600;
   white-space: nowrap;
   opacity: 0;
@@ -196,7 +174,7 @@ button {
   color: #fff;
   padding: 7px 16px;
   border-radius: 3px;
-  font-size: clamp(12px, 0.86vw, 16px);
+  font-size: var(--type-label);
   font-weight: 700;
   white-space: nowrap;
   opacity: 0;
@@ -260,33 +238,22 @@ button {
   isolation: isolate;
   background: #fff;
 }
-.preloader__hero {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: clamp(260px, 30.6vw, 520px);
-  height: clamp(173px, 20.4vw, 347px);
-  max-width: 100%;
-  overflow: hidden;
-  border-radius: 3px;
-  transform: translate(-50%, -50%) scale(0);
-  will-change: transform, width, height;
-}
-.preloader__hero-image {
-  position: absolute;
-  inset: -5%;
-  background: url("/img/Hero-bg.webp") center 58% / cover no-repeat;
-  will-change: transform;
-}
 .preloader__logo {
   position: absolute;
   inset: 0;
   display: grid;
   place-items: center;
+  will-change: transform, opacity;
 }
-.preloader__logo img {
-  width: clamp(80px, 8vw, 130px);
+.preloader__logo svg {
+  display: block;
+  visibility: hidden;
+  width: clamp(140px, 14vw, 210px);
   height: auto;
+  overflow: visible;
+}
+.preloader__piece {
+  vector-effect: non-scaling-stroke;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -350,8 +317,8 @@ button {
   color: var(--gold-light);
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  font-size: clamp(9px, 0.65vw, 12px);
-  font-weight: 700;
+  font-size: var(--type-label);
+  font-weight: 300;
   line-height: 1.5;
 }
 .hero__eyebrow span {
@@ -363,7 +330,7 @@ button {
   font-family: var(--font-heading);
   font-weight: 400;
   letter-spacing: -0.045em;
-  font-size: clamp(40px, 3.5vw, 64px);
+  font-size: var(--type-display);
   line-height: 1.04;
 }
 .hero__line {
@@ -381,9 +348,9 @@ button {
   max-width: 610px;
   margin: 17px 0 0;
   color: rgba(255, 255, 255, 0.8);
-  font-size: clamp(13px, 0.82vw, 16px);
+  font-size: var(--type-body);
   line-height: 1.5;
-  font-weight: 400;
+  font-weight: 300;
 }
 .hero__actions {
   display: flex;
@@ -403,7 +370,7 @@ button {
   padding: 10px 16px;
   border: 1px solid transparent;
   border-radius: 2px;
-  font-size: clamp(11px, 0.74vw, 14px);
+  font-size: var(--type-label);
   font-weight: 700;
   transition:
     background 0.25s ease,
@@ -531,8 +498,8 @@ button {
 .why-invest__eyebrow {
   margin: 0 0 14px;
   color: #b48734;
-  font-size: clamp(10px, 0.68vw, 12px);
-  font-weight: 700;
+  font-size: var(--type-label);
+  font-weight: 300;
   letter-spacing: 0.24em;
   text-transform: uppercase;
 }
@@ -540,7 +507,7 @@ button {
   max-width: 660px;
   margin: 0;
   color: #15232c;
-  font-size: clamp(34px, 3.15vw, 54px);
+  font-size: var(--type-section);
   font-weight: 400;
   letter-spacing: -0.045em;
   line-height: 1.04;
@@ -654,17 +621,19 @@ button {
   max-width: none;
   margin: 0 0 10px;
   color: #17252e;
-  font-size: clamp(10px, 0.9vw, 16px);
+  font-size: var(--type-subheading);
   font-weight: 400;
   letter-spacing: -0.035em;
   line-height: 1.14;
   white-space: nowrap;
+  font-family: var(--font-heading);
 }
 .investment-card p {
   margin: 0;
   color: #66717a;
-  font-size: clamp(11.5px, 0.73vw, 13.5px);
+  font-size: var(--type-body);
   line-height: 1.5;
+  font-weight: 300;
 }
 .why-invest--ready .why-invest__header {
   opacity: 0;
@@ -740,8 +709,8 @@ button {
 .planned-attractions__eyebrow {
   margin: 0 0 16px;
   color: #bd9137;
-  font-size: 11px;
-  font-weight: 700;
+  font-size: var(--type-label);
+  font-weight: 300;
   letter-spacing: 0.22em;
   text-transform: uppercase;
 }
@@ -749,7 +718,7 @@ button {
   margin: 0;
   color: #f5f1ea;
   font-family: var(--font-heading);
-  font-size: clamp(26px, 2.7vw, 46px);
+  font-size: var(--type-section);
   font-weight: 400;
   letter-spacing: -0.045em;
   line-height: 1.05;
@@ -758,8 +727,9 @@ button {
   max-width: 640px;
   margin: 16px 0 0;
   color: #aaa8aa;
-  font-size: clamp(14px, 1.1vw, 17px);
+  font-size: var(--type-body);
   line-height: 1.65;
+  font-weight: 300;
 }
 .planned-attractions__header em {
   font-style: italic;
@@ -941,7 +911,7 @@ button {
     margin-bottom: 14px;
   }
   .planned-attractions__header h2 {
-    font-size: 26px;
+    font-size: var(--type-section);
   }
   .planned-attractions__cards li {
     flex-basis: min(78vw, 286px);
@@ -960,13 +930,14 @@ button {
 
 /* Development landscape */
 .site-context {
+  --map-content-gutter: clamp(24px, 6.15vw, 124px);
   overflow: hidden;
-  padding: 0 clamp(24px, 6.15vw, 124px) clamp(58px, 7vw, 112px);
+  padding: 0 0 clamp(58px, 7vw, 112px);
   color: #eee9df;
   background: #171719;
 }
 .site-context__inner {
-  width: min(100%, 1560px);
+  width: min(calc(100% - 2 * var(--map-content-gutter)), 1560px);
   margin: 0 auto;
 }
 .site-context__header {
@@ -979,15 +950,15 @@ button {
 .site-context__eyebrow {
   margin: 0 0 22px;
   color: #bd9137;
-  font-size: 11px;
-  font-weight: 700;
+  font-size: var(--type-label);
+  font-weight: 300;
   letter-spacing: 0.22em;
   text-transform: uppercase;
 }
 .site-context__header h2 {
   margin: 0;
   color: #f5f1ea;
-  font-size: clamp(38px, 3.7vw, 70px);
+  font-size: var(--type-section);
   font-weight: 400;
   letter-spacing: -0.045em;
   line-height: 1.05;
@@ -1047,7 +1018,8 @@ button {
 }
 @media (max-width: 700px) {
   .site-context {
-    padding: 0 20px 58px;
+    --map-content-gutter: 20px;
+    padding: 0 0 58px;
   }
   .site-context__header {
     align-items: start;
@@ -1059,7 +1031,7 @@ button {
     margin-bottom: 16px;
   }
   .site-context__header h2 {
-    font-size: 38px;
+    font-size: var(--type-section);
   }
   .site-context__note {
     max-width: 290px;
@@ -1090,14 +1062,14 @@ button {
 .invest-now__eyebrow {
   margin: 0 0 20px;
   color: #cda34d;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: var(--type-label);
+  font-weight: 300;
   letter-spacing: 0.2em;
   text-transform: uppercase;
 }
 .invest-now__header h2 {
   margin: 0;
-  font-size: clamp(36px, 3.7vw, 64px);
+  font-size: var(--type-section);
   font-weight: 400;
   letter-spacing: -0.04em;
   line-height: 1.1;
@@ -1106,8 +1078,9 @@ button {
   max-width: 430px;
   margin: 0;
   color: #aaa8a4;
-  font-size: 14px;
+  font-size: var(--type-body);
   line-height: 1.8;
+  font-weight: 300;
 }
 .invest-now__grid {
   display: grid;
@@ -1208,17 +1181,19 @@ button {
 }
 .invest-now__copy h3 {
   margin: 0 0 12px;
-  font-size: clamp(17px, 1.35vw, 22px);
+  font-size: var(--type-subheading);
   font-weight: 400;
   line-height: 1.25;
   letter-spacing: -0.025em;
+  font-family: var(--font-heading);
 }
 .invest-now__copy p {
   margin: 0;
   color: #d0cfca;
-  font-size: 13px;
+  font-size: var(--type-body);
   line-height: 1.75;
   max-width: 580px;
+  font-weight: 300;
 }
 .invest-now__footer {
   display: flex;
@@ -1233,8 +1208,9 @@ button {
   max-width: 560px;
   margin: 0;
   color: #aaa8a4;
-  font-size: 13px;
+  font-size: var(--type-body);
   line-height: 1.8;
+  font-weight: 300;
 }
 .invest-now__cta {
   flex-shrink: 0;
@@ -1242,6 +1218,39 @@ button {
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   .invest-now__card:hover .invest-now__image {
     transform: scale(1.045);
+  }
+}
+/* Keep the title, both card rows and CTA together on laptop displays. */
+@media (min-width: 1001px) and (max-width: 1600px) and (max-height: 900px) {
+  .invest-now {
+    padding-bottom: 24px;
+  }
+  .invest-now__header {
+    gap: 32px;
+    margin-bottom: 20px;
+  }
+  .invest-now__eyebrow {
+    margin-bottom: 12px;
+  }
+  .invest-now__grid {
+    gap: 14px;
+  }
+  .invest-now__card,
+  .invest-now__card--wide {
+    min-height: clamp(190px, calc((100svh - 320px) / 2), 280px);
+  }
+  .invest-now__copy {
+    padding: 16px 20px;
+  }
+  .invest-now__timing {
+    margin-bottom: 10px;
+  }
+  .invest-now__copy h3 {
+    margin-bottom: 8px;
+  }
+  .invest-now__footer {
+    margin-top: 16px;
+    padding-top: 16px;
   }
 }
 @media (max-width: 1000px) {
@@ -1318,15 +1327,15 @@ button {
 }
 .airport-story__eyebrow {
   color: #cda34d;
-  font-size: 10px;
-  font-weight: 600;
+  font-size: var(--type-label);
+  font-weight: 300;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   margin: 0 0 18px;
 }
 .airport-story__header h2 {
   margin: 0;
-  font-size: clamp(30px, 2.9vw, 52px);
+  font-size: var(--type-section);
   font-weight: 400;
   letter-spacing: -0.04em;
   line-height: 1.16;
@@ -1391,16 +1400,18 @@ button {
   transform: translateY(var(--airport-lift, 0px));
 }
 .airport-story__caption h3 {
-  font-size: clamp(23px, 2.1vw, 38px);
+  font-size: var(--type-subheading);
   font-weight: 400;
   letter-spacing: -0.035em;
   margin: 0 0 8px;
+  font-family: var(--font-heading);
 }
 .airport-story__caption p {
-  font-size: 11px;
+  font-size: var(--type-body);
   letter-spacing: 0.05em;
   color: #c1bcb5;
   margin: 0;
+  font-weight: 300;
 }
 .airport-story__stats {
   display: flex;
@@ -1450,16 +1461,18 @@ button {
   border-color: #cda34d12;
 }
 .airport-story__details h3 {
-  font-size: clamp(20px, 1.7vw, 28px);
+  font-size: var(--type-subheading);
   line-height: 1.3;
   font-weight: 400;
   margin: 0 0 18px;
+  font-family: var(--font-heading);
 }
 .airport-story__details article > p:not(.airport-story__eyebrow) {
-  font-size: 13px;
+  font-size: var(--type-label);
   line-height: 1.85;
   color: #b6b3ae;
   margin: 0 0 16px;
+  font-weight: 300;
 }
 .airport-story__details article > p:last-child {
   margin-bottom: 0;
@@ -1526,7 +1539,7 @@ button {
     grid-template-columns: 1fr;
   }
   .airport-story__header h2 {
-    font-size: 30px;
+    font-size: var(--type-section);
   }
   .airport-story__hero {
     height: 470px;
@@ -1559,14 +1572,14 @@ button {
   display: block;
   margin: 0 0 18px;
   color: #cda34d;
-  font-size: 10px;
-  font-weight: 600;
+  font-size: var(--type-label);
+  font-weight: 300;
   letter-spacing: 0.2em;
   text-transform: uppercase;
 }
 .advantages__header h2 {
   margin: 0;
-  font-size: clamp(30px, 3vw, 52px);
+  font-size: var(--type-section);
   font-weight: 400;
   letter-spacing: -0.04em;
   line-height: 1.15;
@@ -1574,9 +1587,10 @@ button {
 .advantages__header > p {
   max-width: 360px;
   color: #aaa8a4;
-  font-size: 13px;
+  font-size: var(--type-body);
   line-height: 1.8;
   margin: 0;
+  font-weight: 300;
 }
 .advantages__words {
   display: grid;
@@ -1675,8 +1689,9 @@ button {
   border-top: 1px solid #ffffff14;
 }
 .advantages__footer p {
-  font-size: 12px;
+  font-size: var(--type-body);
   color: #9b978f;
+  font-weight: 300;
 }
 .advantages__footer button {
   color: #fff;
@@ -1706,20 +1721,23 @@ button {
   will-change: transform, opacity;
 }
 .advantages__floating .advantages__eyebrow {
-  font-size: 9px;
+  font-size: var(--type-label);
   margin-bottom: 15px;
+  font-weight: 300;
 }
 .advantages__floating h3 {
   margin: 0 0 12px;
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 400;
   line-height: 1.2;
+  font-family: var(--font-heading);
 }
 .advantages__floating p {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--type-body);
   line-height: 1.75;
   color: #d2cec6;
+  font-weight: 300;
 }
 .advantages-dialog {
   position: fixed;
@@ -1766,7 +1784,7 @@ button {
 }
 .advantages-dialog__header h2 {
   margin: 0;
-  font-size: clamp(26px, 3vw, 44px);
+  font-size: var(--type-section);
   font-weight: 400;
   letter-spacing: -0.04em;
 }
@@ -1797,22 +1815,23 @@ button {
 .advantages-dialog__path h3 {
   color: #cda34d;
   font-family: var(--font-body);
-  font-size: 10px;
-  font-weight: 600;
+  font-size: var(--type-label);
+  font-weight: 300;
   line-height: 1.6;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   margin: 0 0 20px;
 }
 .advantages-dialog__grid h4 {
-  font-size: 21px;
+  font-size: var(--type-small-heading);
   font-weight: 400;
   margin: 0 0 12px;
 }
 .advantages-dialog__grid p {
   color: #b4b0aa;
-  font-size: 13px;
+  font-size: var(--type-body);
   line-height: 1.75;
+  font-weight: 300;
 }
 .advantages-dialog__grid hr {
   border: 0;
@@ -1888,8 +1907,9 @@ button {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 9px;
-  font-size: 13px;
+  font-size: var(--type-body);
   line-height: 1.4;
+  font-weight: 300;
 }
 .advantages-dialog__path li small {
   grid-column: 1 / -1;
@@ -1973,15 +1993,15 @@ button {
 .how-to-invest__eyebrow {
   margin: 0 0 14px;
   color: #b48734;
-  font-size: 11px;
-  font-weight: 700;
+  font-size: var(--type-label);
+  font-weight: 300;
   letter-spacing: 0.2em;
   text-transform: uppercase;
 }
 .how-to-invest__header h2 {
   margin: 0;
   color: #15232c;
-  font-size: clamp(28px, 2.55vw, 48px);
+  font-size: var(--type-section);
   font-weight: 400;
   letter-spacing: -0.045em;
   line-height: 1.2;
@@ -2049,16 +2069,17 @@ button {
 }
 .how-to-invest__card h3 {
   margin: 0 0 12px;
-  font-family: var(--font-body);
-  font-size: 18px;
-  font-weight: 600;
+  font-family: var(--font-heading);
+  font-size: var(--type-subheading);
+  font-weight: 400;
   line-height: 1.2;
 }
 .how-to-invest__card p {
   margin: 0;
   color: var(--brand-slate);
-  font-size: 13px;
+  font-size: var(--type-body);
   line-height: 1.6;
+  font-weight: 300;
 }
 .how-to-invest__connector {
   position: absolute;
@@ -2077,8 +2098,9 @@ button {
 .how-to-invest__footer p {
   margin: 0;
   color: var(--brand-slate);
-  font-size: 13px;
+  font-size: var(--type-body);
   line-height: 1.5;
+  font-weight: 300;
 }
 .how-to-invest__link {
   display: inline-flex;
@@ -2146,7 +2168,7 @@ button {
     min-height: 0;
   }
   .how-to-invest__header h2 {
-    font-size: 32px;
+    font-size: var(--type-section);
   }
   .how-to-invest__steps {
     grid-template-columns: 1fr;
@@ -2157,8 +2179,9 @@ button {
     padding: 22px;
   }
   .how-to-invest__card p {
-    font-size: 14px;
-  }
+    font-size: var(--type-body);
+  font-weight: 300;
+}
   .how-to-invest__footer {
     flex-direction: column;
     align-items: flex-start;
@@ -2203,15 +2226,15 @@ button {
 .enquiries__welcome {
   margin: 0;
   color: #ad7b25;
-  font-size: 11px;
-  font-weight: 700;
+  font-size: var(--type-label);
+  font-weight: 300;
   letter-spacing: 0.2em;
   text-transform: uppercase;
 }
 .enquiries__intro h2 {
   margin: 18px 0 20px;
   color: #17242c;
-  font-size: clamp(46px, 4.4vw, 76px);
+  font-size: var(--type-section);
   font-weight: 400;
   letter-spacing: -0.055em;
   line-height: 0.98;
@@ -2220,8 +2243,9 @@ button {
   max-width: 510px;
   margin: 0;
   color: #66717a;
-  font-size: clamp(15px, 1.06vw, 19px);
+  font-size: var(--type-body);
   line-height: 1.65;
+  font-weight: 300;
 }
 .enquiries__divider {
   width: min(100%, 510px);
@@ -2240,8 +2264,9 @@ button {
   gap: 12px;
   list-style: none;
   color: #64707b;
-  font-size: clamp(13px, 0.91vw, 16px);
+  font-size: var(--type-body);
   line-height: 1.45;
+  font-weight: 300;
 }
 .enquiries__list li {
   display: flex;
@@ -2280,8 +2305,8 @@ button {
   align-items: center;
   gap: 8px;
   color: #52616b;
-  font-size: 10px;
-  font-weight: 700;
+  font-size: var(--type-label);
+  font-weight: 300;
   letter-spacing: 0.13em;
   text-transform: uppercase;
 }
@@ -2472,15 +2497,16 @@ button {
 .site-footer__intro p {
   max-width: 400px;
   margin: 24px 0 0;
-  font-size: 15px;
+  font-size: var(--type-body);
   line-height: 1.72;
+  font-weight: 300;
 }
 .site-footer__column h2 {
   margin: 0 0 25px;
   color: var(--gold-light);
   font-family: var(--font-body);
-  font-size: 12px;
-  font-weight: 700;
+  font-size: var(--type-label);
+  font-weight: 300;
   letter-spacing: 0.18em;
   text-transform: uppercase;
 }
@@ -2496,7 +2522,7 @@ button {
   gap: 5px;
   align-items: baseline;
   color: rgba(255, 255, 255, 0.73);
-  font-size: clamp(12px, 0.86vw, 16px);
+  font-size: var(--type-label);
   font-weight: 600;
   transition: color 0.25s ease;
 }
@@ -2553,7 +2579,7 @@ button {
 @media (min-width: 821px) {
   .enquiries__intro h2 {
     white-space: nowrap;
-    font-size: clamp(44px, 3.7vw, 66px);
+    font-size: var(--type-section);
   }
 }
 
@@ -2566,11 +2592,11 @@ button {
     gap: 17px;
   }
   .site-nav__link {
-    font-size: 13px;
+    font-size: var(--type-label);
   }
   .site-nav__cta {
     padding: 9px 15px;
-    font-size: 13px;
+    font-size: var(--type-label);
   }
   .brand {
     gap: 11px;
@@ -2597,8 +2623,9 @@ button {
     min-height: 280px;
   }
   .investment-card h3 {
-    font-size: clamp(10px, 1.75vw, 14px);
-  }
+    font-size: var(--type-subheading);
+  font-family: var(--font-heading);
+}
   .site-header {
     min-height: 78px;
     padding: 12px 22px;
@@ -2651,13 +2678,13 @@ button {
   }
   .site-nav__link {
     padding: 14px 0;
-    font-size: 14px;
+    font-size: var(--type-label);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
   .site-nav__cta {
     align-self: flex-start;
     margin-top: 20px;
-    font-size: 13px;
+    font-size: var(--type-label);
   }
   .hero {
     min-height: 100svh;
@@ -2669,13 +2696,14 @@ button {
     padding: 105px 28px 58px;
   }
   .hero__title {
-    font-size: clamp(38px, 5.8vw, 52px);
+    font-size: var(--type-display);
   }
   .hero__description {
     max-width: 570px;
-    font-size: 14px;
+    font-size: var(--type-body);
     line-height: 1.5;
-  }
+  font-weight: 300;
+}
   .hero__actions {
     margin-top: 23px;
   }
@@ -2728,7 +2756,7 @@ button {
     margin-bottom: 17px;
   }
   .why-invest__header h2 {
-    font-size: clamp(35px, 10vw, 46px);
+    font-size: var(--type-section);
   }
   .why-invest__header h2 br {
     display: none;
@@ -2743,11 +2771,13 @@ button {
     border-radius: 0;
   }
   .investment-card h3 {
-    font-size: clamp(9px, 2.9vw, 13px);
-  }
+    font-size: var(--type-subheading);
+  font-family: var(--font-heading);
+}
   .investment-card h3 {
-    font-size: 24px;
-  }
+    font-size: var(--type-subheading);
+  font-family: var(--font-heading);
+}
   .brand img {
     width: 46px;
     height: 46px;
@@ -2764,18 +2794,20 @@ button {
   }
   .hero__eyebrow {
     margin-bottom: 14px;
-    font-size: 9px;
+    font-size: var(--type-label);
     letter-spacing: 0.18em;
-  }
+  font-weight: 300;
+}
   .hero__title {
-    font-size: clamp(34px, 8.8vw, 45px);
+    font-size: var(--type-display);
     line-height: 1.04;
   }
   .hero__description {
     margin-top: 15px;
-    font-size: 12.5px;
+    font-size: var(--type-body);
     line-height: 1.48;
-  }
+  font-weight: 300;
+}
   .hero__actions {
     gap: 9px;
     margin-top: 20px;
@@ -2786,7 +2818,7 @@ button {
     min-width: 0;
     justify-content: space-between;
     padding: 11px 15px;
-    font-size: 11px;
+    font-size: var(--type-label);
   }
   .button .swap-button__track {
     width: 100%;
@@ -2799,11 +2831,12 @@ button {
   }
   .enquiries__intro h2 {
     margin-top: 15px;
-    font-size: 48px;
+    font-size: var(--type-section);
   }
   .enquiries__lead {
-    font-size: 15px;
-  }
+    font-size: var(--type-body);
+  font-weight: 300;
+}
   .enquiries__divider {
     margin: 36px 0 24px;
   }
@@ -2858,8 +2891,9 @@ button {
   }
   .site-footer__intro p {
     margin-top: 20px;
-    font-size: 13px;
-  }
+    font-size: var(--type-body);
+  font-weight: 300;
+}
   .site-footer__column h2 {
     margin-bottom: 20px;
   }
@@ -2929,15 +2963,16 @@ button {
 .opportunities__header h2 {
   margin: 0;
   font-weight: 400;
-  font-size: clamp(28px, 2.55vw, 46px);
+  font-size: var(--type-section);
   letter-spacing: -0.045em;
   line-height: 1.2;
 }
 .opportunities__invitation {
   margin: 0 0 4px;
   color: #73766e;
-  font-size: 13px;
+  font-size: var(--type-body);
   line-height: 1.65;
+  font-weight: 300;
 }
 .opportunities__viewport {
   margin: 0 var(--opportunity-gutter);
@@ -3231,17 +3266,18 @@ button {
 .opportunity-card__copy h3 {
   margin: 0 0 13px;
   max-width: 300px;
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: clamp(20px, 1.5vw, 25px);
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: var(--type-subheading);
   line-height: 1.2;
   letter-spacing: -0.035em;
 }
 .opportunity-card__copy p {
   margin: 0;
   color: #71756f;
-  font-size: 13px;
+  font-size: var(--type-body);
   line-height: 1.7;
+  font-weight: 300;
 }
 .opportunity-card__rule {
   flex-shrink: 0;
@@ -3419,13 +3455,14 @@ button {
 .available-investments__eyebrow {
   margin: 0 0 22px;
   color: var(--gold-light);
-  font-size: 10px;
+  font-size: var(--type-label);
   letter-spacing: 0.22em;
   text-transform: uppercase;
+  font-weight: 300;
 }
 .available-investments h2 {
   margin: 0;
-  font-size: clamp(28px, 3.15vw, 50px);
+  font-size: var(--type-section);
   font-weight: 400;
   line-height: 1.2;
   letter-spacing: -0.035em;
@@ -3447,9 +3484,10 @@ button {
   gap: 20px;
   margin-bottom: 16px;
   color: #a5aeb0;
-  font-size: 10px;
+  font-size: var(--type-label);
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  font-weight: 300;
 }
 .available-investments__filter-heading span:last-child {
   letter-spacing: 0.03em;
@@ -3457,8 +3495,11 @@ button {
 }
 .available-investments__pills {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  flex-wrap: nowrap;
+  gap: 4px;
+  container-type: inline-size;
+  overflow-x: auto;
+  scrollbar-width: thin;
 }
 .available-investments__pills button {
   display: inline-flex;
@@ -3470,7 +3511,7 @@ button {
   border-radius: 24px;
   background: transparent;
   color: #c4cbcd;
-  font-size: 11px;
+  font-size: var(--type-label);
   cursor: pointer;
   transition:
     background 0.2s,
@@ -3575,9 +3616,10 @@ button {
 .available-card h3 {
   margin: 13px 0 24px;
   font-weight: 400;
-  font-size: clamp(15px, 1.15vw, 19px);
+  font-size: var(--type-subheading);
   line-height: 1.45;
   letter-spacing: -0.025em;
+  font-family: var(--font-heading);
 }
 .available-card__bottom {
   display: flex;
@@ -3607,7 +3649,7 @@ button {
   padding: 7px 0;
   background: transparent;
   color: #846022;
-  font-size: 10px;
+  font-size: var(--type-label);
   cursor: pointer;
 }
 .available-card__bottom button {
@@ -3639,7 +3681,8 @@ button {
 }
 .available-card__back h3 {
   margin-top: 32px;
-  font-size: 21px;
+  font-size: var(--type-subheading);
+  font-family: var(--font-heading);
 }
 .available-card__detail {
   border-top: 1px solid #dcd8cf;
@@ -3647,9 +3690,10 @@ button {
 }
 .available-card__detail p {
   color: #707777;
-  font-size: 13px;
+  font-size: var(--type-body);
   line-height: 1.8;
   margin: 10px 0 24px;
+  font-weight: 300;
 }
 .available-card__back-investment {
   margin-top: auto;
@@ -3682,7 +3726,7 @@ button {
   padding: 13px 24px;
   background: #cda34d0a;
   color: var(--gold-light);
-  font-size: 12px;
+  font-size: var(--type-label);
   cursor: pointer;
   transition: background 0.2s;
 }
@@ -3697,8 +3741,9 @@ button {
     aspect-ratio: 1.2;
   }
   .available-card h3 {
-    font-size: 19px;
-  }
+    font-size: var(--type-subheading);
+  font-family: var(--font-heading);
+}
 }
 @media (max-width: 700px) {
   .available-investments {
@@ -3731,7 +3776,7 @@ button {
     gap: 7px;
   }
   .available-investments__pills button {
-    font-size: 10px;
+    font-size: var(--type-label);
     padding: 9px 11px;
   }
 }
@@ -3835,8 +3880,9 @@ button {
   padding: 15px 17px;
 }
 .available-card h3 {
-  font-size: clamp(14px, 1.05vw, 18px);
+  font-size: var(--type-subheading);
   margin: 12px 0 18px;
+  font-family: var(--font-heading);
 }
 .available-card__bottom {
   border-top: 1px solid #101b2210;
@@ -3860,15 +3906,17 @@ button {
   padding: 20px;
 }
 .available-card__back h3 {
-  font-size: 18px;
+  font-size: var(--type-subheading);
   margin: 20px 0;
+  font-family: var(--font-heading);
 }
 .available-card__detail {
   padding-top: 15px;
 }
 .available-card__detail p {
-  font-size: 12px;
+  font-size: var(--type-body);
   margin-bottom: 18px;
+  font-weight: 300;
 }
 .available-card__back-investment p {
   font-size: 18px;
@@ -3896,8 +3944,9 @@ button {
     padding: 16px 18px;
   }
   .available-card h3 {
-    font-size: 17px;
-  }
+    font-size: var(--type-subheading);
+  font-family: var(--font-heading);
+}
 }
 @media (prefers-reduced-motion: reduce) {
   .available-card,
@@ -3978,8 +4027,9 @@ button {
 }
 .available-card__back h3 {
   margin: 12px 0 16px;
-  font-size: 16px;
+  font-size: var(--type-subheading);
   text-shadow: 0 2px 1px #101b2214;
+  font-family: var(--font-heading);
 }
 .available-card__back-top > svg {
   color: var(--category-color);
@@ -4036,15 +4086,16 @@ button {
   margin: 0 0 10px;
   color: #987128;
   font-family: var(--font-body);
-  font-size: 9px;
-  font-weight: 600;
+  font-size: var(--type-label);
+  font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.12em;
 }
 .available-card__detail p,
 .available-card__detail li {
-  font-size: 12px;
+  font-size: var(--type-body);
   line-height: 1.8;
+  font-weight: 300;
 }
 .available-card__detail ul {
   padding-left: 15px;
@@ -4065,7 +4116,7 @@ button {
   border-radius: 3px;
   color: #fff;
   background: #94702e;
-  font-size: 12px;
+  font-size: var(--type-label);
 }
 .available-card__enquire:hover {
   background: #765722;
@@ -4204,13 +4255,14 @@ button {
 .opportunity-books__header h2 {
   margin: 12px 0 0;
   font-family: var(--font-heading);
-  font-size: clamp(30px, 3.5vw, 56px);
+  font-size: var(--type-section);
   font-weight: 400;
 }
 .opportunity-books__header > p {
-  font-size: 15px;
+  font-size: var(--type-body);
   line-height: 1.7;
   color: #59615e;
+  font-weight: 300;
 }
 .opportunity-books__count {
   margin: 24px 0;
@@ -4283,7 +4335,7 @@ button {
 }
 .opportunity-book__page h3 {
   font-family: var(--font-heading);
-  font-size: 23px;
+  font-size: var(--type-subheading);
   font-weight: 400;
   line-height: 1.3;
   margin: 18px 0;
@@ -4294,8 +4346,9 @@ button {
   scrollbar-width: thin;
   padding-right: 8px;
   min-height: 0;
-  font-size: 14px;
+  font-size: var(--type-body);
   line-height: 1.65;
+  font-weight: 300;
 }
 .opportunity-book__details dl {
   display: flex;
@@ -4314,8 +4367,9 @@ button {
   margin: 4px 0 0;
 }
 .opportunity-book__details h4 {
-  font-size: 13px;
+  font-size: var(--type-label);
   margin: 18px 0 6px;
+  font-weight: 300;
 }
 .opportunity-book__details p {
   margin: 0 0 12px;
@@ -4335,7 +4389,7 @@ button {
   border-radius: 3px;
   color: #fff;
   background: #94702e;
-  font-size: 12px;
+  font-size: var(--type-label);
 }
 .opportunity-book__enquire:hover {
   background: #765722;
@@ -4443,7 +4497,7 @@ button {
 }
 .opportunity-book__cover-copy h3 {
   font-family: var(--font-heading);
-  font-size: clamp(14px, 1vw, 18px);
+  font-size: var(--type-subheading);
   letter-spacing: -0.01em;
   line-height: 1.25;
   font-weight: 400;
@@ -4523,7 +4577,7 @@ button {
   background: transparent;
   color: var(--ink);
   font: inherit;
-  font-size: 14px;
+  font-size: var(--type-label);
   cursor: pointer;
 }
 @media (max-width: 1100px) {
@@ -4546,9 +4600,10 @@ button {
     height: 550px;
   }
   .opportunity-book__cover-copy h3 {
-    font-size: 30px;
+    font-size: var(--type-subheading);
     white-space: normal;
-  }
+  font-family: var(--font-heading);
+}
 }
 @media (prefers-reduced-motion: reduce) {
   .opportunity-book__cover,
@@ -4599,15 +4654,17 @@ section[id] {
 }
 .investment-card h3 {
   white-space: normal;
-  font-size: clamp(18px, 1.4vw, 24px);
+  font-size: var(--type-subheading);
   line-height: 1.3;
+  font-family: var(--font-heading);
 }
 .investment-card__copy {
   margin-top: 24px;
 }
 .investment-card p {
-  font-size: 14px;
+  font-size: var(--type-body);
   line-height: 1.65;
+  font-weight: 300;
 }
 .hero__line-inner {
   max-width: 100%;
@@ -4630,6 +4687,11 @@ section[id] {
   max-width: 100%;
   min-height: 44px;
   text-align: left;
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-size: clamp(10px, 0.8cqi, 12px);
+  padding-inline: clamp(5px, 0.45cqi, 8px);
+  gap: 5px;
 }
 .invest-now__timing {
   line-height: 1.5;
@@ -4679,13 +4741,13 @@ section[id] {
   .site-context__header h2,
   .why-invest__header h2,
   .enquiries__intro h2 {
-    font-size: clamp(28px, 7.5vw, 40px);
+    font-size: var(--type-section);
     line-height: 1.2;
   }
   .opportunity-books__header h2,
   .airport-story__header h2,
   .how-to-invest__header h2 {
-    font-size: clamp(26px, 7vw, 34px);
+    font-size: var(--type-section);
     line-height: 1.25;
   }
   .investment-card {
@@ -4693,18 +4755,20 @@ section[id] {
     padding: 24px;
   }
   .hero__description {
-    font-size: 14px;
+    font-size: var(--type-body);
     line-height: 1.65;
-  }
+  font-weight: 300;
+}
   .advantages-dialog__header {
     gap: 12px;
   }
   .advantages-dialog__header h2 {
-    font-size: clamp(20px, 5vw, 28px);
+    font-size: var(--type-section);
   }
   .opportunity-book__cover-copy h3 {
-    font-size: clamp(22px, 6vw, 30px);
-  }
+    font-size: var(--type-subheading);
+  font-family: var(--font-heading);
+}
   .opportunity-book__page {
     padding: 24px 18px 24px 32px;
   }
@@ -4751,7 +4815,7 @@ section[id] {
     letter-spacing: 0.06em;
   }
   .hero__title {
-    font-size: 30px;
+    font-size: var(--type-display);
     line-height: 1.16;
   }
   .opportunity-card {
@@ -4803,10 +4867,10 @@ section[id] {
   overflow: hidden;
   margin: 0;
   padding: 0;
-  border: 1px solid color-mix(in srgb, var(--step-color) 18%, white);
+  border: 1px solid color-mix(in srgb, var(--step-color) 32%, white);
   /* border-radius: clamp(12px, 1.4vw, 22px); */
-  background: color-mix(in srgb, var(--step-color) 9%, white);
-  color: var(--ink);
+  background: color-mix(in srgb, var(--step-color) var(--step-tint), white);
+  color: var(--step-ink);
   font: inherit;
   text-align: left;
   cursor: pointer;
@@ -4862,22 +4926,28 @@ section[id] {
 }
 .opportunity-mosaic__title {
   display: block;
-  font-size: clamp(14px, 1.2vw, 20px);
-  font-weight: 500;
+  width: 100%;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  font-size: var(--type-subheading);
+  font-weight: 400;
   line-height: 1.2;
+  font-family: var(--font-heading);
 }
 .opportunity-mosaic__description {
   display: grid;
   max-height: 0;
   opacity: 0;
   overflow: hidden;
-  color: var(--brand-slate);
-  font-size: clamp(13px, 1.1vw, 17px);
+  color: var(--step-ink);
+  font-size: var(--type-body);
   line-height: 1.6;
+  font-weight: 300;
 }
 .opportunity-mosaic__card[data-position="0"] .opportunity-mosaic__title {
-  font-size: clamp(28px, 3vw, 48px);
+  font-size: var(--type-subheading);
   font-weight: 400;
+  font-family: var(--font-heading);
 }
 .opportunity-mosaic__card[data-position="0"] .opportunity-mosaic__description {
   max-height: 180px;
@@ -4885,7 +4955,7 @@ section[id] {
   opacity: 1;
 }
 .opportunity-mosaic__card:hover {
-  border-color: color-mix(in srgb, var(--step-color) 55%, white);
+  border-color: color-mix(in srgb, var(--step-color) 65%, white);
 }
 .opportunity-mosaic__card:focus-visible {
   outline: 2px solid var(--step-color);
@@ -4955,7 +5025,19 @@ section[id] {
   inset: 12px 12px 58px;
   height: auto;
   margin: 0;
-  opacity: 0.8;
+  opacity: 1;
+}
+.opportunity-mosaic__art .ink {
+  stroke: var(--step-ink);
+}
+.opportunity-mosaic__art .ink-fill {
+  fill: var(--step-ink);
+}
+.opportunity-mosaic__art .accent {
+  stroke: var(--step-accent);
+}
+.opportunity-mosaic__art .accent-fill {
+  fill: var(--step-accent);
 }
 .opportunity-mosaic__art svg {
   width: min(75%, 110px);
@@ -4971,13 +5053,16 @@ section[id] {
   max-height: 145px;
 }
 .opportunity-mosaic__title {
-  font-size: clamp(14px, 1.2vw, 19px);
+  font-size: var(--type-subheading);
+  font-family: var(--font-heading);
 }
 .opportunity-mosaic__card[data-position="0"] .opportunity-mosaic__title {
-  font-size: clamp(24px, 2.2vw, 34px);
+  font-size: var(--type-subheading);
+  font-family: var(--font-heading);
 }
 .opportunity-mosaic__description {
-  font-size: clamp(13px, 1vw, 16px);
+  font-size: var(--type-body);
+  font-weight: 300;
 }
 @media (min-width: 701px) and (max-width: 1100px) {
   .opportunity-mosaic__grid {
@@ -5116,7 +5201,7 @@ section[id] {
   translate: -85% var(--stage-gap);
 }
 .investment-journey__number {
-  font-family: Georgia, serif;
+  font-family: var(--font-heading);
   font-size: clamp(24px, 1.7vw, 30px);
   font-weight: 400;
   line-height: 1;
@@ -5178,9 +5263,9 @@ section[id] {
 }
 .investment-journey__stage h3 {
   margin: 9px 0 10px;
-  font-family: var(--font-body);
+  font-family: var(--font-heading);
   font-weight: 400;
-  font-size: clamp(18px, 1.35vw, 22px);
+  font-size: var(--type-subheading);
   letter-spacing: -0.025em;
 }
 .investment-journey__letter-mask {
@@ -5194,9 +5279,10 @@ section[id] {
 }
 .investment-journey__stage p {
   margin: 0;
-  font-size: clamp(13px, 0.85vw, 14px);
+  font-size: var(--type-body);
   line-height: 1.6;
   color: #77828a;
+  font-weight: 300;
 }
 .investment-journey__footer {
   margin-top: 24px;
@@ -5257,9 +5343,10 @@ section[id] {
     padding-bottom: 0;
   }
   .investment-journey__stage p {
-    font-size: 14px;
+    font-size: var(--type-body);
     max-width: 440px;
-  }
+  font-weight: 300;
+}
   .investment-journey__footer {
     margin-top: 0;
   }
@@ -5353,16 +5440,16 @@ section[id] {
 
 /* Bhutan atlas: scoped to the existing development landscape map area. */
 .bhutan-map {
+  --map-controls-height: 100px;
   position: relative;
   isolation: isolate;
 }
 .bhutan-map-stage {
   position: relative;
   width: 100%;
-  height: auto;
-  aspect-ratio: 1.96 / 1;
+  height: min(51.0204vw, calc(100svh - 84px - var(--map-controls-height) - 24px));
   overflow: hidden;
-  border-radius: 3px;
+  border-radius: 0;
   background: #202522;
   perspective: 1600px;
   isolation: isolate;
@@ -5520,6 +5607,8 @@ section[id] {
   z-index: 30;
   pointer-events: auto;
   padding: 12px 0 0;
+  width: min(calc(100% - 2 * var(--map-content-gutter)), 1560px);
+  margin: 0 auto;
   color: #c8c4bc;
   opacity: 0;
   visibility: hidden;
@@ -5588,7 +5677,7 @@ section[id] {
 }
 @media (max-width: 700px) {
   .bhutan-map-stage {
-    aspect-ratio: 1.14 / 1;
+    height: min(87.7193vw, calc(100svh - 84px - var(--map-controls-height) - 24px));
   }
   .bhutan-map__caption {
     top: 16px;
@@ -5724,7 +5813,7 @@ section[id] {
 .enquiry-dialog__header h2 {
   margin: 12px 0;
   font-family: var(--font-heading);
-  font-size: clamp(32px, 3.2vw, 48px);
+  font-size: var(--type-section);
   font-weight: 400;
   line-height: 1.1;
   letter-spacing: -0.04em;
@@ -5732,8 +5821,9 @@ section[id] {
 .enquiry-dialog__header > div > p:last-child {
   margin: 0;
   color: #66717a;
-  font-size: 14px;
+  font-size: var(--type-body);
   line-height: 1.5;
+  font-weight: 300;
 }
 .enquiry-dialog__close {
   flex: 0 0 44px;
