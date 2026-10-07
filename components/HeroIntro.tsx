@@ -26,7 +26,7 @@ export default function HeroIntro({ logoSvg }: { logoSvg: string }) {
     const shapes = Array.from(preloader.querySelectorAll<SVGPathElement>(
       '[data-logo-part="mark"] path',
     ));
-    const letters = Array.from(preloader.querySelectorAll<SVGGElement>("[data-char]"));
+    const wordmark = preloader.querySelector<SVGGElement>('[data-logo-part="wordmark"]');
     const logo = preloader.querySelector<HTMLElement>(".preloader__logo");
     const svg = preloader.querySelector<SVGSVGElement>("svg");
     if (!svg) return;
@@ -37,54 +37,60 @@ export default function HeroIntro({ logoSvg }: { logoSvg: string }) {
     svg.prepend(definitions);
     svg.append(drawing);
 
-    // Sweep diagonally through the geometry, rather than following asset order.
-    const pieces = shapes.map((shape) => ({ shape, bounds: shape.getBBox() }))
-      .sort((a, b) => (a.bounds.y + a.bounds.height / 2 + a.bounds.x * 0.35)
-        - (b.bounds.y + b.bounds.height / 2 + b.bounds.x * 0.35));
-    const strokes: { paths: SVGPathElement[]; guide: SVGPathElement; wipe: SVGRectElement;
-      top: number; height: number; start: number; duration: number }[] = [];
+    // One feathered mask lets colour travel through the whole mark as a single gesture.
+    const mark = preloader.querySelector<SVGGElement>('[data-logo-part="mark"]');
+    if (!mark) return;
+    const bounds = mark.getBBox();
+    const maskHeight = (bounds.height + 12) * 1.25;
+    const gradient = document.createElementNS(namespace, "linearGradient");
+    gradient.id = `${clipPrefix}-feather`;
+    gradient.setAttribute("x1", "0");
+    gradient.setAttribute("x2", "0");
+    gradient.setAttribute("y1", "0");
+    gradient.setAttribute("y2", "1");
+    [["0%", "white"], ["85%", "white"], ["100%", "black"]].forEach(([offset, colour]) => {
+      const stop = document.createElementNS(namespace, "stop");
+      stop.setAttribute("offset", offset);
+      stop.setAttribute("stop-color", colour);
+      gradient.append(stop);
+    });
+    const mask = document.createElementNS(namespace, "mask");
+    mask.id = `${clipPrefix}-colour`;
+    mask.setAttribute("maskUnits", "userSpaceOnUse");
+    mask.setAttribute("x", String(bounds.x - 6));
+    mask.setAttribute("y", String(bounds.y - 6));
+    mask.setAttribute("width", String(bounds.width + 12));
+    mask.setAttribute("height", String(bounds.height + 12));
+    const sweep = document.createElementNS(namespace, "rect");
+    sweep.setAttribute("x", String(bounds.x - 6));
+    sweep.setAttribute("width", String(bounds.width + 12));
+    sweep.setAttribute("height", String(maskHeight));
+    sweep.setAttribute("y", String(bounds.y - 6 - maskHeight));
+    sweep.setAttribute("fill", `url(#${gradient.id})`);
+    mask.append(sweep);
+    definitions.append(gradient, mask);
+    mark.setAttribute("mask", `url(#${mask.id})`);
 
+    const strokes: { paths: SVGPathElement[]; start: number; duration: number }[] = [];
     const context = gsap.context(() => {
       gsap.set(content, { autoAlpha: 0, y: 18 });
       gsap.set(".hero__line-inner", { autoAlpha: 0, yPercent: 110 });
       gsap.set(".hero__shade", { autoAlpha: 0 });
-      gsap.set(logo, { autoAlpha: 1, scale: 0.94 });
+      gsap.set(logo, { autoAlpha: 1 });
       gsap.set(svg, { autoAlpha: 1 });
-      // Animate opacity on glyph groups to preserve their supplied SVG matrices.
-      gsap.set(letters, { opacity: 0 });
-      pieces.forEach(({ shape, bounds }, index) => {
-        const colour = shape.getAttribute("fill") ?? "none";
-        const clip = document.createElementNS(namespace, "clipPath");
-        clip.id = `${clipPrefix}-${index}`;
-        clip.setAttribute("clipPathUnits", "userSpaceOnUse");
-        const wipe = document.createElementNS(namespace, "rect");
-        const top = bounds.y - 6;
-        const height = bounds.height + 12;
-        wipe.setAttribute("x", String(bounds.x - 6));
-        wipe.setAttribute("width", String(bounds.width + 12));
-        wipe.setAttribute("y", String(top + height));
-        wipe.setAttribute("height", "0");
-        clip.append(wipe);
-        definitions.append(clip);
-        shape.setAttribute("clip-path", `url(#${clip.id})`);
-
-        const guide = shape.cloneNode(false) as SVGPathElement;
-        guide.removeAttribute("clip-path");
-        guide.removeAttribute("data-logo-part");
-        guide.setAttribute("fill", "none");
-        guide.setAttribute("stroke", colour);
-        guide.setAttribute("stroke-width", "0.65");
-        drawing.append(guide);
-        gsap.set(guide, { opacity: 0 });
-
-        // Trace each contour separately: compound ribbons have several cutouts.
+      gsap.set(wordmark, { opacity: 0 });
+      shapes.forEach((shape, index) => {
+        const colour = shape.getAttribute("data-color");
+        const ribbon = colour === "orange" || colour === "coral";
+        const structure = colour === "navy" || colour === "slate";
+        // Neutral hairlines establish the structure before the brand colours arrive.
         const contours = (shape.getAttribute("d") ?? "").match(/[Mm][^Mm]*/g) ?? [];
         const paths = contours.map((contour) => {
           const line = document.createElementNS(namespace, "path");
           line.setAttribute("d", contour);
           line.setAttribute("fill", "none");
-          line.setAttribute("stroke", colour);
-          line.setAttribute("stroke-width", "1.25");
+          line.setAttribute("stroke", "#737984");
+          line.setAttribute("stroke-width", ribbon ? "0.85" : "0.7");
           line.setAttribute("stroke-linecap", "round");
           line.setAttribute("stroke-linejoin", "round");
           line.setAttribute("vector-effect", "non-scaling-stroke");
@@ -93,9 +99,10 @@ export default function HeroIntro({ logoSvg }: { logoSvg: string }) {
           gsap.set(line, { strokeDasharray: length, strokeDashoffset: length });
           return line;
         });
-        const duration = Math.min(0.95, Math.max(0.45, shape.getTotalLength() / 3800));
-        strokes.push({ paths, guide, wipe, top, height, duration,
-          start: index / Math.max(1, pieces.length - 1) * 1.15 });
+        strokes.push({ paths,
+          start: ribbon ? 0.45 : (structure ? 0 : 0.22) + index * 0.009,
+          duration: ribbon ? 1.25 : structure ? 1.05 : 0.8,
+        });
       });
     });
 
@@ -125,27 +132,19 @@ export default function HeroIntro({ logoSvg }: { logoSvg: string }) {
       },
     });
 
-    strokes.forEach(({ paths, guide, wipe, top, height, start, duration }) => {
-      timeline
-        .to(guide, { opacity: 0.12, duration: 0.2 }, start)
-        .to(paths, {
-          strokeDashoffset: 0, duration, ease: "sine.inOut",
-          stagger: { amount: paths.length > 1 ? 0.16 : 0 },
-        }, start)
-        .to(wipe, {
-          attr: { y: top, height }, duration: 0.65, ease: "power2.inOut",
-        }, start + duration * 0.75)
-        .to([...paths, guide], { opacity: 0, duration: 0.3 }, start + duration + 0.4);
+    strokes.forEach(({ paths, start, duration }) => {
+      timeline.to(paths, { strokeDashoffset: 0, duration, ease: "none" }, start);
     });
 
     timeline
-      .to(logo, { scale: 1, duration: 2.4, ease: "sine.out" }, 0)
-      .to(letters, {
-        opacity: 1, duration: 0.4, stagger: { amount: 0.4 }, ease: "power2.out",
-      }, 1.9)
-      .addLabel("handoff", 3.05)
-      .to(logo, { autoAlpha: 0, scale: 1.035, duration: 0.35, ease: "power2.in" }, "handoff")
-      .to(preloader, { autoAlpha: 0, duration: 0.5, ease: "power2.inOut" }, "handoff+=0.18")
+      .to(sweep, {
+        attr: { y: bounds.y - 6 }, duration: 1.8, ease: "power2.inOut",
+      }, 0.9)
+      .to(drawing, { opacity: 0, duration: 1.15, ease: "sine.inOut" }, 1.55)
+      .to(wordmark, { opacity: 1, duration: 0.7, ease: "sine.out" }, 2.3)
+      .addLabel("handoff", 3.65)
+      .to(logo, { autoAlpha: 0, duration: 0.5, ease: "sine.inOut" }, "handoff")
+      .to(preloader, { autoAlpha: 0, duration: 0.65, ease: "sine.inOut" }, "handoff+=0.22")
       .to(".hero__shade", { autoAlpha: 1, duration: 0.4 }, "handoff+=0.25")
       .to(".brand, .menu-toggle, .site-nav__link, .site-nav__cta", {
         autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.025, ease: "power2.out",
@@ -184,7 +183,7 @@ export default function HeroIntro({ logoSvg }: { logoSvg: string }) {
       removeMotion();
       timeline.revert();
       context.revert();
-      shapes.forEach((shape) => shape.removeAttribute("clip-path"));
+      mark.removeAttribute("mask");
       definitions.remove();
       drawing.remove();
       document.body.style.overflow = previousOverflow;
