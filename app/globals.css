@@ -5352,90 +5352,39 @@ section[id] {
   }
 }
 
-/* A viewport-sized scene stays in place until the scroll sequence completes. */
-.investment-journey--pinned {
-  height: calc(100svh - var(--pin-offset, 82px));
-}
-.investment-journey--pinned .investment-journey__inner {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-.investment-journey--pinned .how-to-invest__header,
-.investment-journey--pinned .investment-journey__footer {
-  flex-shrink: 0;
-}
-.investment-journey--pinned .investment-journey__landscape {
-  flex: 1;
-  min-height: 0;
-  aspect-ratio: auto;
-  margin: 20px 0 24px;
-}
-.investment-journey--pinned .investment-journey__curve,
-.investment-journey--pinned .investment-journey__stages {
-  top: 20%;
-  height: 54%;
-  aspect-ratio: auto;
-}
-.investment-journey--pinned .investment-journey__stage {
-  --stage-gap: clamp(18px, 2.8vh, 28px);
-}
-.investment-journey--pinned .investment-journey__footer {
-  margin-top: 0;
-}
-/* On narrow or short screens, move the vertical journey within the pinned scene. */
-.investment-journey--compact .investment-journey__landscape {
-  overflow: hidden;
-}
-.investment-journey--compact .investment-journey__curve {
-  display: none;
-}
-.investment-journey--compact .investment-journey__stages {
-  position: relative;
-  top: 0;
-  height: auto;
-  padding-left: 30px;
-}
-.investment-journey--compact .investment-journey__stages::before,
-.investment-journey--compact .investment-journey__stages::after {
-  content: "";
-  position: absolute;
-  left: 6px;
-  top: 14px;
-  height: var(--journey-track-height);
-  width: 1px;
-  background: #d3cec4;
-}
-.investment-journey--compact .investment-journey__stages::after {
-  background: var(--brand-indigo);
-  clip-path: inset(0 0 calc(100% - var(--journey-progress, 1) * 100%) 0);
-}
-.investment-journey--compact .investment-journey__stage,
-.investment-journey--compact .investment-journey__stage:nth-child(even),
-.investment-journey--compact .investment-journey__stage:first-child,
-.investment-journey--compact .investment-journey__stage:last-child {
-  position: relative;
-  left: auto;
-  top: auto;
-  width: 100%;
-  translate: none;
-  z-index: 1;
-  padding: 0 0 32px 14px;
-}
-.investment-journey--compact .investment-journey__stage::before {
-  content: "";
-  position: absolute;
-  left: -30px;
-  top: 8px;
-  width: 12px;
-  height: 12px;
-  border: 1.5px solid var(--marker-color, var(--stage-color));
-  background: #fff;
-  border-radius: 50%;
-  opacity: var(--stage-reveal, 1);
-}
-.investment-journey--compact .investment-journey__stage:last-child {
-  padding-bottom: 0;
+/* Keep the full desktop journey in one viewport without pinning the page. */
+@media (min-width: 1101px) and (min-height: 650px) {
+  .investment-journey {
+    height: calc(100svh - 82px);
+    min-height: 780px;
+  }
+  .investment-journey__inner {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .investment-journey .how-to-invest__header,
+  .investment-journey__footer {
+    flex-shrink: 0;
+  }
+  .investment-journey__landscape {
+    flex: 1;
+    min-height: 0;
+    aspect-ratio: auto;
+    margin: 20px 0 24px;
+  }
+  .investment-journey__curve,
+  .investment-journey__stages {
+    top: 20%;
+    height: 54%;
+    aspect-ratio: auto;
+  }
+  .investment-journey__stage {
+    --stage-gap: clamp(18px, 2.8vh, 28px);
+  }
+  .investment-journey__footer {
+    margin-top: 0;
+  }
 }
 
 /* Bhutan atlas: scoped to the existing development landscape map area. */

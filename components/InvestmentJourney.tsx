@@ -73,32 +73,16 @@ export default function InvestmentJourney({ curve, icons }: { curve: string; ico
       });
       media.add({
         motion: "(prefers-reduced-motion: no-preference)",
-        panoramic: "(min-width: 1101px) and (min-height: 650px)",
       }, (match) => {
         if (!match.conditions?.motion) return;
-        const compact = !match.conditions.panoramic;
-        section.classList.add("investment-journey--animated", "investment-journey--pinned");
-        section.classList.toggle("investment-journey--compact", compact);
-        const headerOffset = () => Math.ceil(document.querySelector(".site-header")?.getBoundingClientRect().height ?? 82);
-        const updatePinOffset = () => section.style.setProperty("--pin-offset", `${headerOffset()}px`);
-        updatePinOffset();
+        section.classList.add("investment-journey--animated");
         const stages = section.querySelector<HTMLOListElement>(".investment-journey__stages")!;
-        const landscape = section.querySelector<HTMLElement>(".investment-journey__landscape")!;
-        const updateScene = () => {
-          updatePinOffset();
-          if (!compact) return;
-          stages.style.setProperty("--journey-track-height", `${placements[placements.length - 1].offsetTop - placements[0].offsetTop}px`);
-        };
-        updateScene();
-        const compactOffset = (index: number) => landscape.clientHeight / 2 - placements[index].offsetTop - placements[index].offsetHeight / 2;
-        if (compact) gsap.set(stages, { y: () => compactOffset(0) });
         gsap.set(progress, { strokeDasharray: length, strokeDashoffset: length });
         gsap.set(dots, { autoAlpha: 1, attr: { r: 6.5 }, stroke: "#b8b5ac" });
         gsap.set(stages, { "--journey-progress": 0 });
         gsap.set(placements, { "--stage-reveal": .5, "--marker-color": "#b8b5ac" });
         gsap.set(".investment-journey__letter, .investment-journey__number", { color: "#899096" });
         gsap.set(".investment-journey__stage p", { autoAlpha: 0, y: 14 });
-        gsap.set(placements[0].querySelector("p"), { autoAlpha: 1, y: 0 });
         const iconDrawings = gsap.utils.toArray<HTMLElement>(".investment-journey__icon-draw", section);
         const iconPreviews = gsap.utils.toArray<HTMLElement>(".investment-journey__icon-preview", section);
         const iconStrokes = iconDrawings.map((icon) => Array.from(icon.querySelectorAll<SVGGeometryElement>("path, circle, rect")));
@@ -113,41 +97,31 @@ export default function InvestmentJourney({ curve, icons }: { curve: string; ico
           defaults: { ease: "power3.out" },
           scrollTrigger: {
             id: "investment-journey",
-            refreshPriority: 0,
             trigger: section,
-            start: () => `top ${headerOffset()}px`,
-            end: () => `+=${Math.max(1800, window.innerHeight * 2.8)}`,
-            pin: true,
-            pinSpacing: true,
-            anticipatePin: 1,
-            scrub: .65,
-            invalidateOnRefresh: true,
-            onRefreshInit: updateScene,
+            start: "top 75%",
+            toggleActions: "play none none none",
+            once: true,
           },
         });
         stops.forEach((stop, index) => {
-          const time = .85 + index * .72;
+          const time = index * .9;
+          const revealTime = index === 0 ? 0 : time + .62;
           const number = placements[index].querySelector(".investment-journey__number");
           const letters = placements[index].querySelectorAll(".investment-journey__letter");
           const description = placements[index].querySelector("p");
-          if (compact) timeline.to(stages, { y: () => compactOffset(index), duration: .6, ease: "power2.inOut" }, time + .6);
           timeline.to(progress, { strokeDashoffset: length * (1 - stop), duration: .72, ease: "none" }, time)
             .to(stages, { "--journey-progress": stop, duration: .72, ease: "none" }, time)
-            .to(dots[index], { stroke: colors[index], duration: .25 }, time + .62)
-            .to(placements[index], { "--stage-reveal": 1, "--marker-color": colors[index], duration: .25 }, time + .62)
-            .to(number, { color: colors[index], duration: .4 }, time + .64)
-            .to(iconDrawings[index], { autoAlpha: 1, duration: .25 }, time + .64)
-            .to(iconPreviews[index], { autoAlpha: 0, duration: .5 }, time + .64)
-            .to(iconStrokes[index], { strokeDashoffset: 0, duration: .42, stagger: .028, ease: "power2.inOut" }, time + .66)
-            .to(letters, { color: "#15232c", duration: .5, stagger: .035 }, time + .69);
-          if (index > 0) timeline.to(description, { autoAlpha: 1, y: 0, duration: .55 }, time + .86);
+            .to(dots[index], { stroke: colors[index], duration: .25 }, revealTime)
+            .to(placements[index], { "--stage-reveal": 1, "--marker-color": colors[index], duration: .25 }, revealTime)
+            .to(number, { color: colors[index], duration: .4 }, revealTime + .02)
+            .to(iconDrawings[index], { autoAlpha: 1, duration: .25 }, revealTime + .02)
+            .to(iconPreviews[index], { autoAlpha: 0, duration: .5 }, revealTime + .02)
+            .to(iconStrokes[index], { strokeDashoffset: 0, duration: .42, stagger: .028, ease: "power2.inOut" }, revealTime + .04)
+            .to(letters, { color: "#15232c", duration: .5, stagger: .035 }, revealTime + .07);
+          timeline.to(description, { autoAlpha: 1, y: 0, duration: .55 }, revealTime + .24);
         });
-        timeline.to(stages, { "--journey-progress": 1, duration: .35, ease: "none" }, 4.45)
-          // Keep the completed journey in view briefly before the pin releases.
-          .to({}, { duration: .45 }, 5.15);
         return () => {
-          section.classList.remove("investment-journey--animated", "investment-journey--pinned", "investment-journey--compact");
-          section.style.removeProperty("--pin-offset");
+          section.classList.remove("investment-journey--animated");
         };
       }, section);
     }, section);
@@ -160,7 +134,7 @@ export default function InvestmentJourney({ curve, icons }: { curve: string; ico
     trackResize.observe(stageList);
     updateTrackHeight();
     // Earlier chapters can resize after fonts load, a breakpoint changes, or
-    // an opportunity list expands. Keep the pin aligned with its real position.
+    // an opportunity list expands. Keep the entry trigger aligned with the section.
     let refreshFrame = 0;
     const refresh = () => {
       if (disposed || refreshFrame) return;
@@ -170,11 +144,9 @@ export default function InvestmentJourney({ curve, icons }: { curve: string; ico
       });
     };
     const upstreamResize = new ResizeObserver(refresh);
-    const scene = section.closest(".pin-spacer") ?? section;
-    for (let sibling = scene.previousElementSibling; sibling; sibling = sibling.previousElementSibling) {
+    for (let sibling = section.previousElementSibling; sibling; sibling = sibling.previousElementSibling) {
       upstreamResize.observe(sibling);
     }
-    // Exclude this scene/spacer: refreshing changes its own pin spacing.
     document.fonts.ready.then(refresh);
     return () => {
       disposed = true;
