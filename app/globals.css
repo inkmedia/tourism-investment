@@ -353,9 +353,10 @@ button {
   font-weight: 300;
 }
 .hero__actions {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 640px;
   gap: 12px;
-  flex-wrap: wrap;
   margin-top: 23px;
 }
 .button {
@@ -450,6 +451,24 @@ button {
 .swap-button:hover .swap-button__face:last-child,
 .swap-button:focus-visible .swap-button__face:last-child {
   transform: translateY(0);
+}
+/* Keep both hero actions aligned, including when a label needs two lines. */
+.hero__actions .button {
+  width: 100%;
+  min-width: 0;
+}
+.hero__actions .swap-button__track {
+  width: 100%;
+  height: auto;
+  min-height: 28px;
+  font-size: 1.1em;
+}
+.hero__actions .swap-button__face {
+  justify-content: space-between;
+  font-size: inherit;
+}
+.hero__actions .swap-button__icon {
+  font-size: inherit;
 }
 .hero__bottom-label {
   position: absolute;
@@ -4738,6 +4757,10 @@ section[id] {
 }
 
 @media (max-width: 700px) {
+  .hero__actions {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 360px;
+  }
   .site-context__header h2,
   .why-invest__header h2,
   .enquiries__intro h2 {
