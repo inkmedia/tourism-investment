@@ -2,6 +2,7 @@
 
 import gsap from "gsap";
 import { useId, useLayoutEffect, useRef } from "react";
+import { observePlaybackVisibility } from "./playbackVisibility";
 
 export default function HeroIntro({ logoSvg }: { logoSvg: string }) {
   const preloaderRef = useRef<HTMLDivElement>(null);
@@ -21,6 +22,7 @@ export default function HeroIntro({ logoSvg }: { logoSvg: string }) {
     let fallback = 0;
     let removeMotion = () => {};
     let sliderInterval = 0;
+    let removePlayback = () => {};
     const slides = Array.from(scene.querySelectorAll<HTMLElement>(".hero__slide"));
     const mountedAt = performance.now();
     const content = ".brand, .menu-toggle, .site-nav__link, .site-nav__cta, .hero__eyebrow, .hero__description, .hero__actions, .hero__stats, .hero__bottom-label";
@@ -115,13 +117,16 @@ export default function HeroIntro({ logoSvg }: { logoSvg: string }) {
         document.body.style.overflow = previousOverflow;
         if (slides.length > 1) {
           let activeSlide = 0;
-          sliderInterval = window.setInterval(() => {
-            if (document.hidden) return;
-            const nextSlide = (activeSlide + 1) % slides.length;
-            gsap.to(slides[activeSlide], { opacity: 0, duration: 0.85, ease: "sine.inOut" });
-            gsap.to(slides[nextSlide], { opacity: 1, duration: 0.85, ease: "sine.inOut" });
-            activeSlide = nextSlide;
-          }, 3000);
+          removePlayback = observePlaybackVisibility(hero, (playing) => {
+            window.clearInterval(sliderInterval);
+            if (!playing) return;
+            sliderInterval = window.setInterval(() => {
+              const nextSlide = (activeSlide + 1) % slides.length;
+              gsap.to(slides[activeSlide], { opacity: 0, duration: 0.85, ease: "sine.inOut" });
+              gsap.to(slides[nextSlide], { opacity: 1, duration: 0.85, ease: "sine.inOut" });
+              activeSlide = nextSlide;
+            }, 3000);
+          });
         }
         if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
         const moveX = gsap.quickTo(scene, "x", { duration: 1, ease: "power3.out" });
@@ -175,15 +180,12 @@ export default function HeroIntro({ logoSvg }: { logoSvg: string }) {
       window.clearTimeout(fallback);
       timeline.play();
     };
-    const loadImage = (src: string) => new Promise<void>((resolve) => {
-      const image = new window.Image();
-      image.onload = () => { image.decode().catch(() => {}).then(resolve); };
-      image.onerror = () => resolve();
-      image.src = src;
-    });
+    // Decode the responsive image selected by the browser, without also
+    // downloading the original JPG used before image optimization.
+    const firstImage = scene.querySelector<HTMLImageElement>(".hero__image");
     let minimum = 0;
     fallback = window.setTimeout(start, 4000);
-    Promise.allSettled([loadImage("/img/1.jpg"), document.fonts.ready]).then(() => {
+    Promise.allSettled([firstImage?.decode(), document.fonts.ready]).then(() => {
       if (disposed || started) return;
       minimum = window.setTimeout(start, Math.max(0, 350 - (performance.now() - mountedAt)));
     });
@@ -193,6 +195,7 @@ export default function HeroIntro({ logoSvg }: { logoSvg: string }) {
       window.clearTimeout(fallback);
       window.clearTimeout(minimum);
       window.clearInterval(sliderInterval);
+      removePlayback();
       gsap.killTweensOf(slides);
       gsap.set(slides, { clearProps: "opacity" });
       removeMotion();

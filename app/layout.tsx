@@ -1,7 +1,27 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import SmoothScroll from "../components/SmoothScroll";
 import "lenis/dist/lenis.css";
 import "./globals.css";
+
+const lora = localFont({
+  src: [
+    { path: "../public/fonts/Lora-Regular.woff2", weight: "400 700", style: "normal" },
+    { path: "../public/fonts/Lora-Italic.woff2", weight: "400 700", style: "italic" },
+  ],
+  display: "swap",
+  variable: "--font-lora",
+  adjustFontFallback: "Times New Roman",
+});
+const roboto = localFont({
+  src: [
+    { path: "../public/fonts/Roboto-Regular.woff2", weight: "300 700", style: "normal" },
+    { path: "../public/fonts/Roboto-Italic.woff2", weight: "300 700", style: "italic" },
+  ],
+  display: "swap",
+  variable: "--font-roboto",
+  adjustFontFallback: "Arial",
+});
 
 export const metadata: Metadata = {
   title: "Tourism Investment | Gelephu Mindfulness City",
@@ -19,15 +39,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${lora.variable} ${roboto.variable}`}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Roboto:ital,wght@0,300..700;1,300..700&display=swap"
-        />
-        <link rel="preload" as="image" href="/img/1.jpg" />
         <script
           dangerouslySetInnerHTML={{
             __html: `

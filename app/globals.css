@@ -10,8 +10,8 @@
   --cream: #f4f0e9;
   --gold: #cda34d;
   --gold-light: #e0b713;
-  --font-heading: "Lora", "Times New Roman", serif;
-  --font-body: "Roboto", Arial, sans-serif;
+  --font-heading: var(--font-lora), "Times New Roman", serif;
+  --font-body: var(--font-roboto), Arial, sans-serif;
   /* Page 30 brand scale, adapted for responsive web reading. */
   --type-display: clamp(30px, 4vw, 35px);
   --type-section: clamp(28px, 3.75vw, 35px);
@@ -352,6 +352,10 @@ button {
 }
 .hero__slide:first-child {
   opacity: 1;
+}
+.hero__image {
+  object-fit: cover;
+  object-position: center 58%;
 }
 .hero__shade {
   position: absolute;

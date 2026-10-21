@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import Image from "next/image";
 import Header from "@/components/Header";
 import HeroIntro from "@/components/HeroIntro";
 import HisMajesty from "@/components/HisMajesty";
@@ -40,12 +41,21 @@ export default async function Home() {
       <Header />
       <section className="hero" aria-labelledby="hero-title">
         <div className="hero__scene" aria-hidden="true">
-          {["1.jpg", "15.jpg", "16.jpg"].map((image) => (
+          {["1.jpg", "15.jpg", "16.jpg"].map((image, index) => (
             <div
               key={image}
               className="hero__slide"
-              style={{ backgroundImage: `url("/img/${image}")` }}
-            />
+            >
+              <Image
+                src={`/img/${image}`}
+                alt=""
+                fill
+                sizes="110vw"
+                preload={index === 0}
+                quality={85}
+                className="hero__image"
+              />
+            </div>
           ))}
         </div>
         <div className="hero__shade" aria-hidden="true" />

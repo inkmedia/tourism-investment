@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
 import gsap from "gsap";
+import { observePlaybackVisibility } from "./playbackVisibility";
 
 const areas = [
   {
@@ -87,6 +88,7 @@ function OpportunityTitle({ title, run }: { title: string; run: number }) {
 }
 
 export default function Opportunities() {
+  const sectionRef = useRef<HTMLElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [swapRuns, setSwapRuns] = useState(() => areas.map(() => 0));
   const [selectionRevision, setSelectionRevision] = useState(0);
@@ -95,10 +97,19 @@ export default function Opportunities() {
 
   // Restart the three-second countdown after each manual selection.
   useEffect(() => {
-    const timer = window.setTimeout(() => {
-      setActiveIndex((current) => (current + 1) % areas.length);
-    }, 3000);
-    return () => window.clearTimeout(timer);
+    let timer = 0;
+    const stop = observePlaybackVisibility(sectionRef.current!, (playing) => {
+      window.clearTimeout(timer);
+      if (playing) {
+        timer = window.setTimeout(() => {
+          setActiveIndex((current) => (current + 1) % areas.length);
+        }, 3000);
+      }
+    });
+    return () => {
+      stop();
+      window.clearTimeout(timer);
+    };
   }, [activeIndex, selectionRevision]);
 
   function selectArea(index: number, animateTitle = false) {
@@ -134,7 +145,7 @@ export default function Opportunities() {
   }
 
   return (
-    <section className="tourism-areas" id="opportunities" aria-labelledby="tourism-areas-title">
+    <section ref={sectionRef} className="tourism-areas" id="opportunities" aria-labelledby="tourism-areas-title">
       <div className="tourism-areas__inner">
         <div className="tourism-areas__selection">
           <header className="tourism-areas__header">
