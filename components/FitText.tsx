@@ -5,7 +5,7 @@ import { useLayoutEffect, useRef, type ReactNode } from "react";
 type TitleGroup = { refresh: () => void; release: () => void; users: number };
 const groups = new WeakMap<HTMLElement, TitleGroup>();
 
-/** Every card title in a section uses the same size, set by its longest title. */
+/** Share a title size, wrapping when a single line would be too small to read. */
 function createGroup(section: HTMLElement): TitleGroup {
   let frame = 0;
   let active = true;
@@ -25,14 +25,20 @@ function createGroup(section: HTMLElement): TitleGroup {
     const ratio = Math.min(1, ...titles.map((title) =>
       Math.max(1, title.clientWidth - 3) / (title.firstElementChild as HTMLElement).scrollWidth,
     ));
-    size *= ratio;
+    const minimumSize = Math.min(size, 18);
+    size = Math.max(minimumSize, size * ratio);
     apply();
     // Check actual glyph widths, including letter spacing, at the shared size.
-    while (size > 1 && titles.some((title) =>
+    while (size > minimumSize && titles.some((title) =>
       (title.firstElementChild as HTMLElement).scrollWidth > title.clientWidth,
     )) {
-      size -= .25;
+      size = Math.max(minimumSize, size - .25);
       apply();
+    }
+    if (titles.some((title) => (title.firstElementChild as HTMLElement).scrollWidth > title.clientWidth)) {
+      titles.forEach((title) => {
+        (title.firstElementChild as HTMLElement).style.whiteSpace = "normal";
+      });
     }
   };
   const schedule = () => {

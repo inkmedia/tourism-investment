@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const navigation = [
   { label: "Why Invest", href: "#why-invest" },
@@ -14,6 +14,25 @@ const navigation = [
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuToggle = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+        menuToggle.current?.focus();
+      }
+    };
+    const desktop = matchMedia("(min-width: 1001px)");
+    const closeOnDesktop = () => { if (desktop.matches) setMenuOpen(false); };
+    document.addEventListener("keydown", closeOnEscape);
+    desktop.addEventListener("change", closeOnDesktop);
+    return () => {
+      document.removeEventListener("keydown", closeOnEscape);
+      desktop.removeEventListener("change", closeOnDesktop);
+    };
+  }, [menuOpen]);
 
   useEffect(() => {
     const update = () => setScrolled(window.scrollY > 24);
@@ -23,9 +42,9 @@ export default function Header() {
   }, []);
 
   return (
-    <header className={`site-header ${scrolled || menuOpen ? "site-header--solid" : ""} ${scrolled ? "site-header--sticky" : ""}`}>
+    <header className={`site-header ${scrolled || menuOpen ? "site-header--solid" : ""} ${scrolled ? "site-header--sticky" : ""} ${menuOpen ? "site-header--menu-open" : ""}`}>
       <a className="brand" href="#top" aria-label="Tourism Investment — home">
-        <Image src={scrolled ? "/img/logo_.svg" : "/img/logo-white-2.png"} alt="Gelephu Mindfulness City logo" width={56} height={56} priority />
+        <Image src={scrolled || menuOpen ? "/img/logo_.svg" : "/img/logo-white-2.png"} alt="Gelephu Mindfulness City logo" width={56} height={56} priority />
         <span className="brand__copy">
           <strong>Tourism Investment</strong>
           <small>Gelephu Mindfulness City</small>
@@ -33,6 +52,7 @@ export default function Header() {
       </a>
 
       <button
+        ref={menuToggle}
         className="menu-toggle"
         type="button"
         aria-expanded={menuOpen}

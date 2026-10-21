@@ -6358,8 +6358,8 @@ section[id] {
   letter-spacing: -0.035em;
 }
 .advantages-mosaic__card:not([data-position="0"]) .advantages-mosaic__title {
-  font-size: var(--advantage-title-size, 20px);
-  white-space: nowrap;
+  font-size: max(18px, var(--advantage-title-size, 20px));
+  white-space: normal;
 }
 .advantages-mosaic__word { display: inline-block; white-space: pre; }
 .advantages-mosaic__description {
@@ -6386,4 +6386,144 @@ section[id] {
 }
 @media (prefers-reduced-motion: reduce) {
   .advantages-mosaic__card { transition: none; }
+}
+
+/* Keep the desktop composition while giving smaller screens room to read. */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+@media (max-width: 1100px) {
+  .advantages-mosaic__card:not([data-position="0"]) .advantages-mosaic__title {
+    font-size: 18px;
+    white-space: normal;
+    line-height: 1.35;
+  }
+  .advantages-mosaic__word {
+    white-space: normal;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+  .available-investments__pills {
+    gap: 8px;
+    padding: 5px;
+    scroll-padding-inline: 5px;
+  }
+  .available-investments__pills button {
+    font-size: var(--type-label);
+    padding: 10px 14px;
+    gap: 8px;
+  }
+  .available-investments__pills button span {
+    flex-shrink: 0;
+  }
+  .button {
+    max-width: 100%;
+    min-width: 0;
+  }
+  .button .swap-button__track {
+    width: 100%;
+    height: auto;
+    min-height: 28px;
+  }
+  .button .swap-button__face,
+  .button .swap-button__track,
+  .button .swap-button__icon {
+    font-size: inherit;
+  }
+  .button .swap-button__face {
+    gap: 12px;
+    min-width: 0;
+  }
+  .planned-attractions__cards strong {
+    line-height: 1.4;
+  }
+}
+
+@media (max-width: 1000px) {
+  .site-header--menu-open {
+    color: var(--ink);
+  }
+  .site-header--menu-open .brand__copy small {
+    color: var(--brand-slate);
+  }
+  .site-header--menu-open .menu-toggle {
+    color: var(--ink);
+    border-color: rgb(16 27 34 / 36%);
+    background: transparent;
+  }
+  .site-nav__links {
+    gap: 0;
+  }
+  .site-nav__link {
+    line-height: 1.5;
+  }
+  .site-nav__link-face {
+    min-height: 1.5em;
+  }
+  .site-nav__cta {
+    max-width: 100%;
+    min-height: 44px;
+    white-space: normal;
+  }
+  .site-nav__cta .swap-button__track {
+    height: auto;
+    min-height: 24px;
+  }
+}
+
+@media (max-width: 760px) {
+  .partners-cta__inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 28px;
+  }
+  .partners-cta__button {
+    align-self: stretch;
+  }
+  .tourism-areas__feature {
+    /* The longest description must fit even at larger text settings. */
+    display: flex;
+    align-items: flex-end;
+  }
+  .tourism-areas__caption {
+    position: relative;
+    margin-top: 120px;
+  }
+  .advantages-mosaic {
+    grid-template-rows: minmax(300px, auto) repeat(4, minmax(180px, auto));
+  }
+}
+
+@media (max-width: 600px) {
+  .available-card__category,
+  .available-card__label,
+  .available-card__metrics dt {
+    font-size: 10px;
+  }
+  .available-card__explore {
+    font-size: 12px;
+  }
+  .available-card .available-card__return,
+  .available-card__enquire {
+    min-height: 44px;
+  }
+  .available-investments__filter-heading {
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    line-height: 1.5;
+  }
+  .site-footer__column a {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  .site-footer__column ul {
+    gap: 2px;
+  }
+  .footer-link__track {
+    height: auto;
+    min-height: 1.45em;
+  }
 }
