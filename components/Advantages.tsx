@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ArrowRight, X } from "lucide-react";
+import AdvantagesMosaic from "./AdvantagesMosaic";
 
-const advantages = [
+const advantages: [string, string, string][] = [
   ["Autonomy", "Special Administrative Region", "Established under Royal Charter with executive, legislative, and judicial autonomy."],
   ["Legal clarity", "Investor-friendly legal framework", "Singapore common law, ADGM regulations, international arbitration, and anti-corruption safeguards."],
   ["Market access", "Strategic market access", "Direct India access via free trade arrangements and border proximity — a gateway to South Asia."],
@@ -18,17 +19,7 @@ const advantages = [
 const tenure = [["Residential", "99 years"], ["Hotel & Retail", "60 + 30 years"], ["Ultra High-End Integrated", "99 years"], ["Commercial Office", "60 years"], ["Industrial", "30 + 30 years"], ["Agricultural", "30 + 30 years"]];
 
 export default function Advantages() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const headerRef = useRef<HTMLElement>(null);
-  const wordsRef = useRef<HTMLDivElement>(null);
-  const footerRef = useRef<HTMLElement>(null);
-  const [active, setActive] = useState<number | null>(null);
-  const [preview, setPreview] = useState(0);
-  const letterTimelines = useRef(new Map<number, gsap.core.Timeline>());
-  const previousTitle = useRef<number | null>(null);
-  const floating = useRef<HTMLDivElement>(null);
-  const floatingCard = useRef<HTMLDivElement>(null);
-  const aim = useRef({ x: 0, y: 0 });
+  const [autoPaused, setAutoPaused] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
   const panel = useRef<HTMLDivElement>(null);
   const opener = useRef<HTMLButtonElement>(null);
@@ -36,150 +27,13 @@ export default function Advantages() {
   const closing = useRef(false);
 
   useEffect(() => {
-    const section = sectionRef.current!;
-    const header = headerRef.current!;
-    const words = Array.from(wordsRef.current!.querySelectorAll<HTMLElement>(".advantages__word"));
-    const footer = footerRef.current!;
-    const reduced = matchMedia("(prefers-reduced-motion: reduce)");
-    if (reduced.matches) return;
-    gsap.set([header, footer], { autoAlpha: 0, y: 20 });
-    gsap.set(words, { autoAlpha: 0, y: 28, rotateX: -8, transformOrigin: "left bottom" });
-    const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) return;
-      gsap.timeline().to(header, { autoAlpha: 1, y: 0, duration: .65, ease: "power3.out" }).to(words, { autoAlpha: 1, y: 0, rotateX: 0, duration: .72, stagger: .075, ease: "power3.out" }, "<.12").to(footer, { autoAlpha: 1, y: 0, duration: .5, ease: "power2.out" }, "<.18");
-      observer.disconnect();
-    }, { threshold: .16 });
-    observer.observe(section);
-    return () => { observer.disconnect(); gsap.killTweensOf([header, ...words, footer]); };
-  }, []);
-
-  // Two text faces roll through the same plane, as in Codrops' 3DLettersMenuHover.
-  // See THIRD_PARTY_NOTICES.md for attribution and license.
-  useLayoutEffect(() => {
-    const timelines = letterTimelines.current;
-    const context = gsap.context(() => {
-      gsap.set(".advantages__face--clone .advantages__letter", { yPercent: -100, rotationX: 90, opacity: 0 });
-    }, wordsRef);
+    const panelElement = panel.current;
+    const dialogElement = dialog.current;
     return () => {
-      timelines.forEach((timeline) => timeline.kill());
-      timelines.clear();
-      previousTitle.current = null;
-      context.revert();
+      if (oldOverflow.current !== null) document.body.style.overflow = oldOverflow.current;
+      if (panelElement) gsap.killTweensOf(panelElement);
+      if (dialogElement) gsap.killTweensOf(dialogElement);
     };
-  }, []);
-
-  useEffect(() => {
-    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const buttons = wordsRef.current!.querySelectorAll<HTMLButtonElement>(".advantages__word button");
-    const roll = (index: number, entering: boolean) => {
-      const original = buttons[index].querySelectorAll(".advantages__face--original .advantages__letter");
-      const clone = buttons[index].querySelectorAll(".advantages__face--clone .advantages__letter");
-      letterTimelines.current.get(index)?.kill();
-      if (reduced) {
-        gsap.set(original, { yPercent: 0, rotationX: 0, opacity: 1 });
-        gsap.set(clone, { yPercent: -100, rotationX: 90, opacity: 0 });
-        return;
-      }
-      const timeline = gsap.timeline({
-        delay: entering ? .1 : 0,
-        defaults: { duration: .5, ease: "power2.out", stagger: .025 },
-      });
-      timeline
-        .to(original, { yPercent: entering ? 100 : 0, rotationX: entering ? -90 : 0, opacity: entering ? 0 : 1 }, 0)
-        .to(clone, { yPercent: entering ? 0 : -100, rotationX: entering ? 0 : 90, opacity: entering ? 1 : 0 }, 0);
-      letterTimelines.current.set(index, timeline);
-    };
-    if (previousTitle.current !== null && previousTitle.current !== active) roll(previousTitle.current, false);
-    if (active !== null) roll(active, true);
-    previousTitle.current = active;
-  }, [active]);
-
-  // Swap copy only after the outgoing card has finished shrinking.
-  // Killing the previous tween also cancels stale swaps during rapid hovering.
-  useLayoutEffect(() => {
-    const card = floatingCard.current!;
-    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let tween: gsap.core.Tween;
-    if (active === null) {
-      tween = gsap.to(card, { autoAlpha: 0, scale: reduced ? 1 : .78, duration: reduced ? 0 : .2, ease: "power2.in" });
-    } else if (active !== preview) {
-      tween = gsap.to(card, {
-        autoAlpha: 0, scale: reduced ? 1 : .78,
-        duration: reduced || Number(gsap.getProperty(card, "opacity")) === 0 ? 0 : .18,
-        ease: "power2.in",
-        onComplete: () => setPreview(active),
-      });
-    } else {
-      if (Number(gsap.getProperty(card, "opacity")) === 0) gsap.set(card, { scale: reduced ? 1 : .78 });
-      tween = gsap.to(card, { autoAlpha: 1, scale: 1, duration: reduced ? 0 : .38, ease: "power3.out" });
-    }
-    return () => { tween.kill(); };
-  }, [active, preview]);
-
-  useEffect(() => {
-    const box = floating.current!;
-    const card = floatingCard.current!;
-    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (active === null) return;
-    // The outer element follows the pointer; the inner card swings independently.
-    const position = () => {
-      const margin = reduced ? 12 : 38;
-      const width = box.offsetWidth, height = box.offsetHeight;
-      return {
-        x: Math.max(margin, Math.min(innerWidth - width - margin, aim.current.x - width * .65)),
-        y: Math.max(margin, Math.min(innerHeight - height - margin, aim.current.y + 28)),
-      };
-    };
-    const target = position();
-    const visible = Number(gsap.getProperty(card, "opacity")) > 0;
-    let x = visible ? Number(gsap.getProperty(box, "x")) : target.x;
-    let y = visible ? Number(gsap.getProperty(box, "y")) : target.y;
-    let last = 0, frame = 0, tilt = reduced ? 0 : Number(gsap.getProperty(card, "rotation"));
-    gsap.set(box, { x, y });
-    const moveX = gsap.quickSetter(box, "x", "px");
-    const moveY = gsap.quickSetter(box, "y", "px");
-    const rotate = gsap.quickSetter(card, "rotation", "deg");
-    const tick = (time: number) => {
-      const dt = Math.min(32, time - (last || time - 16));
-      last = time;
-      const target = position();
-      const dx = target.x - x;
-      const ease = reduced ? 1 : 1 - Math.exp(-dt / 85);
-      x += dx * ease;
-      y += (target.y - y) * ease;
-      tilt += ((reduced ? 0 : Math.max(-9, Math.min(9, dx * .12))) - tilt) * ease;
-      moveX(x); moveY(y); rotate(tilt);
-      frame = requestAnimationFrame(tick);
-    };
-    frame = requestAnimationFrame(tick);
-    const dismiss = () => setActive(null);
-    const key = (event: KeyboardEvent) => { if (event.key === "Escape") dismiss(); };
-    const outside = (event: PointerEvent) => {
-      if (!(event.target instanceof Element) || !event.target.closest(".advantages__word button")) dismiss();
-    };
-    window.addEventListener("keydown", key);
-    window.addEventListener("pointerdown", outside);
-    window.addEventListener("scroll", dismiss, { passive: true });
-    window.addEventListener("resize", dismiss);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("keydown", key);
-      window.removeEventListener("pointerdown", outside);
-      window.removeEventListener("scroll", dismiss);
-      window.removeEventListener("resize", dismiss);
-    };
-  }, [active]);
-
-  const reveal = (index: number, x: number, y: number) => {
-    aim.current = { x, y };
-    setActive(index);
-  };
-
-  useEffect(() => () => {
-    if (oldOverflow.current !== null) document.body.style.overflow = oldOverflow.current;
-    if (floatingCard.current) gsap.killTweensOf(floatingCard.current);
-    if (panel.current) gsap.killTweensOf(panel.current);
-    if (dialog.current) gsap.killTweensOf(dialog.current);
   }, []);
 
   const restore = () => {
@@ -196,7 +50,6 @@ export default function Advantages() {
     });
   };
   const open = () => {
-    setActive(null);
     if (dialog.current!.open) return;
     oldOverflow.current = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -232,56 +85,16 @@ export default function Advantages() {
   };
 
   return (
-    <section ref={sectionRef} className="advantages" aria-labelledby="advantages-title">
+    <section
+      className="advantages advantages--mosaic"
+      aria-labelledby="advantages-title"
+      onMouseEnter={() => setAutoPaused(true)}
+      onMouseLeave={() => setAutoPaused(false)}
+    >
       <div className="advantages__inner">
-        <header ref={headerRef} className="advantages__header"><div><p className="advantages__eyebrow">Why GMC stands apart</p><h2 id="advantages-title">GMC’s unparalleled advantages</h2></div><p>A purpose-built legal, tax, banking and land tenure framework designed to give investors clarity and confidence before the destination fully matures.</p></header>
-        <div ref={wordsRef} className="advantages__words">
-          {advantages.map(([label, title, description], index) => (
-            <div className="advantages__word" key={label}>
-              <button
-                type="button"
-                aria-label={label}
-                aria-describedby={`advantage-description-${index}`}
-                data-active={active === index || undefined}
-                onPointerEnter={(event) => { if (event.pointerType === "mouse") reveal(index, event.clientX, event.clientY); }}
-                onPointerMove={(event) => { if (event.pointerType === "mouse") aim.current = { x: event.clientX, y: event.clientY }; }}
-                onPointerLeave={(event) => { if (event.pointerType === "mouse") setActive(null); }}
-                onFocus={(event) => {
-                  if (!event.currentTarget.matches(":focus-visible")) return;
-                  const rect = event.currentTarget.getBoundingClientRect();
-                  reveal(index, rect.left + rect.width / 2, rect.bottom);
-                }}
-                onBlur={() => setActive(null)}
-                onClick={(event) => {
-                  if (event.detail > 0 && matchMedia("(hover: hover) and (pointer: fine)").matches) {
-                    reveal(index, event.clientX, event.clientY);
-                  } else {
-                    const rect = event.currentTarget.getBoundingClientRect();
-                    reveal(index, rect.left + rect.width / 2, rect.bottom);
-                  }
-                }}
-              >
-                <span className="advantages__label" aria-hidden="true">
-                  {["original", "clone"].map((face) => (
-                    <span className={`advantages__face advantages__face--${face}`} key={face}>
-                      {label.split(" ").map((word, wordIndex) => <span className="advantages__token" key={wordIndex}>{wordIndex > 0 && "\u00a0"}{Array.from(word).map((letter, letterIndex) => <span className="advantages__letter" key={letterIndex}>{letter}</span>)}</span>)}
-                    </span>
-                  ))}
-                </span>
-                <small aria-hidden="true">{String(index + 1).padStart(2, "0")}</small>
-              </button>
-              <span className="advantages__sr" id={`advantage-description-${index}`}>{title}. {description}</span>
-            </div>
-          ))}
-        </div>
-        <footer ref={footerRef} className="advantages__footer"><p>Explore the advantages. Discover the framework behind them.</p><button ref={opener} type="button" onClick={open} className="button button--gold swap-button"><span className="swap-button__track"><span className="swap-button__face">View more <span className="swap-button__icon"><ArrowRight aria-hidden="true" /></span></span><span className="swap-button__face" aria-hidden="true">View more <span className="swap-button__icon"><ArrowRight /></span></span></span></button></footer>
-      </div>
-      <div ref={floating} className="advantages__floating" aria-hidden="true">
-        <div ref={floatingCard} className="advantages__floating-card">
-          <span className="advantages__eyebrow">{String(preview + 1).padStart(2, "0")} / Why GMC stands apart</span>
-          <h3>{advantages[preview][1]}</h3>
-          <p>{advantages[preview][2]}</p>
-        </div>
+        <header className="advantages__header"><div><p className="advantages__eyebrow">Why GMC stands apart</p><h2 id="advantages-title">GMC’s unparalleled advantages</h2></div><p>A purpose-built legal, tax, banking and land tenure framework designed to give investors clarity and confidence before the destination fully matures.</p></header>
+        <AdvantagesMosaic items={advantages} paused={autoPaused} />
+        <footer className="advantages__footer"><p>Select an advantage to explore. Discover the framework behind it.</p><button ref={opener} type="button" onClick={open} className="button button--gold swap-button"><span className="swap-button__track"><span className="swap-button__face">View more <span className="swap-button__icon"><ArrowRight aria-hidden="true" /></span></span><span className="swap-button__face" aria-hidden="true">View more <span className="swap-button__icon"><ArrowRight /></span></span></span></button></footer>
       </div>
       <dialog ref={dialog} className="advantages-dialog" aria-labelledby="advantages-dialog-title" onCancel={(event) => { event.preventDefault(); close(); }} onClose={restore} onClick={(event) => { if (event.target === event.currentTarget) close(); }}>
         <div ref={panel} className="advantages-dialog__panel" data-lenis-prevent>

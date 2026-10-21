@@ -2,12 +2,14 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import Header from "@/components/Header";
 import HeroIntro from "@/components/HeroIntro";
+import HisMajesty from "@/components/HisMajesty";
 import Footer from "@/components/Footer";
 import WhyInvest from "@/components/WhyInvest";
 import Opportunities from "@/components/Opportunities";
 import InvestorEnquiries from "@/components/InvestorEnquiries";
 import InvestmentJourney from "@/components/InvestmentJourney";
 import AvailableInvestments from "@/components/AvailableInvestments";
+import PartnersCTA from "@/components/PartnersCTA";
 import PlannedAttractions from "@/components/PlannedAttractions";
 import SiteContext from "@/components/SiteContext";
 import WhyInvestNow from "@/components/WhyInvestNow";
@@ -133,11 +135,13 @@ export default async function Home() {
       <WhyInvest />
       <Opportunities />
       <AvailableInvestments />
+      <PartnersCTA />
       <PlannedAttractions />
       <SiteContext />
       <WhyInvestNow />
       <AirportStory />
       <Advantages />
+      <HisMajesty />
       <InvestmentJourney />
       <InvestorEnquiries />
       <Footer />

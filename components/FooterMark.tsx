@@ -45,9 +45,9 @@ const pieces = [
   { d: "M 1324 1037 L 1031 1330 L 1324 1330 Z", fill: "#3F4A75" },
 ];
 
-export default function FooterMark({ monochrome = false }: { monochrome?: boolean }) {
+export default function FooterMark({ monochrome = false, preserveAspectRatio = "xMidYMid meet" }: { monochrome?: boolean; preserveAspectRatio?: string }) {
   return (
-    <svg viewBox="0 0 1360 1360" aria-hidden="true" focusable="false">
+    <svg viewBox="0 0 1360 1360" preserveAspectRatio={preserveAspectRatio} aria-hidden="true" focusable="false">
       {pieces.map((piece, index) => (
         <path
           key={index}

@@ -23,9 +23,9 @@ export default function Header() {
   }, []);
 
   return (
-    <header className={`site-header ${scrolled || menuOpen ? "site-header--solid" : ""}`}>
+    <header className={`site-header ${scrolled || menuOpen ? "site-header--solid" : ""} ${scrolled ? "site-header--sticky" : ""}`}>
       <a className="brand" href="#top" aria-label="Tourism Investment — home">
-        <Image src="/img/logo-white-2.png" alt="Gelephu Mindfulness City logo" width={56} height={56} priority />
+        <Image src={scrolled ? "/img/logo_.svg" : "/img/logo-white-2.png"} alt="Gelephu Mindfulness City logo" width={56} height={56} priority />
         <span className="brand__copy">
           <strong>Tourism Investment</strong>
           <small>Gelephu Mindfulness City</small>
@@ -44,6 +44,7 @@ export default function Header() {
       </button>
 
       <nav id="primary-navigation" className={`site-nav ${menuOpen ? "site-nav--open" : ""}`} aria-label="Primary navigation">
+        <div className="site-nav__links">
         {navigation.map((item, index) => (
           <a
             className={`site-nav__link site-nav__link--${index + 1}`}
@@ -63,6 +64,7 @@ export default function Header() {
             </span>
           </a>
         ))}
+        </div>
         <a className="site-nav__cta swap-button" href="#enquiries" onClick={() => setMenuOpen(false)}>
           <span className="swap-button__track">
             <span className="swap-button__face">Talk to our team <span className="swap-button__icon" aria-hidden="true"><ArrowRight /></span></span>
