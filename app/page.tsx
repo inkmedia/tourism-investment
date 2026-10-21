@@ -7,45 +7,17 @@ import WhyInvest from "@/components/WhyInvest";
 import Opportunities from "@/components/Opportunities";
 import InvestorEnquiries from "@/components/InvestorEnquiries";
 import InvestmentJourney from "@/components/InvestmentJourney";
-import OpportunityBooks from "@/components/OpportunityBooks";
 import AvailableInvestments from "@/components/AvailableInvestments";
 import PlannedAttractions from "@/components/PlannedAttractions";
 import SiteContext from "@/components/SiteContext";
 import WhyInvestNow from "@/components/WhyInvestNow";
 import AirportStory from "@/components/AirportStory";
 import Advantages from "@/components/Advantages";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, FileText, Plane, UsersRound } from "lucide-react";
 
 const heading = ["A new destination.", "A rare hospitality", "opportunity."];
 
 export default async function Home() {
-  // Use the supplied asset for both the track and its animated stroke.
-  const journeySvg = await readFile(
-    path.join(process.cwd(), "public/img/investment-path-clean.svg"),
-    "utf8",
-  );
-  const investmentCurve =
-    journeySvg.match(
-      /<path\b[^>]*\bid="journey-curve"[^>]*\bd="([^"]+)"/,
-    )?.[1] ?? "";
-  const journeyIcons = await Promise.all(
-    [
-      "01_explore.svg",
-      "02_connect.svg",
-      "03_assess.svg",
-      "04_structure.svg",
-      "05_develop.svg",
-    ].map(async (filename) => {
-      const svg = await readFile(
-        path.join(process.cwd(), "public/img/svg", filename),
-        "utf8",
-      );
-      // Scope the supplied artwork's styles and parts to this component.
-      return svg
-        .replace(/<style\b[^>]*>[\s\S]*?<\/style>/g, "")
-        .replace(/\bid="([^"]+)"/g, 'data-icon-part="$1"');
-    }),
-  );
   const logoColours: Record<string, string> = {
     navy: "#3F4A75", slate: "#5C6A7F", burgundy: "#8B2939",
     orange: "#FF7E45", coral: "#FF5C4F", yellow: "#FFD217",
@@ -65,7 +37,15 @@ export default async function Home() {
       <HeroIntro logoSvg={preloaderLogo} />
       <Header />
       <section className="hero" aria-labelledby="hero-title">
-        <div className="hero__scene" aria-hidden="true" />
+        <div className="hero__scene" aria-hidden="true">
+          {["1.jpg", "15.jpg", "16.jpg"].map((image) => (
+            <div
+              key={image}
+              className="hero__slide"
+              style={{ backgroundImage: `url("/img/${image}")` }}
+            />
+          ))}
+        </div>
         <div className="hero__shade" aria-hidden="true" />
         <div className="hero__content">
           <p className="hero__eyebrow reveal reveal--eyebrow">
@@ -128,6 +108,23 @@ export default async function Home() {
               </span>
             </a>
           </div>
+          <dl className="hero__stats" aria-label="Investment highlights">
+            <div className="hero__stat">
+              <Plane className="hero__stat-icon" strokeWidth={1.4} aria-hidden="true" />
+              <dt>International airport opens</dt>
+              <dd>December 2029</dd>
+            </div>
+            <div className="hero__stat">
+              <UsersRound className="hero__stat-icon" strokeWidth={1.4} aria-hidden="true" />
+              <dt>Passengers a year by 2044</dt>
+              <dd>3.1M</dd>
+            </div>
+            <div className="hero__stat">
+              <FileText className="hero__stat-icon" strokeWidth={1.4} aria-hidden="true" />
+              <dt>Hotel &amp; retail land lease</dt>
+              <dd>60 + 30 <span>yrs</span></dd>
+            </div>
+          </dl>
         </div>
         <div className="hero__bottom-label reveal reveal--label">
           Special Administrative Region
@@ -136,13 +133,12 @@ export default async function Home() {
       <WhyInvest />
       <Opportunities />
       <AvailableInvestments />
-      <OpportunityBooks />
       <PlannedAttractions />
       <SiteContext />
       <WhyInvestNow />
       <AirportStory />
       <Advantages />
-      <InvestmentJourney curve={investmentCurve} icons={journeyIcons} />
+      <InvestmentJourney />
       <InvestorEnquiries />
       <Footer />
     </main>

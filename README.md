@@ -11,6 +11,19 @@ npm run dev
 
 Open `http://localhost:3000`.
 
+## Separate preview version
+
+The updated design is maintained on `version-2.0`.
+Keep `main` as the existing production version. Push preview changes to this
+branch without merging them into `main`.
+
+For a Vercel project connected to this repository, keep its Production Branch
+set to `main` and enable Preview deployments for this branch. Use the preview
+deployment URL to test or share the updated design independently. If the new
+design needs a separate production site, import the repository as a second
+Vercel project, select this branch as that project's Production Branch, and
+use a different domain. Leave the original project's domain and settings in place.
+
 ## Current assets and content
 
 - `public/img/Logo.png` is copied from the supplied `img/Logo.png`.

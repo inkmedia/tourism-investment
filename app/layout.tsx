@@ -27,7 +27,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Roboto:ital,wght@0,300..700;1,300..700&display=swap"
         />
-        <link rel="preload" as="image" href="/img/Hero-bg.webp" />
+        <link rel="preload" as="image" href="/img/1.jpg" />
         <script
           dangerouslySetInnerHTML={{
             __html: `

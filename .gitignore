@@ -4,3 +4,5 @@ out
 .env*
 !.env.example
 *.tsbuildinfo
+.DS_Store
+.vercel

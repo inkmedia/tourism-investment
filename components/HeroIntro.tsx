@@ -20,8 +20,10 @@ export default function HeroIntro({ logoSvg }: { logoSvg: string }) {
     let started = false;
     let fallback = 0;
     let removeMotion = () => {};
+    let sliderInterval = 0;
+    const slides = Array.from(scene.querySelectorAll<HTMLElement>(".hero__slide"));
     const mountedAt = performance.now();
-    const content = ".brand, .menu-toggle, .site-nav__link, .site-nav__cta, .hero__eyebrow, .hero__description, .hero__actions, .hero__bottom-label";
+    const content = ".brand, .menu-toggle, .site-nav__link, .site-nav__cta, .hero__eyebrow, .hero__description, .hero__actions, .hero__stats, .hero__bottom-label";
 
     const shapes = Array.from(preloader.querySelectorAll<SVGPathElement>(
       '[data-logo-part="mark"] path',
@@ -111,6 +113,16 @@ export default function HeroIntro({ logoSvg }: { logoSvg: string }) {
       onComplete: () => {
         gsap.set(preloader, { display: "none" });
         document.body.style.overflow = previousOverflow;
+        if (slides.length > 1) {
+          let activeSlide = 0;
+          sliderInterval = window.setInterval(() => {
+            if (document.hidden) return;
+            const nextSlide = (activeSlide + 1) % slides.length;
+            gsap.to(slides[activeSlide], { opacity: 0, duration: 0.85, ease: "sine.inOut" });
+            gsap.to(slides[nextSlide], { opacity: 1, duration: 0.85, ease: "sine.inOut" });
+            activeSlide = nextSlide;
+          }, 3000);
+        }
         if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
         const moveX = gsap.quickTo(scene, "x", { duration: 1, ease: "power3.out" });
         const moveY = gsap.quickTo(scene, "y", { duration: 1, ease: "power3.out" });
@@ -153,7 +165,7 @@ export default function HeroIntro({ logoSvg }: { logoSvg: string }) {
       .to(".hero__line-inner", {
         autoAlpha: 1, yPercent: 0, duration: 0.65, stagger: 0.1, ease: "power3.out",
       }, "handoff+=0.5")
-      .to(".hero__description, .hero__actions, .hero__bottom-label", {
+      .to(".hero__description, .hero__actions, .hero__stats, .hero__bottom-label", {
         autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.1, ease: "power2.out",
       }, "handoff+=0.9");
 
@@ -171,7 +183,7 @@ export default function HeroIntro({ logoSvg }: { logoSvg: string }) {
     });
     let minimum = 0;
     fallback = window.setTimeout(start, 4000);
-    Promise.allSettled([loadImage("/img/Hero-bg.webp"), document.fonts.ready]).then(() => {
+    Promise.allSettled([loadImage("/img/1.jpg"), document.fonts.ready]).then(() => {
       if (disposed || started) return;
       minimum = window.setTimeout(start, Math.max(0, 350 - (performance.now() - mountedAt)));
     });
@@ -180,6 +192,9 @@ export default function HeroIntro({ logoSvg }: { logoSvg: string }) {
       disposed = true;
       window.clearTimeout(fallback);
       window.clearTimeout(minimum);
+      window.clearInterval(sliderInterval);
+      gsap.killTweensOf(slides);
+      gsap.set(slides, { clearProps: "opacity" });
       removeMotion();
       timeline.revert();
       context.revert();
