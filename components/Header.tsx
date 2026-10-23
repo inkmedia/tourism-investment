@@ -13,6 +13,7 @@ const navigation = [
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuToggle = useRef<HTMLButtonElement>(null);
 
@@ -35,14 +36,50 @@ export default function Header() {
   }, [menuOpen]);
 
   useEffect(() => {
-    const update = () => setScrolled(window.scrollY > 24);
-    update();
+    const hero = document.querySelector<HTMLElement>(".hero");
+    let previousY = window.scrollY;
+    let direction = 0;
+    let distance = 0;
+    let hideAfter = 0;
+    const measure = () => {
+      hideAfter = hero
+        ? hero.getBoundingClientRect().top + window.scrollY + hero.offsetHeight / 2
+        : window.innerHeight / 2;
+    };
+    const update = () => {
+      // Clamp overscroll so the page edges don't trigger a false direction change.
+      const y = Math.max(0, Math.min(window.scrollY, document.documentElement.scrollHeight - window.innerHeight));
+      const delta = y - previousY;
+      previousY = y;
+      setScrolled(y > 24);
+
+      if (y <= hideAfter || menuOpen) {
+        setHidden(false);
+        direction = 0;
+        distance = 0;
+        return;
+      }
+      if (!delta) return;
+      const nextDirection = Math.sign(delta);
+      distance = nextDirection === direction ? distance + Math.abs(delta) : Math.abs(delta);
+      direction = nextDirection;
+      // Ignore tiny movements from touchpads and smooth scrolling.
+      if (distance >= 10) setHidden(direction > 0);
+    };
+    measure();
+    const observer = hero ? new ResizeObserver(measure) : null;
+    if (hero) observer?.observe(hero);
     window.addEventListener("scroll", update, { passive: true });
-    return () => window.removeEventListener("scroll", update);
-  }, []);
+    window.addEventListener("resize", measure);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", measure);
+    };
+  }, [menuOpen]);
 
   return (
-    <header className={`site-header ${scrolled || menuOpen ? "site-header--solid" : ""} ${scrolled ? "site-header--sticky" : ""} ${menuOpen ? "site-header--menu-open" : ""}`}>
+    <header className={`site-header ${scrolled || menuOpen ? "site-header--solid" : ""} ${scrolled ? "site-header--sticky" : ""} ${hidden && !menuOpen ? "site-header--hidden" : ""} ${menuOpen ? "site-header--menu-open" : ""}`}>
       <a className="brand" href="#top" aria-label="Tourism Investment — home">
         <Image src={scrolled || menuOpen ? "/img/logo_.svg" : "/img/logo-white-2.png"} alt="Gelephu Mindfulness City logo" width={56} height={56} priority />
         <span className="brand__copy">

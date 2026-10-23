@@ -18,6 +18,32 @@ import {
   opportunityDetails,
 } from "./investmentData";
 
+const excludedCategories = new Set([
+  "Boutique & Micro-Stays",
+  "Scenic Transport",
+  "Nature & Eco",
+  "Culture & Heritage",
+]);
+
+const excludedOpportunities = new Set([
+  "Forest Edge Resort",
+  "Heritage Village",
+  "Riverfront Promenade",
+  "Capsule Hotel Retreat",
+  "Food Hall & Dessert Street",
+  "Wellness Farm Retreat",
+  "Eco-Cycle Hub & Scenic Bike Trails",
+]);
+
+const availableOpportunities = opportunities.filter(
+  (item) =>
+    !excludedOpportunities.has(item.title) &&
+    !excludedCategories.has(categories[item.category][0]),
+);
+const availableCategoryIds = new Set(
+  availableOpportunities.map((item) => item.category),
+);
+
 function SwapLabel({
   text,
   back = false,
@@ -106,9 +132,6 @@ function InvestmentCard({
             />
             <span className="available-card__flip-icon" aria-hidden="true">
               <RotateCw size={17} />
-            </span>
-            <span className="available-card__image-number" aria-hidden="true">
-              {String(item.id + 1).padStart(2, "0")}
             </span>
           </div>
           <div className="available-card__body">
@@ -266,7 +289,7 @@ export default function AvailableInvestments() {
       targets.forEach((target) => target.classList.remove("reveal-pending"));
     };
   }, [category, expanded]);
-  const filtered = opportunities.filter(
+  const filtered = availableOpportunities.filter(
     (item) => category === null || item.category === category,
   );
   const visible = expanded ? filtered : filtered.slice(0, 8);
@@ -291,6 +314,10 @@ export default function AvailableInvestments() {
               <br />
               opportunities
             </h2>
+            <p className="available-investments__intro">
+              We welcome local and international investors to explore the following
+              projects for development in Gelephu Mindfulness City.
+            </p>
           </div>
           <p className="available-investments__disclaimer">
             All figures are indicative only and subject to change. IRR targets
@@ -305,9 +332,6 @@ export default function AvailableInvestments() {
         >
           <div className="available-investments__filter-heading">
             <span id="investment-type-label">Find your opportunity</span>
-            <span role="status" aria-live="polite">
-              {filtered.length} opportunities
-            </span>
           </div>
           <div
             className="available-investments__pills"
@@ -323,7 +347,7 @@ export default function AvailableInvestments() {
             >
               All types
             </button>
-            {categories.map(([name, color], index) => (
+            {categories.map(([name, color], index) => !availableCategoryIds.has(index) ? null : (
               <button
                 key={name}
                 style={{ "--category-color": color } as CSSProperties}
@@ -350,9 +374,6 @@ export default function AvailableInvestments() {
         </ul>
         {filtered.length > 8 && (
           <div data-investment-reveal className="available-investments__more">
-            <p>
-              Showing {visible.length} of {filtered.length} opportunities
-            </p>
             <button
               className="swap-button"
               aria-expanded={expanded}
@@ -377,6 +398,9 @@ export default function AvailableInvestments() {
             </button>
           </div>
         )}
+        <p className="available-investments__image-note">
+          Images are for reference purposes only.
+        </p>
       </div>
     </section>
   );

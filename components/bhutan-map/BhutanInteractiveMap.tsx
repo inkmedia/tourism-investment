@@ -145,7 +145,7 @@ export default function BhutanInteractiveMap() {
           svg.setAttribute("role", "group");
           svg.setAttribute(
             "aria-label",
-            "Bhutan: satellite terrain, natural systems, Mindfulness Trail and settlements. Use the controls below to explore.",
+            "Bhutan: satellite terrain, natural systems, GMC boundary, Mindfulness Trail and settlements. Use the controls below to explore.",
           );
           svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
           svg
@@ -397,7 +397,7 @@ export default function BhutanInteractiveMap() {
             protectedForests: "protected-forest",
             corridors: "ecological-corridor",
             rivers: "river",
-            dams: "dam",
+            gmcBoundary: "gmc-boundary",
             airports: "airports",
             trail: "mindfulness-trail",
             sites: "religious-sites",
@@ -665,7 +665,7 @@ export default function BhutanInteractiveMap() {
                     id: "bhutan-map",
                     refreshPriority: 1,
                     trigger: stage.parentElement!,
-                    start: "top top+=84",
+                    start: "top top",
                     end: () =>
                       `+=${window.innerHeight * (mobile ? 0.85 : 1.7)}`,
                     pin: stage.parentElement!,
@@ -835,8 +835,7 @@ export default function BhutanInteractiveMap() {
                       timeline.scrollTrigger!.end +
                       Math.max(
                         120,
-                        stage.parentElement!.offsetHeight +
-                          84 -
+                        stage.parentElement!.offsetHeight -
                           window.innerHeight +
                           80,
                       ),
@@ -844,8 +843,7 @@ export default function BhutanInteractiveMap() {
                       timeline.scrollTrigger!.end +
                       Math.max(
                         120,
-                        stage.parentElement!.offsetHeight +
-                          84 -
+                        stage.parentElement!.offsetHeight -
                           window.innerHeight +
                           80,
                       ) +

@@ -45,11 +45,12 @@ export default function PartnersCTA() {
       </div>
       <div className="partners-cta__inner">
         <div className="partners-cta__copy">
-          <p className="partners-cta__eyebrow">Build with us</p>
+          <p className="partners-cta__eyebrow">Discuss your investment plans</p>
           <h2 id="partners-cta-title">Partners required</h2>
           <p>
-            We’re seeking investors, developers and operators to shape the future
-            of tourism in Gelephu Mindfulness City.
+            Explore established project concepts with partners ready to bring them
+            to life in Gelephu Mindfulness City. We’re seeking investors and
+            collaborators to help take these tourism ventures forward.
           </p>
         </div>
           <a className="button button--gold swap-button partners-cta__button" href="#enquiries">

@@ -16,7 +16,7 @@ type Options = {
 /** Cached SVG coordinates; one coalesced frame per pointer event, no React updates. */
 export function createMapInteractions(o: Options) {
   const desktop = matchMedia("(min-width: 900px) and (hover: hover) and (pointer: fine)");
-  const infrastructure = Array.from(o.svg.querySelectorAll<SVGGraphicsElement>(".airport, .religious-site, #layer-dams > path"))
+  const infrastructure = Array.from(o.svg.querySelectorAll<SVGGraphicsElement>(".airport, .religious-site"))
     .map((element) => { const b = element.getBBox(); return { element, x: b.x + b.width / 2, y: b.y + b.height / 2 }; });
   const markers = o.cities.map((city) => {
     const dot = city.querySelector<SVGGraphicsElement>(".city-dot")!;

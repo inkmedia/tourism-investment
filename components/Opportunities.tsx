@@ -1,8 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
-import gsap from "gsap";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { observePlaybackVisibility } from "./playbackVisibility";
 
 const areas = [
@@ -50,47 +49,9 @@ const areas = [
   },
 ];
 
-// Match the letter roll used by the “Why GMC stands apart” titles.
-function OpportunityTitle({ title, run }: { title: string; run: number }) {
-  const label = useRef<HTMLSpanElement>(null);
-
-  useLayoutEffect(() => {
-    if (!run || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const context = gsap.context(() => {
-      const original = label.current!.querySelectorAll(".tourism-areas__face--original .tourism-areas__letter");
-      const clone = label.current!.querySelectorAll(".tourism-areas__face--clone .tourism-areas__letter");
-      gsap.timeline({
-        delay: 0.03,
-        defaults: { duration: 0.3, ease: "power2.out", stagger: 0.012 },
-      })
-        .fromTo(original, { yPercent: 0, rotationX: 0, opacity: 1 }, { yPercent: 100, rotationX: -90, opacity: 0 }, 0)
-        .fromTo(clone, { yPercent: -100, rotationX: 90, opacity: 0 }, { yPercent: 0, rotationX: 0, opacity: 1 }, 0);
-    }, label);
-    return () => context.revert();
-  }, [run]);
-
-  return (
-    <span ref={label} className="tourism-areas__label" aria-hidden="true">
-      {["original", "clone"].map((face) => (
-        <span className={`tourism-areas__face tourism-areas__face--${face}`} key={face}>
-          {title.split(" ").map((word, wordIndex) => (
-            <span className="tourism-areas__token" key={wordIndex}>
-              {wordIndex > 0 && "\u00a0"}
-              {Array.from(word).map((letter, letterIndex) => (
-                <span className="tourism-areas__letter" key={letterIndex}>{letter}</span>
-              ))}
-            </span>
-          ))}
-        </span>
-      ))}
-    </span>
-  );
-}
-
 export default function Opportunities() {
   const sectionRef = useRef<HTMLElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [swapRuns, setSwapRuns] = useState(() => areas.map(() => 0));
   const [selectionRevision, setSelectionRevision] = useState(0);
   const buttons = useRef<(HTMLButtonElement | null)[]>([]);
   const active = areas[activeIndex];
@@ -112,12 +73,9 @@ export default function Opportunities() {
     };
   }, [activeIndex, selectionRevision]);
 
-  function selectArea(index: number, animateTitle = false) {
+  function selectArea(index: number) {
     setActiveIndex(index);
     setSelectionRevision((current) => current + 1);
-    if (animateTitle && index !== activeIndex) {
-      setSwapRuns((current) => current.map((run, itemIndex) => itemIndex === index ? run + 1 : run));
-    }
   }
 
   function navigate(event: KeyboardEvent<HTMLButtonElement>, index: number) {
@@ -150,7 +108,7 @@ export default function Opportunities() {
         <div className="tourism-areas__selection">
           <header className="tourism-areas__header">
             <p className="how-to-invest__eyebrow">Tourism opportunity areas</p>
-            <h2 id="tourism-areas-title">We welcome investment partners in the following areas.</h2>
+            <h2 id="tourism-areas-title">We welcome investment partners in the following areas:</h2>
           </header>
           <div className="tourism-areas__list" role="group" aria-label="Choose a tourism opportunity area">
             {areas.map((area, index) => (
@@ -162,13 +120,13 @@ export default function Opportunities() {
                 aria-label={area.title}
                 aria-pressed={index === activeIndex}
                 aria-controls="tourism-area-detail"
-                onMouseEnter={() => selectArea(index, true)}
-                onFocus={(event) => selectArea(index, event.currentTarget.matches(":focus-visible"))}
+                onMouseEnter={() => selectArea(index)}
+                onFocus={() => selectArea(index)}
                 onClick={() => selectArea(index)}
                 onKeyDown={(event) => navigate(event, index)}
               >
                 <span className="tourism-areas__number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-                <OpportunityTitle title={area.title} run={swapRuns[index]} />
+                <span className="tourism-areas__label">{area.title}</span>
               </button>
             ))}
           </div>

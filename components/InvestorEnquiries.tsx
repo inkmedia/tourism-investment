@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
 import EnquiryBackdrop from "./EnquiryBackdrop";
+import PrivacyPolicyLink from "./PrivacyPolicyLink";
 
 type FieldProps = {
   label: string;
@@ -43,6 +44,8 @@ function Field({ label, icon, required, children, wide }: FieldProps) {
 export default function InvestorEnquiries() {
   const [step, setStep] = useState<1 | 2>(1);
   const [draftOpened, setDraftOpened] = useState(false);
+  const [source, setSource] = useState("");
+  const [sourceOther, setSourceOther] = useState("");
   const stepHeading = useRef<HTMLHeadingElement>(null);
   const previousStep = useRef(step);
 
@@ -76,7 +79,7 @@ export default function InvestorEnquiries() {
       "",
       `Message / additional context:\n${values.get("message") || ""}`,
       "",
-      `How they heard about GMC Tourism Investment: ${values.get("source") || ""}`,
+      `How they heard about GMC Tourism Investment: ${source === "Other" ? `Other: ${sourceOther.trim()}` : source}`,
     ].join("\n");
     setDraftOpened(true);
     window.location.href = `mailto:ghevaram.suthar@inkmedia.in?subject=${encodeURIComponent("Tourism investment enquiry")}&body=${encodeURIComponent(body)}`;
@@ -92,9 +95,9 @@ export default function InvestorEnquiries() {
       <div className="enquiries__inner">
         <div className="enquiries__intro">
           <p className="enquiries__eyebrow">Investor enquiries</p>
-          <h2 id="enquiries-title">Build with us.</h2>
+          <h2 id="enquiries-title">Discuss your investment plans</h2>
           <p className="enquiries__lead">
-            We are seeking exceptional investors, developers and operators with
+            We are seeking investors, developers and operators with
             the ambition to create the next generation of tourism and
             hospitality in Gelephu Mindfulness City.
           </p>
@@ -163,6 +166,7 @@ export default function InvestorEnquiries() {
                 <option>Culture, Food & Entertainment</option>
                 <option>Tourism Services & Infrastructure</option>
                 <option>Multiple / open to discussion</option>
+                <option>Other</option>
               </select>
               <ChevronDown aria-hidden="true" />
             </Field>
@@ -214,19 +218,32 @@ export default function InvestorEnquiries() {
               label="How did you hear about us?"
               icon={<Radio />}
             >
-              <select name="source" defaultValue="">
+              <select name="source" value={source} onChange={(event) => setSource(event.target.value)}>
                 <option value="" disabled>
                   Select
                 </option>
                 <option>GMC website</option>
-                <option>Investment conference</option>
-                <option>Industry publication</option>
+                <option>Google / search engine</option>
+                <option>Word of mouth</option>
                 <option>Direct referral</option>
                 <option>Social media</option>
                 <option>Other</option>
               </select>
               <ChevronDown aria-hidden="true" />
             </Field>
+            {source === "Other" && (
+              <Field label="Please specify how you heard about us" icon={<Radio />} wide required>
+                <input
+                  name="sourceOther"
+                  value={sourceOther}
+                  onChange={(event) => setSourceOther(event.target.value)}
+                  placeholder="Tell us where you heard about us"
+                  required={step === 2}
+                  pattern=".*\S.*"
+                  title="Please enter how you heard about us."
+                />
+              </Field>
+            )}
             <Field label="Brief concept description" icon={<Lightbulb />}>
               <textarea
                 name="concept"
@@ -265,7 +282,11 @@ export default function InvestorEnquiries() {
               </span>
             </button>
             <span className="enquiries__progress" aria-live="polite">Step {step} of 2</span>
-            <p className="enquiries__privacy">Your details are shared only with the GMC investment team and are never passed to third parties.</p>
+            <p className="enquiries__privacy">
+              Please review GMC&apos;s{" "}
+              <PrivacyPolicyLink />{" "}
+              for information on how your personal data is handled.
+            </p>
           </div>
           {draftOpened && <p className="enquiries__status" role="status">Your email app will open with your enquiry. Please send the email to complete your submission.</p>}
         </form>

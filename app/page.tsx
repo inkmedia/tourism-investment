@@ -12,6 +12,7 @@ import InvestmentJourney from "@/components/InvestmentJourney";
 import AvailableInvestments from "@/components/AvailableInvestments";
 import PartnersCTA from "@/components/PartnersCTA";
 import PlannedAttractions from "@/components/PlannedAttractions";
+import LatestUpdates from "@/components/LatestUpdates";
 import SiteContext from "@/components/SiteContext";
 import WhyInvestNow from "@/components/WhyInvestNow";
 import AirportStory from "@/components/AirportStory";
@@ -134,7 +135,7 @@ export default async function Home() {
             <div className="hero__stat">
               <FileText className="hero__stat-icon" strokeWidth={1.4} aria-hidden="true" />
               <dt>Hotel &amp; retail land lease</dt>
-              <dd>60 + 30 <span>yrs</span></dd>
+              <dd className="hero__lease-value">60 - 90 <span>years leasehold</span></dd>
             </div>
           </dl>
         </div>
@@ -147,6 +148,7 @@ export default async function Home() {
       <AvailableInvestments />
       <PartnersCTA />
       <PlannedAttractions />
+      <LatestUpdates />
       <SiteContext />
       <WhyInvestNow />
       <AirportStory />

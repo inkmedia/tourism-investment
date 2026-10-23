@@ -8,7 +8,8 @@ export function prepareLayerMotion(svg: SVGSVGElement) {
   const rivers = Array.from(svg.querySelectorAll<SVGPathElement>(`${S.rivers} path`));
   const lengths = rivers.map((p) => p.getTotalLength());
   const airports = Array.from(svg.querySelectorAll<SVGGElement>(`${S.airports} > g`));
-  const dams = Array.from(svg.querySelectorAll<SVGPathElement>(`${S.dams} > path`));
+  const gmcBoundary = Array.from(svg.querySelectorAll<SVGPathElement>(`${S.gmcBoundary} > path`));
+  const gmcLengths = gmcBoundary.map((path) => path.getTotalLength());
   const sites = Array.from(svg.querySelectorAll<SVGGElement>(`${S.sites} > g`));
   const bands = Array.from({ length: 6 }, () => document.createElementNS(ns, "g"));
   const boxes = sites.map((s) => s.getBBox());
@@ -54,13 +55,13 @@ export function prepareLayerMotion(svg: SVGSVGElement) {
       filterTweens.get(key)?.kill();
       if (!visible || reduced) return;
       let tween: gsap.core.Tween | undefined;
-      if (key === "rivers" || key === "trail") {
-        const paths = key === "rivers" ? rivers : trail;
-        const distance = key === "rivers" ? lengths : trailLengths;
+      if (key === "rivers" || key === "trail" || key === "gmcBoundary") {
+        const paths = key === "rivers" ? rivers : key === "trail" ? trail : gmcBoundary;
+        const distance = key === "rivers" ? lengths : key === "trail" ? trailLengths : gmcLengths;
         tween = gsap.fromTo(paths, { strokeDasharray: (i) => distance[i], strokeDashoffset: (i) => distance[i] },
           { strokeDashoffset: 0, duration: .45, stagger: { amount: key === "trail" ? .18 : .06 }, ease: "power2.out" });
-      } else if (key === "airports" || key === "dams") {
-        tween = gsap.fromTo(key === "airports" ? airports : dams, { scale: .94 },
+      } else if (key === "airports") {
+        tween = gsap.fromTo(airports, { scale: .94 },
           { scale: 1, duration: .35, stagger: { amount: .06 }, ease: "power3.out" });
       } else if (key === "sites") {
         tween = gsap.fromTo(bands, { opacity: .35 }, { opacity: 1, duration: .3, stagger: { amount: .12 }, ease: "power2.out" });
@@ -73,16 +74,17 @@ export function prepareLayerMotion(svg: SVGSVGElement) {
     },
     resetFilters() {
       filterTweens.forEach((tween) => tween.kill()); filterTweens.clear();
-      gsap.set([...rivers, ...trail], { strokeDashoffset: 0 });
-      gsap.set([...airports, ...dams], { scale: 1 });
+      gsap.set([...rivers, ...trail, ...gmcBoundary], { strokeDashoffset: 0 });
+      gsap.set(airports, { scale: 1 });
       gsap.set([...bands, ...Array.from(find(S.corridors).children)], { opacity: 1 });
       gsap.set(rect, { attr: { width: box.width * 1.3 + 2 } });
       forest.removeAttribute("mask");
     },
-    reveal(timeline: gsap.core.Timeline, wrappers: Map<LayerKey, SVGGElement>, timing: { forests: number; corridors: number; rivers: number; dams: number; airports: number; sites: number }) {
+    reveal(timeline: gsap.core.Timeline, wrappers: Map<LayerKey, SVGGElement>, timing: { forests: number; corridors: number; rivers: number; gmcBoundary: number; airports: number; sites: number }) {
       gsap.set(rivers, { strokeDasharray: (i) => lengths[i], strokeDashoffset: (i) => lengths[i] });
+      gsap.set(gmcBoundary, { strokeDasharray: (i) => gmcLengths[i], strokeDashoffset: (i) => gmcLengths[i] });
       gsap.set(rect, { attr: { width: 0 } });
-      gsap.set([...airports, ...dams], { scale: .92, transformOrigin: "center" });
+      gsap.set(airports, { scale: .92, transformOrigin: "center" });
       gsap.set(bands, { opacity: 0 });
       gsap.set(rings, { opacity: 0, scale: .8, transformOrigin: "center" });
       timeline.to(wrappers.get("protectedForests")!, { opacity: 1, duration: .12 }, timing.forests)
@@ -90,8 +92,8 @@ export function prepareLayerMotion(svg: SVGSVGElement) {
         .to(wrappers.get("corridors")!, { opacity: 1, duration: .14, ease: "sine.inOut" }, timing.corridors)
         .to(wrappers.get("rivers")!, { opacity: 1, duration: .05 }, timing.rivers)
         .to(rivers, { strokeDashoffset: 0, duration: .13, stagger: { amount: .025 }, ease: "power2.out" }, timing.rivers)
-        .to(wrappers.get("dams")!, { opacity: 1, duration: .07 }, timing.dams)
-        .to(dams, { scale: 1, duration: .07, stagger: { amount: .02 }, ease: "power3.out" }, timing.dams)
+        .to(wrappers.get("gmcBoundary")!, { opacity: 1, duration: .07 }, timing.gmcBoundary)
+        .to(gmcBoundary, { strokeDashoffset: 0, duration: .1, ease: "power2.out" }, timing.gmcBoundary)
         .to(wrappers.get("airports")!, { opacity: 1, duration: .07 }, timing.airports)
         .to(airports, { scale: 1, duration: .08, stagger: { amount: .025 }, ease: "power3.out" }, timing.airports)
         .to(rings, { opacity: .16, duration: .015, stagger: { amount: .015 } }, timing.airports)

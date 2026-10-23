@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import FooterMark from "./FooterMark";
+import PrivacyPolicyLink from "./PrivacyPolicyLink";
 import gsap from "gsap";
 import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
 
@@ -137,6 +138,9 @@ export default function Footer() {
             <h2>Contact</h2>
             <ul>
               <li>
+                <FooterLink label="info@gmc.bt" href="mailto:info@gmc.bt" />
+              </li>
+              <li>
                 <FooterLink label="GMC official website" href="https://gmc.bt" external />
               </li>
               <li>
@@ -149,6 +153,9 @@ export default function Footer() {
         <div className="site-footer__legal">
           <p>© {new Date().getFullYear()} Gelephu Mindfulness City Tourism Investment. Special Administrative Region, Kingdom of Bhutan.</p>
           <p>All investment figures are indicative only. This website does not constitute investment advice.</p>
+          <p>
+            <PrivacyPolicyLink />
+          </p>
         </div>
       </div>
     </footer>

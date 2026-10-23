@@ -9,35 +9,35 @@ const milestones = [
   {
     title: "Prime Land Still Available",
     timing: "Now",
-    image: "/img/Prime-Land-Still-Available.png",
+    image: "/img/why-invest-now/Prime land still available.webp",
     description:
       "Strategic sites across key precincts remain accessible before demand intensifies and values appreciate.",
   },
   {
     title: "Early Investor Privileges",
     timing: "Now",
-    image: "/img/Early-Investor-Privileges.png",
+    image: "/img/why-invest-now/Early investor privileges.webp",
     description:
       "Access to current incentives, favourable terms, and first-mover advantage in one of Asia’s newest destination developments.",
   },
   {
     title: "Championship Golf Course",
     timing: "2028",
-    image: "/img/Championship-Golf-Course.png",
+    image: "/img/why-invest-now/Championship Golf in Southern Bhutan-2.webp",
     description:
       "One of the first major lifestyle assets within GMC, attracting high-net-worth visitors and establishing a premium leisure hub.",
   },
   {
     title: "International Airport",
     timing: "2029",
-    image: "/img/img/36.jpg",
+    image: "/img/why-invest-now/Bhutan Airport with Timber Lattice.webp",
     description:
       "Direct international access expected to transform connectivity and unlock significant growth in tourism and business travel.",
   },
   {
     title: "Tourism Infrastructure",
     timing: "From 2027",
-    image: "/img/Tourism-Infrastructure.png",
+    image: "/img/why-invest-now/Tourism infrastructure.webp",
     description:
       "Hotels, attractions, wellness facilities and visitor experiences coming online, creating a stronger tourism ecosystem.",
   },
@@ -105,7 +105,7 @@ export default function WhyInvestNow() {
       <div className="invest-now__inner">
         <header className="invest-now__header">
           <div>
-            <p className="invest-now__eyebrow">The window before take-off</p>
+            <p className="invest-now__eyebrow">An opportunity to shape what comes next</p>
             <h2 id="invest-now-title">Why invest now?</h2>
           </div>
           <p className="invest-now__intro">

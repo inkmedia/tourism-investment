@@ -18,6 +18,7 @@ export default function HisMajesty() {
             <span>His Majesty</span>
             King Jigme Khesar Namgyel Wangchuck
           </h2>
+          <p>&ldquo;GMC is not just for the present generation but for all future generations...&rdquo;</p>
           <p>at Bhutan Innovation Forum 2024</p>
         </div>
       </div>

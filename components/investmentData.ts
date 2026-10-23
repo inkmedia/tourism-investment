@@ -16,6 +16,25 @@ const images = [
   "Forest Edge Resort.png",
   "5-Star Wildlife Lodge.png",
 ];
+const opportunityImages: Record<string, string> = {
+  "5-Star City Hotel": "5 star city hotel.webp",
+  "Conference & Business Hotel": "Conference and hity hotel.webp",
+  "5-Star Wildlife Lodge": "5_ wildlife lodge.webp",
+  "Longevity & Wellness Resort": "Longevity-&-Wellness-Resort.webp",
+  "Hotspring Resort": "Hotspring-Resort.webp",
+  "Adventure Theme Park": "Adventure-Theme-Park.webp",
+  "Scenic Aerial Adventure Park": "Scenic-Aerial-Adventure-Park.webp",
+  "Cinema & Movie Experience": "Cinema-&-Movie-Experience.webp",
+  "Water Park": "Water-Park.webp",
+  "Bird Watching Eco-Lodge": "Bird-Watching-Eco-Lodge.webp",
+  "Nature Glamping Resort": "Nature-Glamping-Resort.webp",
+  "Cable Car": "Cable-Car.webp",
+  "Alpine Coaster": "Alpine-Coaster.webp",
+  "Mini Golf": "Mini-Golf.webp",
+  "Bhutanese Culinary Studio & Chef’s Table": "Bhutanese-Culinary-Studio-&-Chef’s-Table.webp",
+  "River Sports Hub": "River-Sports-Hub.webp",
+  "ATV Trail Experience": "ATV-Trail-Experience.webp",
+};
 // Detail copy can be added here as each opportunity brief is supplied.
 export const opportunities = [
   ["5-Star City Hotel", 0, "USD 8–10M"],
@@ -49,7 +68,9 @@ export const opportunities = [
   title: String(title),
   category: Number(category),
   investment: String(investment),
-  image: `/cards/${images[index % images.length]}`,
+  image: opportunityImages[String(title)]
+    ? `/img/opportunities/${opportunityImages[String(title)]}`
+    : `/cards/${images[index % images.length]}`,
   description: "",
 }));
 

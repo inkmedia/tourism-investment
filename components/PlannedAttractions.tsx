@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import FitText from "@/components/FitText";
+import Image from "next/image";
 
 const attractions = [
   "Light Festival",
@@ -28,220 +29,82 @@ const attractions = [
 
 export default function PlannedAttractions() {
   const railRef = useRef<HTMLDivElement>(null);
-  const surfaceRef = useRef<HTMLDivElement>(null);
-  const cursorRef = useRef<HTMLSpanElement>(null);
-  const progressRef = useRef<HTMLSpanElement>(null);
-
   useEffect(() => {
-    const rail = railRef.current!;
-    const surface = surfaceRef.current!;
-    const cursor = cursorRef.current!;
+    const rail = railRef.current;
+    if (!rail) return;
     const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
-    let frame = 0,
-      target = rail.scrollLeft,
-      velocity = 0,
-      lastX = 0,
-      lastTime = 0,
-      lastFrame = 0;
-    let pointer: number | null = null;
-    let cursorFrame = 0,
-      cursorTime = 0;
-    let cursorX = 0,
-      cursorY = 0,
-      aimX = 0,
-      aimY = 0,
-      stretch = 0,
-      angle = 0;
-    const animateCursor = (time: number) => {
-      const dt = Math.min(32, time - (cursorTime || time - 16));
-      cursorTime = time;
-      const dx = aimX - cursorX,
-        dy = aimY - cursorY;
-      const distance = Math.hypot(dx, dy);
-      const follow = reducedMotion.matches ? 1 : 1 - Math.exp(-dt / 42);
-      cursorX += dx * follow;
-      cursorY += dy * follow;
-      if (distance > 0.5) angle = Math.atan2(dy, dx);
-      const desiredStretch = reducedMotion.matches
-        ? 0
-        : Math.min(0.32, distance / 160);
-      stretch += (desiredStretch - stretch) * (1 - Math.exp(-dt / 75));
-      cursor.style.left = `${cursorX}px`;
-      cursor.style.top = `${cursorY}px`;
-      cursor.style.setProperty("--cursor-angle", `${angle}rad`);
-      cursor.style.setProperty("--cursor-stretch", String(1 + stretch));
-      cursor.style.setProperty("--cursor-squash", String(1 - stretch * 0.55));
-      if (distance > 0.1 || stretch > 0.001)
-        cursorFrame = requestAnimationFrame(animateCursor);
-      else {
-        cursorFrame = 0;
-        cursorTime = 0;
-      }
+    let frame = 0;
+    let lastTime = 0;
+    let position = rail.scrollLeft;
+    let paused = false;
+    let visible = false;
+    const cards = Array.from(rail.querySelectorAll<HTMLElement>(".planned-attractions__cards li"));
+    let lastParallaxPosition = -1;
+    let lastRailWidth = -1;
+
+    const updateParallax = () => {
+      const bounds = rail.getBoundingClientRect();
+      if (rail.scrollLeft === lastParallaxPosition && bounds.width === lastRailWidth) return;
+      lastParallaxPosition = rail.scrollLeft;
+      lastRailWidth = bounds.width;
+      // Read positions together before updating styles to avoid repeated layout work.
+      const offsets = cards.map((card) => {
+        const rect = card.getBoundingClientRect();
+        if (rect.right < bounds.left || rect.left > bounds.right) return null;
+        const progress = (rect.left + rect.width / 2 - bounds.left - bounds.width / 2)
+          / ((bounds.width + rect.width) / 2);
+        return -Math.max(-1, Math.min(1, progress)) * rect.width * 0.12;
+      });
+      cards.forEach((card, index) => {
+        if (offsets[index] !== null) {
+          card.style.setProperty("--parallax-x", `${offsets[index]}px`);
+        }
+      });
     };
-    const clamp = (value: number) =>
-      Math.max(0, Math.min(rail.scrollWidth - rail.clientWidth, value));
-    const progress = () => {
-      const max = rail.scrollWidth - rail.clientWidth;
-      progressRef.current!.style.transform = `scaleX(${max > 0 ? rail.scrollLeft / max : 1})`;
-    };
+
     const tick = (time: number) => {
-      const dt = Math.min(32, time - (lastFrame || time - 16));
-      lastFrame = time;
-      if (pointer === null && Math.abs(velocity) > 0.02) {
-        target = clamp(target + velocity * dt);
-        velocity *= Math.exp(-dt / 210);
+      const elapsed = lastTime ? Math.min(time - lastTime, 50) : 0;
+      lastTime = time;
+      const collection = rail.firstElementChild as HTMLElement | null;
+      if (!paused && visible && !document.hidden && !reducedMotion.matches && collection) {
+        const loopWidth = collection.offsetWidth + 18;
+        position = (position + elapsed * 0.04) % loopWidth;
+        rail.scrollLeft = position;
+      } else {
+        position = rail.scrollLeft;
       }
-      const difference = target - rail.scrollLeft;
-      rail.scrollLeft +=
-        difference * (reducedMotion.matches ? 1 : 1 - Math.exp(-dt / 65));
-      if (Math.abs(difference) > 0.5 || Math.abs(velocity) > 0.02)
-        frame = requestAnimationFrame(tick);
-      else {
-        rail.scrollLeft = target;
-        frame = 0;
-        lastFrame = 0;
-      }
+      if (visible && !document.hidden && !reducedMotion.matches) updateParallax();
+      frame = requestAnimationFrame(tick);
     };
-    const animate = () => {
-      if (!frame) frame = requestAnimationFrame(tick);
+    const pause = () => { paused = true; };
+    const resume = () => {
+      paused = rail.matches(":hover, :focus-within");
+      position = rail.scrollLeft;
+      lastTime = 0;
     };
-    const positionCursor = (event: PointerEvent) => {
-      if (event.pointerType !== "mouse") return;
-      const bounds = surface.getBoundingClientRect();
-      aimX = event.clientX - bounds.left;
-      aimY = event.clientY - bounds.top;
-      if (!surface.classList.contains("has-pointer")) {
-        cursorX = aimX;
-        cursorY = aimY;
-        stretch = 0;
-        cursor.style.left = `${cursorX}px`;
-        cursor.style.top = `${cursorY}px`;
-      }
-      if (!cursorFrame) cursorFrame = requestAnimationFrame(animateCursor);
-      surface.classList.toggle(
-        "has-pointer",
-        event.clientX >= bounds.left &&
-          event.clientX <= bounds.right &&
-          event.clientY >= bounds.top &&
-          event.clientY <= bounds.bottom,
-      );
-    };
-    const down = (event: PointerEvent) => {
-      if (event.pointerType !== "mouse" || event.button !== 0) return;
-      event.preventDefault();
-      pointer = event.pointerId;
-      velocity = 0;
-      target = rail.scrollLeft;
-      lastX = event.clientX;
-      lastTime = performance.now();
-      rail.setPointerCapture(pointer);
-      surface.classList.add("is-dragging");
-      positionCursor(event);
-    };
-    const move = (event: PointerEvent) => {
-      positionCursor(event);
-      if (event.pointerId !== pointer) return;
-      const now = performance.now();
-      const delta = lastX - event.clientX;
-      target = clamp(target + delta);
-      velocity = 0.6 * velocity + (0.4 * delta) / Math.max(8, now - lastTime);
-      lastX = event.clientX;
-      lastTime = now;
-      animate();
-    };
-    const end = (event: PointerEvent) => {
-      if (event.pointerId !== pointer) return;
-      pointer = null;
-      if (
-        event.type !== "pointerup" ||
-        performance.now() - lastTime > 90 ||
-        reducedMotion.matches
-      )
-        velocity = 0;
-      if (rail.hasPointerCapture(event.pointerId))
-        rail.releasePointerCapture(event.pointerId);
-      surface.classList.remove("is-dragging");
-      animate();
-    };
-    const leave = () => {
-      surface.classList.remove("has-pointer");
-      cancelAnimationFrame(cursorFrame);
-      cursorFrame = 0;
-      cursorTime = 0;
-    };
-    const wheel = (event: WheelEvent) => {
-      if (event.ctrlKey || pointer !== null) return;
-      const delta =
-        (Math.abs(event.deltaX) > Math.abs(event.deltaY)
-          ? event.deltaX
-          : event.deltaY) *
-        (event.deltaMode === 1
-          ? 16
-          : event.deltaMode === 2
-            ? rail.clientWidth
-            : 1);
-      if (!frame) target = rail.scrollLeft;
-      const next = clamp(target + delta);
-      if (next === target) return;
-      event.preventDefault();
-      event.stopPropagation();
-      velocity = 0;
-      target = next;
-      animate();
-    };
-    const key = (event: KeyboardEvent) => {
-      if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key))
-        return;
-      event.preventDefault();
-      velocity = 0;
-      target = clamp(
-        event.key === "Home"
-          ? 0
-          : event.key === "End"
-            ? rail.scrollWidth
-            : rail.scrollLeft + (event.key === "ArrowRight" ? 1 : -1) * 320,
-      );
-      animate();
-    };
-    const touch = () => {
-      cancelAnimationFrame(frame);
-      frame = 0;
-      lastFrame = 0;
-      velocity = 0;
-      const captured = pointer;
-      pointer = null;
-      if (captured !== null && rail.hasPointerCapture(captured))
-        rail.releasePointerCapture(captured);
-      surface.classList.remove("is-dragging");
-      leave();
-    };
-    rail.addEventListener("pointerdown", down);
-    rail.addEventListener("pointermove", move);
-    rail.addEventListener("pointerenter", positionCursor);
-    rail.addEventListener("pointerleave", leave);
-    rail.addEventListener("pointerup", end);
-    rail.addEventListener("pointercancel", end);
-    rail.addEventListener("lostpointercapture", end);
-    rail.addEventListener("wheel", wheel, { passive: false });
-    rail.addEventListener("keydown", key);
-    rail.addEventListener("touchstart", touch, { passive: true });
-    rail.addEventListener("scroll", progress, { passive: true });
-    window.addEventListener("blur", touch);
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      lastTime = 0;
+    });
+    observer.observe(rail);
+    rail.addEventListener("pointerenter", pause);
+    rail.addEventListener("pointerleave", resume);
+    rail.addEventListener("focusin", pause);
+    rail.addEventListener("focusout", resume);
+    rail.addEventListener("touchstart", pause, { passive: true });
+    rail.addEventListener("touchend", resume);
+    rail.addEventListener("touchcancel", resume);
+    frame = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(frame);
-      cancelAnimationFrame(cursorFrame);
-      rail.removeEventListener("pointerdown", down);
-      rail.removeEventListener("pointermove", move);
-      rail.removeEventListener("pointerenter", positionCursor);
-      rail.removeEventListener("pointerleave", leave);
-      rail.removeEventListener("pointerup", end);
-      rail.removeEventListener("pointercancel", end);
-      rail.removeEventListener("lostpointercapture", end);
-      rail.removeEventListener("wheel", wheel);
-      rail.removeEventListener("keydown", key);
-      rail.removeEventListener("touchstart", touch);
-      rail.removeEventListener("scroll", progress);
-      window.removeEventListener("blur", touch);
+      observer.disconnect();
+      rail.removeEventListener("pointerenter", pause);
+      rail.removeEventListener("pointerleave", resume);
+      rail.removeEventListener("focusin", pause);
+      rail.removeEventListener("focusout", resume);
+      rail.removeEventListener("touchstart", pause);
+      rail.removeEventListener("touchend", resume);
+      rail.removeEventListener("touchcancel", resume);
     };
   }, []);
   return (
@@ -253,52 +116,43 @@ export default function PlannedAttractions() {
         <header className="planned-attractions__header">
           <p className="planned-attractions__eyebrow">Planned attractions</p>
           <h2 id="planned-attractions-title">
-            <FitText>A city that keeps</FitText>
+            <FitText>More to discover.</FitText>
             <FitText>
-              <em>giving you reasons to return.</em>
+              <em>More reasons to return.</em>
             </FitText>
           </h2>
           <p>
-            Twenty planned experiences, designed as an evolving programme rather
-            than a fixed list.
+            A growing mix of attractions and experiences, with something new to
+            discover each time you visit.
           </p>
         </header>
-        <div ref={surfaceRef} className="planned-attractions__surface">
-          <div
-            ref={railRef}
-            className="planned-attractions__rail"
-            role="region"
-            tabIndex={0}
-            aria-label="Planned attractions. Drag, scroll, or use the arrow keys to explore."
-          >
-            <ol className="planned-attractions__cards">
-              {attractions.map((attraction, index) => (
+        <div
+          ref={railRef}
+          className="planned-attractions__rail"
+          role="region"
+          tabIndex={0}
+          aria-label="Planned attractions. Automatically scrolling; pause by hovering or focusing."
+        >
+          {[false, true].map((duplicate) => (
+            <ul
+              key={String(duplicate)}
+              className="planned-attractions__cards"
+              aria-hidden={duplicate || undefined}
+            >
+              {attractions.map((attraction) => (
                 <li key={attraction}>
-                  <span className="planned-attractions__number">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <b aria-hidden="true">{String(index + 1).padStart(2, "0")}</b>
-                  <strong>
-                    <FitText singleLine>{attraction}</FitText>
-                  </strong>
+                  <Image
+                    src={`/img/planned-attractions/${attraction.replaceAll(" ", "-")}.webp`}
+                    alt=""
+                    fill
+                    sizes="(max-width: 600px) 386px, (max-width: 1138px) 338px, (max-width: 1502px) 30vw, 446px"
+                    className="planned-attractions__image"
+                  />
+                  <h3>{attraction}</h3>
                 </li>
               ))}
-            </ol>
-          </div>
-          <span
-            ref={cursorRef}
-            className="planned-attractions__drag-label"
-            aria-hidden="true"
-          >
-            ‹ <span>Drag</span> ›
-          </span>
-        </div>
-        <div className="planned-attractions__rail-footer" aria-hidden="true">
-          <span>20 experiences · Explore the collection</span>
-          <div className="planned-attractions__progress">
-            <span ref={progressRef} />
-          </div>
-          <span>Drag to explore ↔</span>
+            </ul>
+          ))}
         </div>
       </div>
     </section>

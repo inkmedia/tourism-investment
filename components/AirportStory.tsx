@@ -203,10 +203,10 @@ export default function AirportStory() {
           </header>
           <div ref={imageRef} className="airport-story__hero">
             <img
-              src="/img/img/36.jpg"
+              src="/img/why-invest-now/Bhutan Airport with Timber Lattice.webp"
               alt="Artist’s impression of Gelephu International Airport, with a series of timber-inspired terminal roofs"
-              width={1600}
-              height={900}
+              width={1464}
+              height={1074}
               loading="lazy"
             />
             <div className="airport-story__caption">
@@ -225,7 +225,7 @@ export default function AirportStory() {
                   <dd ref={passengersRef}>0.0M</dd>
                 </div>
                 <div>
-                  <dt>CAGR 2030–2044</dt>
+                  <dt>Projected CAGR 2030–2044</dt>
                   <dd ref={growthRef}>0%</dd>
                 </div>
               </dl>
@@ -237,33 +237,31 @@ export default function AirportStory() {
         <article>
           <p className="airport-story__eyebrow">02 — Gateway to South Asia</p>
           <h3>
-            <FitText singleLine>A region within reach.</FitText>
+            <FitText singleLine>Close to major markets</FitText>
           </h3>
           <p>
-            Within a short flight radius lies one of the largest concentrations
-            of population and economic activity on Earth — northern India,
-            Bangladesh, Nepal, western China, and portions of Southeast Asia.
+            Gelephu’s location in southern Bhutan places it close to India and
+            within short flying distance of key markets across South and
+            Southeast Asia.
           </p>
           <p>
-            This may ultimately position GMC not merely as a Bhutanese
-            destination, but as a Himalayan interface between South Asia,
-            Southeast Asia, and environmentally aligned global capital.
+            For tourism investors, this offers the potential to attract regional
+            visitors alongside international travellers exploring Bhutan and the
+            wider Himalayas.
           </p>
         </article>
         <article>
           <p className="airport-story__eyebrow">03 — Railway connectivity</p>
           <h3>
-            <FitText singleLine>69-km Kokrajhar–Gelephu Rail Line</FitText>
+            <FitText singleLine>A direct rail link to India</FitText>
           </h3>
           <p>
-            India’s first-ever railway link to Bhutan, declared a Special
-            Railway Project by Indian Railways and backed by the Government of
-            India.
+            The planned 69-km Kokrajhar–Gelephu railway will connect Gelephu to
+            India’s rail network, adding another way to reach the city.
           </p>
           <p>
-            Improved rail access will fundamentally reduce travel friction,
-            providing a seamless entry corridor from India and materially
-            increasing long-term confidence in regional integration.
+            The link is expected to make travel from India easier and support
+            the movement of goods as the city grows.
           </p>
         </article>
       </div>
