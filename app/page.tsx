@@ -31,6 +31,7 @@ export default async function Home() {
     path.join(process.cwd(), "public/img/logo.svg"), "utf8",
   ))
     .replace(/<style\b[^>]*>[\s\S]*?<\/style>/g, "")
+    .replace(/<title\b[^>]*>[\s\S]*?<\/title>/g, "")
     .replace(/aria-labelledby="[^"]*"/g, 'aria-hidden="true"')
     .replace(/\bid="([^"]+)"/g, 'data-logo-part="$1"')
     .replace(/class="piece (\w+)"/g, (_, colour: string) =>

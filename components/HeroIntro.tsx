@@ -75,6 +75,100 @@ export default function HeroIntro({ logoSvg }: { logoSvg: string }) {
     definitions.append(gradient, mask);
     mark.setAttribute("mask", `url(#${mask.id})`);
 
+    // A small, feathered window reveals the unfilled geometry under the cursor.
+    // Keep this independent of the introductory colour sweep.
+    const revealGradient = document.createElementNS(namespace, "radialGradient");
+    revealGradient.id = `${clipPrefix}-cursor-feather`;
+    revealGradient.setAttribute("gradientUnits", "userSpaceOnUse");
+    revealGradient.setAttribute("r", String(bounds.width * 0.36));
+    [["0%", "1"], ["32%", "1"], ["65%", "0.65"], ["100%", "0"]].forEach(([offset, opacity]) => {
+      const stop = document.createElementNS(namespace, "stop");
+      stop.setAttribute("offset", offset);
+      stop.setAttribute("stop-color", "white");
+      stop.setAttribute("stop-opacity", opacity);
+      revealGradient.append(stop);
+    });
+    const revealMask = document.createElementNS(namespace, "mask");
+    revealMask.id = `${clipPrefix}-cursor-mask`;
+    revealMask.setAttribute("maskUnits", "userSpaceOnUse");
+    const revealArea = document.createElementNS(namespace, "rect");
+    for (const [name, value] of Object.entries({
+      x: bounds.x - 6, y: bounds.y - 6,
+      width: bounds.width + 12, height: bounds.height + 12,
+    })) {
+      revealMask.setAttribute(name, String(value));
+      revealArea.setAttribute(name, String(value));
+    }
+    revealArea.setAttribute("fill", `url(#${revealGradient.id})`);
+    revealMask.append(revealArea);
+    definitions.append(revealGradient, revealMask);
+    const skeleton = document.createElementNS(namespace, "g");
+    skeleton.setAttribute("mask", `url(#${revealMask.id})`);
+    skeleton.setAttribute("opacity", "0");
+    skeleton.setAttribute("pointer-events", "none");
+    skeleton.setAttribute("aria-hidden", "true");
+    shapes.forEach((shape) => {
+      const outline = document.createElementNS(namespace, "path");
+      outline.setAttribute("d", shape.getAttribute("d") ?? "");
+      outline.setAttribute("fill-rule", shape.getAttribute("fill-rule") ?? "nonzero");
+      outline.setAttribute("fill", "white");
+      outline.setAttribute("stroke", "#171b22");
+      outline.setAttribute("stroke-width", "1.1");
+      outline.setAttribute("stroke-linejoin", "round");
+      outline.setAttribute("vector-effect", "non-scaling-stroke");
+      skeleton.append(outline);
+    });
+    svg.append(skeleton);
+
+    const cursor = { x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2, opacity: 0 };
+    const followX = gsap.quickTo(cursor, "x", { duration: 0.38, ease: "power3.out" });
+    const followY = gsap.quickTo(cursor, "y", { duration: 0.38, ease: "power3.out" });
+    const reveal = gsap.quickTo(cursor, "opacity", { duration: 0.55, ease: "sine.out" });
+    let tracking = false;
+    let interactionFinished = false;
+    const paintReveal = () => {
+      revealGradient.setAttribute("cx", String(cursor.x));
+      revealGradient.setAttribute("cy", String(cursor.y));
+      skeleton.setAttribute("opacity", String(cursor.opacity));
+      if (!tracking && cursor.opacity < 0.001) gsap.ticker.remove(paintReveal);
+    };
+    const leaveLogo = () => {
+      tracking = false;
+      reveal(0);
+    };
+    const moveOverLogo = (event: PointerEvent) => {
+      if (interactionFinished || event.pointerType !== "mouse") return;
+      const matrix = svg.getScreenCTM();
+      if (!matrix) return;
+      const point = new DOMPoint(event.clientX, event.clientY).matrixTransform(matrix.inverse());
+      if (point.x < bounds.x || point.x > bounds.x + bounds.width ||
+          point.y < bounds.y || point.y > bounds.y + bounds.height) {
+        leaveLogo();
+        return;
+      }
+      if (!tracking && cursor.opacity < 0.01) {
+        cursor.x = point.x;
+        cursor.y = point.y;
+      }
+      tracking = true;
+      gsap.ticker.add(paintReveal);
+      followX(point.x);
+      followY(point.y);
+      reveal(1);
+    };
+    preloader.addEventListener("pointermove", moveOverLogo, { passive: true });
+    preloader.addEventListener("pointerleave", leaveLogo);
+    const removeReveal = () => {
+      interactionFinished = true;
+      preloader.removeEventListener("pointermove", moveOverLogo);
+      preloader.removeEventListener("pointerleave", leaveLogo);
+      gsap.ticker.remove(paintReveal);
+      followX.tween.kill();
+      followY.tween.kill();
+      reveal.tween.kill();
+      skeleton.remove();
+    };
+
     const strokes: { paths: SVGPathElement[]; start: number; duration: number }[] = [];
     const context = gsap.context(() => {
       gsap.set(content, { autoAlpha: 0, y: 18 });
@@ -113,6 +207,7 @@ export default function HeroIntro({ logoSvg }: { logoSvg: string }) {
     const timeline = gsap.timeline({
       paused: true,
       onComplete: () => {
+        removeReveal();
         gsap.set(preloader, { display: "none" });
         document.body.style.overflow = previousOverflow;
         if (slides.length > 1) {
@@ -199,6 +294,7 @@ export default function HeroIntro({ logoSvg }: { logoSvg: string }) {
       gsap.killTweensOf(slides);
       gsap.set(slides, { clearProps: "opacity" });
       removeMotion();
+      removeReveal();
       timeline.revert();
       context.revert();
       mark.removeAttribute("mask");
