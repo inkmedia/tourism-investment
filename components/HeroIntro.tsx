@@ -133,7 +133,9 @@ export default function HeroIntro({ logoSvg }: { logoSvg: string }) {
       if (!tracking && cursor.opacity < 0.001) gsap.ticker.remove(paintReveal);
     };
     const leaveLogo = () => {
+      if (!tracking) return;
       tracking = false;
+      reveal.tween.duration(1.25);
       reveal(0);
     };
     const moveOverLogo = (event: PointerEvent) => {
@@ -150,11 +152,14 @@ export default function HeroIntro({ logoSvg }: { logoSvg: string }) {
         cursor.x = point.x;
         cursor.y = point.y;
       }
+      if (!tracking) {
+        reveal.tween.duration(0.55);
+        reveal(1);
+      }
       tracking = true;
       gsap.ticker.add(paintReveal);
       followX(point.x);
       followY(point.y);
-      reveal(1);
     };
     preloader.addEventListener("pointermove", moveOverLogo, { passive: true });
     preloader.addEventListener("pointerleave", leaveLogo);
