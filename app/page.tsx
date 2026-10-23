@@ -17,7 +17,7 @@ import SiteContext from "@/components/SiteContext";
 import WhyInvestNow from "@/components/WhyInvestNow";
 import AirportStory from "@/components/AirportStory";
 import Advantages from "@/components/Advantages";
-import { ArrowRight, FileText, Plane, UsersRound } from "lucide-react";
+import { ArrowRight, FileText, Plane, UsersRound, Landmark } from "lucide-react";
 
 const heading = ["A new destination.", "A rare hospitality", "opportunity."];
 
@@ -138,10 +138,12 @@ export default async function Home() {
               <dt>Hotel &amp; retail land lease</dt>
               <dd className="hero__lease-value">60 - 90 <span>years leasehold</span></dd>
             </div>
+            <div className="hero__stat">
+              <Landmark className="hero__stat-icon" strokeWidth={1.4} aria-hidden="true" />
+              <dt>Special Administrative Region</dt>
+              <dd>SAR</dd>
+            </div>
           </dl>
-        </div>
-        <div className="hero__bottom-label reveal reveal--label">
-          Special Administrative Region
         </div>
       </section>
       <WhyInvest />

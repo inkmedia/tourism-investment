@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Building2, Compass, Sprout } from "lucide-react";
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -66,6 +66,19 @@ export default function PartnersCTA() {
             </span>
           </a>
       </div>
+      <ul className="partners-cta__cards" aria-label="Sample partnership concepts">
+        {[
+          { title: "Seeking partners for A", Icon: Building2 },
+          { title: "Seeking partners for B", Icon: Sprout },
+          { title: "Seeking partners for C", Icon: Compass },
+        ].map(({ title, Icon }) => (
+          <li key={title} className="partners-cta__card">
+            <Icon className="partners-cta__card-icon" size={24} strokeWidth={1.4} aria-hidden="true" />
+            <h3>{title}</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.</p>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
