@@ -709,8 +709,9 @@ button {
 .his-majesty__quote-card {
   z-index: 1;
   color: #f4f0df;
-  background: #386d35cc;
-  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  background: #386d35e0;
   grid-area: 2 / 2;
   align-self: start;
   margin: 0 -12px 40px -24%;
