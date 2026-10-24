@@ -698,11 +698,11 @@ button {
 }
 .his-majesty__copy h2 span {
   display: block;
-  margin-bottom: 16px;
-  color: #94703d;
+  margin-bottom: 14px;
+  color: #b48734;
   font-family: var(--font-body);
   font-size: var(--type-label);
-  font-weight: 500;
+  font-weight: 300;
   letter-spacing: 0.24em;
   text-transform: uppercase;
 }
