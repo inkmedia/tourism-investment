@@ -665,73 +665,103 @@ button {
   opacity: 0;
 }
 .his-majesty {
+  position: relative;
   scroll-margin-top: 82px;
-  padding: clamp(56px, 6vw, 104px) clamp(24px, 4vw, 80px);
-  background: var(--cream);
-  color: var(--ink);
+  padding: clamp(56px, 8svh, 80px) clamp(32px, 4.5vw, 88px);
+  background: #eeeae1;
+  color: #203d34;
 }
 .his-majesty__inner {
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-  align-items: center;
-  gap: clamp(40px, 6vw, 104px);
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  grid-template-rows: 1fr 1fr;
+  gap: 24px clamp(32px, 4vw, 64px);
   width: min(100%, 1600px);
   margin: 0 auto;
 }
 .his-majesty__copy {
-  max-width: 490px;
-  padding-block: 16px;
-}
-.his-majesty__rule {
-  display: block;
-  width: 48px;
-  height: 2px;
-  margin-bottom: 30px;
-  background: var(--gold);
+  grid-column: 2;
+  grid-row: 1;
+  align-self: end;
+  padding-top: 8px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #b18b4e;
 }
 .his-majesty__copy h2 {
   margin: 0;
   font-size: var(--type-section);
   font-weight: 400;
   letter-spacing: -0.035em;
-  line-height: 1.35;
+  line-height: 1.2;
   text-wrap: balance;
 }
 .his-majesty__copy h2 span {
   display: block;
-  margin-bottom: 12px;
-  color: #62675f;
+  margin-bottom: 16px;
+  color: #94703d;
   font-family: var(--font-body);
-  font-size: 12px;
-  font-weight: 400;
-  letter-spacing: 0.18em;
+  font-size: var(--type-label);
+  font-weight: 500;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
 }
+.his-majesty__quote-card {
+  z-index: 1;
+  color: #f4f0df;
+  background: #386d35cc;
+  backdrop-filter: blur(20px);
+  grid-area: 2 / 2;
+  align-self: start;
+  margin: 0 -12px 40px -24%;
+  padding: 36px clamp(32px, 3.5vw, 56px);
+  position: relative;
+  box-shadow: 0 22px 38px -22px #14261e59;
+}
+.his-majesty__quote-mark {
+  position: absolute;
+  top: 8px;
+  left: 16px;
+  color: #d2bf87;
+  font-family: var(--font-heading);
+  font-size: 48px;
+  line-height: 1;
+}
 .his-majesty__quote {
-  margin: 28px 0 0;
+  margin: 0;
 }
 .his-majesty__quote p {
   margin: 0;
-  color: #4e5757;
   font-family: var(--font-heading);
-  font-size: clamp(18px, 1.6vw, 23px);
+  font-size: var(--type-subheading);
   font-style: italic;
   font-weight: 400;
-  line-height: 1.65;
+  line-height: 1.5;
   text-wrap: pretty;
 }
 .his-majesty__attribution {
-  margin: 20px 0 0;
-  color: #62675f;
-  font-size: 12px;
+  margin-top: 24px;
+  color: #dcd8c7;
+  font-size: var(--type-body);
   font-weight: 400;
   line-height: 1.6;
 }
+.his-majesty__attribution::before {
+  content: "";
+  display: block;
+  width: 56px;
+  height: 1px;
+  margin-bottom: 14px;
+  background: #d2bf87;
+}
 .his-majesty__portrait {
   position: relative;
-  aspect-ratio: 4 / 3;
+  grid-column: 1;
+  grid-row: 1 / 3;
+  min-height: clamp(360px, 54svh, 480px);
   overflow: hidden;
   background: #d9d8cc;
+  box-shadow: 0 22px 38px -24px rgb(20 38 30 / 35%);
 }
 .his-majesty__portrait img {
   object-fit: cover;
@@ -747,14 +777,27 @@ button {
 @media (max-width: 760px) {
   .his-majesty__inner {
     grid-template-columns: minmax(0, 1fr);
-    gap: 36px;
+    grid-template-rows: auto auto auto;
+    gap: 22px;
   }
   .his-majesty__copy {
-    max-width: 540px;
-    padding-block: 0;
+    grid-column: 1;
+    grid-row: 1;
+    padding-top: 0;
   }
-  .his-majesty__rule { margin-bottom: 24px; }
-  .his-majesty__quote { margin-top: 24px; }
+  .his-majesty__portrait {
+    grid-column: 1;
+    grid-row: 2;
+    min-height: 0;
+    aspect-ratio: 4 / 3;
+  }
+  .his-majesty__quote-card {
+    grid-column: 1;
+    grid-row: 3;
+    margin: -48px 0 0 12px;
+    padding: 44px 24px 28px;
+  }
+  .his-majesty__quote-mark { top: 12px; left: 22px; }
 }
 
 .why-invest {
