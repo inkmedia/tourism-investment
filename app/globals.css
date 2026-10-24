@@ -665,81 +665,96 @@ button {
   opacity: 0;
 }
 .his-majesty {
-  position: relative;
-  isolation: isolate;
-  display: flex;
-  align-items: center;
-  min-height: clamp(600px, 75svh, 820px);
-  overflow: hidden;
-  padding: clamp(48px, 6vw, 88px) clamp(24px, 4vw, 80px);
-  background: var(--ink);
-  color: var(--cream);
-}
-.his-majesty__portrait {
-  position: absolute;
-  z-index: -2;
-  inset: 0;
-}
-.his-majesty::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  background: linear-gradient(90deg, rgb(16 27 34 / 90%) 0%, rgb(16 27 34 / 70%) 28%, rgb(16 27 34 / 20%) 55%, transparent 80%);
+  scroll-margin-top: 82px;
+  padding: clamp(56px, 6vw, 104px) clamp(24px, 4vw, 80px);
+  background: var(--cream);
+  color: var(--ink);
 }
 .his-majesty__inner {
-  width: 100%;
-  max-width: 1600px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  align-items: center;
+  gap: clamp(40px, 6vw, 104px);
+  width: min(100%, 1600px);
   margin: 0 auto;
 }
-.his-majesty__portrait img {
-  object-fit: cover;
-  object-position: center 46%;
-}
 .his-majesty__copy {
-  max-width: min(42%, 500px);
+  max-width: 490px;
+  padding-block: 16px;
 }
 .his-majesty__rule {
   display: block;
   width: 48px;
   height: 2px;
-  margin-bottom: 28px;
+  margin-bottom: 30px;
   background: var(--gold);
 }
 .his-majesty__copy h2 {
-  max-width: 540px;
   margin: 0;
   font-size: var(--type-section);
   font-weight: 400;
   letter-spacing: -0.035em;
-  line-height: 1.3;
+  line-height: 1.35;
   text-wrap: balance;
 }
 .his-majesty__copy h2 span {
   display: block;
-  margin-bottom: 8px;
-}
-.his-majesty__copy p {
-  margin: 24px 0 0;
+  margin-bottom: 12px;
+  color: #62675f;
   font-family: var(--font-body);
-  font-size: var(--type-body);
-  font-weight: 300;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.his-majesty__quote {
+  margin: 28px 0 0;
+}
+.his-majesty__quote p {
+  margin: 0;
+  color: #4e5757;
+  font-family: var(--font-heading);
+  font-size: clamp(18px, 1.6vw, 23px);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+.his-majesty__attribution {
+  margin: 20px 0 0;
+  color: #62675f;
+  font-size: 12px;
+  font-weight: 400;
   line-height: 1.6;
 }
-@media (max-width: 700px) {
-  .his-majesty {
-    align-items: flex-end;
-    min-height: 760px;
-    min-height: max(760px, 90svh);
-    padding-block: 48px;
+.his-majesty__portrait {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #d9d8cc;
+}
+.his-majesty__portrait img {
+  object-fit: cover;
+  object-position: 55% 46%;
+}
+.his-majesty__image-layer {
+  position: absolute;
+  inset: -10% -6%;
+}
+@media (prefers-reduced-motion: reduce) {
+  .his-majesty__image-layer { inset: 0; }
+}
+@media (max-width: 760px) {
+  .his-majesty__inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 36px;
   }
-  .his-majesty::after {
-    background: linear-gradient(180deg, transparent 25%, rgb(16 27 34 / 20%) 45%, rgb(16 27 34 / 88%) 73%, var(--ink) 100%);
+  .his-majesty__copy {
+    max-width: 540px;
+    padding-block: 0;
   }
-  .his-majesty__portrait img { object-position: 57% center; }
-  .his-majesty__copy { max-width: 420px; }
-  .his-majesty__rule { margin-bottom: 22px; }
-  .his-majesty__copy p { margin-top: 18px; }
+  .his-majesty__rule { margin-bottom: 24px; }
+  .his-majesty__quote { margin-top: 24px; }
 }
 
 .why-invest {

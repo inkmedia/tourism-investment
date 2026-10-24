@@ -146,6 +146,7 @@ export default async function Home() {
           </dl>
         </div>
       </section>
+      <HisMajesty />
       <WhyInvest />
       <Opportunities />
       <AvailableInvestments />
@@ -156,7 +157,6 @@ export default async function Home() {
       <WhyInvestNow />
       <AirportStory />
       <Advantages />
-      <HisMajesty />
       <InvestmentJourney />
       <InvestorEnquiries />
       <Footer />
