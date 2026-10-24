@@ -666,6 +666,9 @@ button {
 }
 .his-majesty {
   position: relative;
+  display: grid;
+  align-content: center;
+  min-height: 100svh;
   scroll-margin-top: 82px;
   padding: clamp(56px, 8svh, 80px) clamp(32px, 4.5vw, 88px);
   background: #eeeae1;
