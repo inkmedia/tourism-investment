@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { TOURISM_EMAIL } from "@/lib/contact";
 import FooterMark from "./FooterMark";
 import PrivacyPolicyLink from "./PrivacyPolicyLink";
 import gsap from "gsap";
@@ -138,7 +139,7 @@ export default function Footer() {
             <h2>Contact</h2>
             <ul>
               <li>
-                <FooterLink label="info@gmc.bt" href="mailto:info@gmc.bt" />
+                <FooterLink label={TOURISM_EMAIL} href={`mailto:${TOURISM_EMAIL}`} />
               </li>
               <li>
                 <FooterLink label="GMC official website" href="https://gmc.bt" external />

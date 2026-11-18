@@ -1,32 +1,13 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import BhutanInteractiveMap from "./bhutan-map/BhutanInteractiveMap";
 
 export default function SiteContext() {
-  const sectionRef = useRef<HTMLElement>(null);
 
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section || matchMedia("(prefers-reduced-motion: reduce)").matches)
-      return;
-    section.classList.add("site-context--ready");
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        section.classList.add("site-context--visible");
-        observer.disconnect();
-      },
-      { threshold: 0.18 },
-    );
-    observer.observe(section);
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <section
       id="investment-map"
-      ref={sectionRef}
       className="site-context"
       aria-labelledby="site-context-title"
     >

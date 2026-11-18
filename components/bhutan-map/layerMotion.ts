@@ -87,13 +87,13 @@ export function prepareLayerMotion(svg: SVGSVGElement) {
       gsap.set(airports, { scale: .92, transformOrigin: "center" });
       gsap.set(bands, { opacity: 0 });
       gsap.set(rings, { opacity: 0, scale: .8, transformOrigin: "center" });
-      timeline.to(wrappers.get("protectedForests")!, { opacity: 1, duration: .12 }, timing.forests)
-        .to(rect, { attr: { width: box.width * 1.3 + 2 }, duration: .15, ease: "power2.inOut", ...maskMotion }, timing.forests)
-        .to(wrappers.get("corridors")!, { opacity: 1, duration: .14, ease: "sine.inOut" }, timing.corridors)
+      timeline.to(wrappers.get("protectedForests")!, { opacity: 1, duration: .06 }, timing.forests)
+        .to(rect, { attr: { width: box.width * 1.3 + 2 }, duration: .07, ease: "power2.inOut", ...maskMotion }, timing.forests)
+        .to(wrappers.get("corridors")!, { opacity: 1, duration: .06, ease: "sine.inOut" }, timing.corridors)
         .to(wrappers.get("rivers")!, { opacity: 1, duration: .05 }, timing.rivers)
-        .to(rivers, { strokeDashoffset: 0, duration: .13, stagger: { amount: .025 }, ease: "power2.out" }, timing.rivers)
+        .to(rivers, { strokeDashoffset: 0, duration: .06, stagger: { amount: .025 }, ease: "power2.out" }, timing.rivers)
         .to(wrappers.get("gmcBoundary")!, { opacity: 1, duration: .07 }, timing.gmcBoundary)
-        .to(gmcBoundary, { strokeDashoffset: 0, duration: .1, ease: "power2.out" }, timing.gmcBoundary)
+        .to(gmcBoundary, { strokeDashoffset: 0, duration: .06, ease: "power2.out" }, timing.gmcBoundary)
         .to(wrappers.get("airports")!, { opacity: 1, duration: .07 }, timing.airports)
         .to(airports, { scale: 1, duration: .08, stagger: { amount: .025 }, ease: "power3.out" }, timing.airports)
         .to(rings, { opacity: .16, duration: .015, stagger: { amount: .015 } }, timing.airports)

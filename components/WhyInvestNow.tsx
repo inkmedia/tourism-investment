@@ -99,6 +99,8 @@ export default function WhyInvestNow() {
   return (
     <section
       ref={sectionRef}
+      id="why-invest-now"
+      tabIndex={-1}
       className="invest-now"
       aria-labelledby="invest-now-title"
     >

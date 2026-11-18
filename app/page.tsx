@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import WhyInvest from "@/components/WhyInvest";
 import Opportunities from "@/components/Opportunities";
 import InvestorEnquiries from "@/components/InvestorEnquiries";
+import InvestmentFAQ from "@/components/InvestmentFAQ";
 import InvestmentJourney from "@/components/InvestmentJourney";
 import AvailableInvestments from "@/components/AvailableInvestments";
 import PartnersCTA from "@/components/PartnersCTA";
@@ -152,13 +153,14 @@ export default async function Home() {
       <AvailableInvestments />
       <PartnersCTA />
       <PlannedAttractions />
-      <LatestUpdates />
       <SiteContext />
       <WhyInvestNow />
       <AirportStory />
       <Advantages />
       <InvestmentJourney />
+      <LatestUpdates />
       <InvestorEnquiries />
+      <InvestmentFAQ />
       <Footer />
     </main>
   );

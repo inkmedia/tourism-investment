@@ -110,6 +110,7 @@ function BookCard({ item, index }: { item: (typeof opportunities)[number]; index
           <a
             className="opportunity-book__enquire swap-button"
             href="#enquiries"
+            data-investment-opportunity={item.id}
           >
             <SwapLabel text="Enquire now" />
           </a>

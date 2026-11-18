@@ -7,11 +7,14 @@ export function fitViewBoxToBBox(bbox: MapViewBox, aspect: number, extent: MapVi
   let height = bbox.height * (1 + padding);
   if (width / height < ratio) width = height * ratio;
   else height = width / ratio;
-  // Stage ratios are kept within the source's geographic coverage by the responsive CSS.
-  // Reduce contextual padding first if the source edge would otherwise be exposed.
-  const limit = Math.min(1, extent.width / width, extent.height / height);
-  width *= limit; height *= limit;
-  return centerViewBox(bbox.x + bbox.width / 2, bbox.y + bbox.height / 2, width, height, extent);
+  // Keep the entire boundary in frame, even when a short viewport is wider
+  // than the satellite raster. Shrinking to the raster cropped the south edge.
+  const cx = bbox.x + bbox.width / 2;
+  const cy = bbox.y + bbox.height / 2;
+  const fitted = centerViewBox(cx, cy, width, height, extent);
+  if (width > extent.width) fitted.x = cx - width / 2;
+  if (height > extent.height) fitted.y = cy - height / 2;
+  return fitted;
 }
 
 export function centerViewBox(cx: number, cy: number, width: number, height: number, extent: MapViewBox): MapViewBox {
@@ -23,7 +26,8 @@ export function centerViewBox(cx: number, cy: number, width: number, height: num
 }
 
 export function altitudeViewBox(final: MapViewBox, extent: MapViewBox, mobile: boolean): MapViewBox {
-  const factor = Math.min(mobile ? 1.12 : 1.2, extent.width / final.width, extent.height / final.height);
+  const factor = Math.max(1, Math.min(mobile ? 1.12 : 1.2, extent.width / final.width, extent.height / final.height));
+  if (factor === 1) return { ...final };
   return centerViewBox(final.x + final.width / 2, final.y + final.height / 2, final.width * factor, final.height * factor, extent);
 }
 

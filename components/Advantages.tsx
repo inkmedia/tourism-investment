@@ -7,14 +7,14 @@ import AdvantagesMosaic from "./AdvantagesMosaic";
 import FooterMark from "./FooterMark";
 
 const advantages: [string, string, string][] = [
+  ["Administrative autonomy", "Special Administrative Region", "Established under Royal Charter with executive, legislative, and judicial autonomy."],
   ["First-mover opportunity", "First-mover opportunity", "Shape a new economic hub from the ground floor before the market matures."],
   ["Legal framework", "Investor-friendly legal framework", "Singapore common law, ADGM regulations, international arbitration, and anti-corruption safeguards."],
   ["Market access", "Strategic market access", "Direct India access via free trade arrangements and border proximity — a gateway to South Asia."],
-  ["Clean energy", "Renewable energy advantage", "Powered by clean hydropower within one of the world’s only carbon-negative countries."],
+  ["Clean energy", "Renewable energy advantage", "Bhutan is recognised for its carbon negative status and abundant renewable hydropower."],
   ["Long-term stability", "Political stability", "Bhutan’s long-standing peace and trusted institutions provide a secure foundation for long-term capital."],
   ["Integrated planning", "Purpose-built city", "Designed from the ground up around mindfulness, sustainability, innovation, and liveability."],
   ["National commitment", "High-level national commitment", "A national priority with coordinated government support across planning, approvals, and implementation."],
-  ["Administrative autonomy", "Special Administrative Region", "Established under Royal Charter with executive, legislative, and judicial autonomy."],
   ["Quality of life", "Talent, wellness & quality of life", "Bhutan’s wellness, nature and cultural assets attract talent, residents, and long-stay visitors."],
 ];
 const tenure = [["Residential", "99 years"], ["Hotel & Retail", "60 - 90 years leasehold"], ["Ultra High-End Integrated", "99 years"], ["Commercial Office", "60 years"], ["Industrial", "30 + 30 years"], ["Agricultural", "30 + 30 years"]];

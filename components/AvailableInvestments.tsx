@@ -212,12 +212,7 @@ function InvestmentCard({
                     ))}
                   </ul>
                 </div>
-                <a
-                  className="available-card__enquire swap-button"
-                  href="#enquiries"
-                >
-                  <SwapLabel text="Enquire now" />
-                </a>
+
                 <p className="available-card__legal">
                   Figures are indicative only. IRR targets are unaudited
                   projections and do not constitute a guarantee of returns.
@@ -240,6 +235,13 @@ function InvestmentCard({
                 </div>
               </>
             )}
+            <a
+              className="available-card__enquire swap-button"
+              href="#enquiries"
+              data-investment-opportunity={item.id}
+            >
+              <SwapLabel text="Enquire now" />
+            </a>
           </div>
           <button
             className="available-card__return swap-button"

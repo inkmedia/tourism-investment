@@ -16,19 +16,19 @@ export const MAP_SELECTORS = {
 } as const;
 
 export const MAP_ANIMATION = {
-  descent: .12, descentDuration: .48, satellite: .15, approach: .12,
-  boundary: .34, forests: .43, corridors: .49, rivers: .54, gmcBoundary: .76,
-  trail: .65, trailDuration: .14, cities: .78, airports: .82, sites: .86,
-  controls: .94, legend: .90, interaction: .94,
+  descent: 0, descentDuration: .08, satellite: 0, approach: .02,
+  boundary: .02, forests: .40, corridors: .53, rivers: .64, gmcBoundary: .08,
+  trail: .24, trailDuration: .08, cities: .76, airports: .76, sites: .78,
+  controls: .90, legend: 0, interaction: .90,
 } as const;
 
 export const MAP_LAYERS = [
+  { key: "gmcBoundary", label: "GMC boundary", color: "#f4d274" },
+  { key: "trail", label: "Mindfulness Trail", color: "#d2232a" },
   { key: "protectedForests", label: "Protected forest", color: "#6fa43d" },
   { key: "corridors", label: "Ecological corridor", color: "#cae897" },
   { key: "rivers", label: "Rivers", color: "#6abbf2" },
-  { key: "gmcBoundary", label: "GMC boundary", color: "#f4d274" },
   { key: "airports", label: "Airports", color: "#ffffff" },
-  { key: "trail", label: "Mindfulness Trail", color: "#d2232a" },
   { key: "sites", label: "Religious sites", color: "#ce0901" },
 ] as const;
 export type LayerKey = typeof MAP_LAYERS[number]["key"];

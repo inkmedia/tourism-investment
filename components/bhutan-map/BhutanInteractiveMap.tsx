@@ -80,7 +80,7 @@ export default function BhutanInteractiveMap() {
   const [ready, setReady] = useState(false);
   const [loadFailed, setLoadFailed] = useState(false);
   const [explore, setExplore] = useState(false);
-  const [leaving, setLeaving] = useState(false);
+  const [revealedLayers, setRevealedLayers] = useState<LayerKey[]>([]);
   const [cities, setCities] = useState<City[]>([]);
   const [selectedCity, setSelectedCity] = useState("");
   const [hiddenLayers, setHiddenLayers] = useState<LayerKey[]>([]);
@@ -92,11 +92,12 @@ export default function BhutanInteractiveMap() {
     const measureControls = () =>
       map.style.setProperty(
         "--map-controls-height",
-        `${controls.getBoundingClientRect().height}px`,
+        `${controls.getBoundingClientRect().height + (map.querySelector(".bhutan-map__legend")?.getBoundingClientRect().height ?? 0)}px`,
       );
     measureControls();
     const observer = new ResizeObserver(measureControls);
     observer.observe(controls);
+    observer.observe(map.querySelector(".bhutan-map__legend")!);
     return () => observer.disconnect();
   }, []);
 
@@ -125,14 +126,14 @@ export default function BhutanInteractiveMap() {
                   images: await module.loadCloudTextures(),
                 }))
                 .catch(() => null);
-          const response = await fetch("/img/bhutan-map-production.svg", {
-            signal: abort.signal,
-          });
-          if (!response.ok) throw new Error("Map unavailable");
-          const markup = await response.text();
           const image = new Image();
           image.src = "/img/bhutan-satellite.webp";
-          const [, preparedClouds] = await Promise.all([
+          const [markup, , preparedClouds] = await Promise.all([
+            fetch("/img/bhutan-map-production.svg", { signal: abort.signal })
+              .then((response) => {
+                if (!response.ok) throw new Error("Map unavailable");
+                return response.text();
+              }),
             image.decode(),
             cloudAssets,
           ]);
@@ -166,7 +167,8 @@ export default function BhutanInteractiveMap() {
           );
           const boundaryBBox = (q(S.boundary) as SVGGraphicsElement).getBBox();
           const sourceExtent = (q(S.satellite) as SVGGraphicsElement).getBBox();
-          const legendBBox = (q(S.legend) as SVGGraphicsElement).getBBox();
+          q(S.legend).style.display = "none";
+          q(S.legend).setAttribute("aria-hidden", "true");
           const stageAspect = () => {
             const bounds = stage.getBoundingClientRect();
             return bounds.width / bounds.height;
@@ -198,28 +200,9 @@ export default function BhutanInteractiveMap() {
             lastCameraTransform = transform;
             camera.style.transform = transform;
           };
-          const placeLegend = () => {
-            const scale = Math.min(
-              0.7,
-              (original.width * 0.94) / legendBBox.width,
-              (original.height * 0.13) / legendBBox.height,
-            );
-            const x = original.x + original.width * 0.02 - legendBBox.x * scale;
-            const y =
-              original.y +
-              original.height * 0.97 -
-              (legendBBox.y + legendBBox.height) * scale;
-            q(S.legend).setAttribute(
-              "transform",
-              `translate(${x} ${y}) scale(${scale})`,
-            );
-          };
-          placeLegend();
           writeView();
           let viewTween: gsap.core.Tween | undefined;
-          let interactive = false,
-            zoomed = false,
-            exiting = false;
+          let interactive = false;
           let focusedCityId = "";
           const hidden = new Set<LayerKey>();
           const preference = matchMedia("(prefers-reduced-motion: reduce)");
@@ -322,7 +305,6 @@ export default function BhutanInteractiveMap() {
             });
           };
           const reset = () => {
-            zoomed = false;
             focusedCityId = "";
             stage.dataset.focused = "false";
             animateView(original);
@@ -330,7 +312,7 @@ export default function BhutanInteractiveMap() {
             interactions?.focus("");
           };
           const selectLayer = (key: LayerKey | null) => {
-            if (!interactive || exiting) return;
+            if (!interactive) return;
             if (key === null) hidden.clear();
             else if (hidden.has(key)) hidden.delete(key);
             else hidden.add(key);
@@ -347,11 +329,10 @@ export default function BhutanInteractiveMap() {
             });
           };
           const focus = (id: string) => {
-            if (!interactive || exiting) return;
+            if (!interactive) return;
             const city = cityGroups.find((group) => group.id === id);
             if (!city) return;
             selectLayer(null);
-            zoomed = true;
             stage.dataset.focused = "true";
             setSelectedCity(id);
             const box = city
@@ -379,7 +360,7 @@ export default function BhutanInteractiveMap() {
             cities: cityGroups,
             atmosphere: cloudState,
             reduced: preference,
-            enabled: () => interactive && !exiting,
+            enabled: () => interactive,
             focus,
           });
           interactions.enable(false);
@@ -465,7 +446,7 @@ export default function BhutanInteractiveMap() {
             interactive = value;
             stage.dataset.mode = value ? "explore" : "story";
             camera.style.willChange = value ? "auto" : "transform";
-            enableControls(value && !exiting);
+            enableControls(value);
             // One reversible handoff owns visual and native interaction state together.
             gsap.to(controls, {
               autoAlpha: value ? 1 : 0,
@@ -479,7 +460,6 @@ export default function BhutanInteractiveMap() {
             } else {
               layerMotion.resetFilters();
               viewTween?.kill();
-              zoomed = false;
               focusedCityId = "";
               stage.dataset.focused = "false";
               setSelectedCity("");
@@ -524,7 +504,6 @@ export default function BhutanInteractiveMap() {
                 sourceExtent,
                 matchMedia("(max-width: 700px)").matches,
               );
-              placeLegend();
               const layers = [...hidden];
               if (interactive && focusedCityId) focus(focusedCityId);
               else if (interactive) {
@@ -547,14 +526,9 @@ export default function BhutanInteractiveMap() {
                 desktop: "(min-width: 701px)",
               },
               (context) => {
-                const reduced = context.conditions!.reduced,
-                  mobile = context.conditions!.mobile;
-                exiting = false;
-                stage.dataset.exiting = "false";
-                setLeaving(false);
+                const reduced = context.conditions!.reduced;
                 mode(false);
                 hidden.clear();
-                zoomed = false;
                 focusedCityId = "";
                 stage.dataset.focused = "false";
                 viewTween?.kill();
@@ -572,12 +546,14 @@ export default function BhutanInteractiveMap() {
                   layerTargets.forEach((el) =>
                     gsap.set(el, { opacity: nativeOpacity.get(el)! }),
                   );
+                  setRevealedLayers(MAP_LAYERS.map(({ key }) => key));
                   mode(true);
                   gsap.set(controls, { opacity: 1, visibility: "visible" });
                   caption.textContent = "Explore Bhutan";
                   progress.style.transform = "scaleX(1)";
                   return;
                 }
+                setRevealedLayers([]);
                 void ensureClouds();
                 const boundary = Array.from(
                   svg.querySelectorAll<SVGPathElement>(
@@ -637,7 +613,6 @@ export default function BhutanInteractiveMap() {
                 let phase = -1;
                 let refreshing = false;
                 let refreshFrame = 0;
-                let refreshExit = () => {};
                 let lastApproach = -1;
                 const syncInteraction = (
                   scrollProgress: number,
@@ -648,39 +623,62 @@ export default function BhutanInteractiveMap() {
                       storyProgress >= T.interaction,
                   );
                 };
+                let lastRevealed = "";
                 const captions = [
-                  "Above the Himalayan landscape",
-                  "Descending through the clouds",
-                  "The geography emerges",
-                  "Forests, corridors and rivers",
+                  "GMC boundaries",
                   "The Mindfulness Trail",
+                  "Protected forests",
+                  "Ecological corridors",
+                  "Rivers",
                   "Places, culture and arrival",
                   "Explore the landscape",
                 ];
+                const syncStory = () => {
+                  if (disposed || refreshing) return;
+                  const p = timeline.progress();
+                  stage.dataset.storyProgress = p.toFixed(4);
+
+                  if (!interactive && approach.progress !== lastApproach) {
+                    lastApproach = approach.progress;
+                    writeStoryView();
+                  }
+                  syncInteraction(timeline.scrollTrigger?.progress ?? 0, p);
+                  progress.style.transform = `scaleX(${p})`;
+                  const visible = MAP_LAYERS.filter(({ key }) => p >= (key === "protectedForests" ? T.forests : T[key])).map(({ key }) => key);
+                  const signature = visible.join(",");
+                  if (signature !== lastRevealed) {
+                    lastRevealed = signature;
+                    setRevealedLayers(visible);
+                  }
+                  const next = p < T.trail ? 0 : p < T.forests ? 1 : p < T.corridors ? 2 : p < T.rivers ? 3 : p < T.cities ? 4 : p < T.interaction ? 5 : 6;
+                  if (next !== phase) {
+                    phase = next;
+                    caption.textContent = captions[next];
+                  }
+                  cloud?.update();
+                };
                 const timeline = gsap.timeline({
                   defaults: { ease: "none" },
                   scrollTrigger: {
-                    // This upstream pin mounts after its SVG fetch; measure it before
-                    // downstream scenes even when those triggers were created first.
+                    // Measure the upstream story before downstream animation scenes.
                     id: "bhutan-map",
                     refreshPriority: 1,
-                    trigger: stage.parentElement!,
-                    start: "top top",
+                    trigger: stage.parentElement!.parentElement!,
+                    start: "top 80px",
                     end: () =>
-                      `+=${window.innerHeight * (mobile ? 0.85 : 1.7)}`,
-                    pin: stage.parentElement!,
-                    scrub: 0.55,
-                    anticipatePin: 1,
+                      `+=${stage.parentElement!.parentElement!.offsetHeight - window.innerHeight * 1.7}`,
+                    // Native sticky layout reserves the complete story before assets load.
+                    scrub: true,
                     invalidateOnRefresh: true,
                     onRefreshInit: () => {
                       refreshing = true;
                       cloud?.suspend();
                     },
                     onUpdate: (self) => {
-                      // Pin refresh briefly rewinds progress to measure layout. It is
+                      // Refresh briefly rewinds progress to measure layout. It is
                       // not a reverse-scroll gesture and must not erase exploration.
                       if (disposed || refreshing) return;
-                      // Let scrub settle naturally; do not jump the remaining reveal to its endpoint.
+                      // Interaction follows the same playhead as the visible layers.
                       syncInteraction(
                         self.progress,
                         self.animation?.progress() ?? 0,
@@ -690,9 +688,9 @@ export default function BhutanInteractiveMap() {
                       cancelAnimationFrame(refreshFrame);
                       refreshFrame = requestAnimationFrame(() => {
                         if (disposed) return;
-                        // ScrollTrigger restores its scrubbed playhead after measuring the pin.
+                        // Resume the renderer only after refresh restores the playhead.
                         refreshing = false;
-                        refreshExit();
+                        syncStory();
                         syncInteraction(
                           self.progress,
                           self.animation?.progress() ?? 0,
@@ -702,42 +700,12 @@ export default function BhutanInteractiveMap() {
                       });
                     },
                   },
-                  onUpdate: () => {
-                    if (disposed || refreshing) return;
-                    const p = timeline.progress();
-                    stage.dataset.storyProgress = p.toFixed(4);
-
-                    if (!interactive && approach.progress !== lastApproach) {
-                      lastApproach = approach.progress;
-                      writeStoryView();
-                    }
-                    syncInteraction(timeline.scrollTrigger?.progress ?? 0, p);
-                    progress.style.transform = `scaleX(${p})`;
-                    const next =
-                      p < 0.12
-                        ? 0
-                        : p < 0.32
-                          ? 1
-                          : p < 0.43
-                            ? 2
-                            : p < 0.65
-                              ? 3
-                              : p < 0.78
-                                ? 4
-                                : p < 0.94
-                                  ? 5
-                                  : 6;
-                    if (next !== phase) {
-                      phase = next;
-                      caption.textContent = captions[next];
-                    }
-                    cloud?.update();
-                  },
+                  onUpdate: () => syncStory(),
                 });
                 timeline
                   .to(
                     approach,
-                    { progress: 0.06, duration: 0.12, ease: "sine.inOut" },
+                    { progress: 0.06, duration: 0.02, ease: "sine.inOut" },
                     0,
                   )
                   .to(
@@ -745,23 +713,23 @@ export default function BhutanInteractiveMap() {
                     { descent: 1, duration: T.descentDuration },
                     T.descent,
                   )
-                  .to(cloudState, { opacity: 0, duration: 0.14 }, 0.48)
+                  .to(cloudState, { opacity: 0, duration: 0.04 }, 0.04)
                   .fromTo(
                     shadowRef.current,
                     { opacity: 0.1, xPercent: -2, yPercent: -1 },
-                    { opacity: 0, xPercent: 3, yPercent: 2, duration: 0.55 },
-                    0.06,
+                    { opacity: 0, xPercent: 3, yPercent: 2, duration: 0.06 },
+                    0,
                   )
                   .to(
                     approach,
-                    { progress: 1, duration: 0.48, ease: "sine.inOut" },
+                    { progress: 1, duration: 0.06, ease: "sine.inOut" },
                     T.approach,
                   )
-                  .to(q(S.base), { opacity: 1, duration: 0.37 }, T.satellite)
-                  .to(q(S.boundary), { opacity: 1, duration: 0.1 }, T.boundary)
+                  .to(q(S.base), { opacity: 1, duration: 0.06 }, T.satellite)
+                  .to(q(S.boundary), { opacity: 1, duration: 0.04 }, T.boundary)
                   .to(
                     boundary,
-                    { strokeDashoffset: 0, duration: 0.12 },
+                    { strokeDashoffset: 0, duration: 0.04 },
                     T.boundary,
                   )
                   .to(
@@ -800,84 +768,9 @@ export default function BhutanInteractiveMap() {
                     ),
                     { scale: 1, duration: 0.06, stagger: { amount: 0.07 } },
                     T.cities,
-                  )
-                  .to(q(S.legend), { opacity: 1, duration: 0.08 }, T.legend);
+                  );
                 // Keep normalized narrative progress at exactly one, independent of tween endpoints.
                 timeline.to({}, { duration: 1 }, 0);
-                const updateExit = (progress: number) => {
-                  const next = progress > 0.35;
-                  if (next === exiting) return;
-                  exiting = next;
-                  stage.dataset.exiting = String(next);
-                  setLeaving(next);
-                  if (next) {
-                    if (zoomed) reset();
-                    hidden.clear();
-                    setHiddenLayers([]);
-                    layerMotion.resetFilters();
-                    layerTargets.forEach((el) =>
-                      exploreTo(el, {
-                        opacity: nativeOpacity.get(el)!,
-                        duration: 0.4,
-                      }),
-                    );
-                  }
-                  enableControls(interactive && !next);
-                  caption.textContent = next
-                    ? "From landscape to opportunity"
-                    : "Explore the landscape";
-                };
-                const exit = gsap.timeline({
-                  scrollTrigger: {
-                    trigger: stage.parentElement!,
-                    // Leave room to reach controls on shorter screens before quietening the scene.
-                    start: () =>
-                      timeline.scrollTrigger!.end +
-                      Math.max(
-                        120,
-                        stage.parentElement!.offsetHeight -
-                          window.innerHeight +
-                          80,
-                      ),
-                    end: () =>
-                      timeline.scrollTrigger!.end +
-                      Math.max(
-                        120,
-                        stage.parentElement!.offsetHeight -
-                          window.innerHeight +
-                          80,
-                      ) +
-                      window.innerHeight * 0.65,
-                    scrub: 0.6,
-                    onUpdate: (self) => {
-                      if (!disposed && !refreshing) updateExit(self.progress);
-                    },
-                  },
-                });
-                refreshExit = () =>
-                  updateExit(exit.scrollTrigger?.progress ?? 0);
-                exit
-                  .to(
-                    svg.querySelectorAll('[data-label-hierarchy="secondary"]'),
-                    { opacity: 0.35, duration: 1 },
-                    0,
-                  )
-                  .to(artwork, { scale: 0.985, duration: 1 }, 0)
-                  .fromTo(
-                    controls,
-                    { opacity: 1 },
-                    { opacity: 0.35, duration: 1, immediateRender: false },
-                    0,
-                  )
-                  .to(
-                    cloudState,
-                    {
-                      ambient: 0,
-                      duration: 1,
-                      onUpdate: () => cloud?.update(),
-                    },
-                    0,
-                  );
                 return () => {
                   cancelAnimationFrame(refreshFrame);
                   cloud?.resume();
@@ -916,7 +809,7 @@ export default function BhutanInteractiveMap() {
           }
         }
       },
-      { rootMargin: "800px" },
+      { rootMargin: "2400px" },
     );
     observer.observe(stage);
     return () => {
@@ -928,97 +821,105 @@ export default function BhutanInteractiveMap() {
   }, []);
 
   return (
-    <div className="bhutan-map" data-ready={ready}>
-      <div ref={stageRef} className="bhutan-map-stage" data-mode="story">
-        {!ready && (
-          <div className="bhutan-map__loader" role="status">
-            {!loadFailed && (
-              <span className="bhutan-map__spinner" aria-hidden="true" />
-            )}
-            <span>
-              {loadFailed
-                ? "The landscape couldn’t load. Please refresh to try again."
-                : "Loading the landscape"}
+    <div className="bhutan-map-story" data-failed={loadFailed}>
+      <div className="bhutan-map" data-ready={ready}>
+        <div className="bhutan-map__toolbar"><span>Scroll to discover each layer</span><a href="#why-invest-now" onClick={() => document.getElementById("why-invest-now")?.focus({ preventScroll: true })}>Skip map ↓</a></div>
+        <div ref={stageRef} className="bhutan-map-stage" data-mode="story">
+          {!ready && (
+            <div className="bhutan-map__loader" role="status">
+              {!loadFailed && (
+                <span className="bhutan-map__spinner" aria-hidden="true" />
+              )}
+              <span>
+                {loadFailed
+                  ? "The landscape couldn’t load. Please refresh to try again."
+                  : "Loading the landscape"}
+              </span>
+            </div>
+          )}
+          <div
+            ref={artworkRef}
+            className="bhutan-map__artwork"
+            aria-busy={!ready && !loadFailed}
+          >
+            <div ref={cameraRef} className="bhutan-map__camera" />
+          </div>
+          <div
+            ref={shadowRef}
+            className="bhutan-map__shadow"
+            aria-hidden="true"
+          />
+          <div ref={cloudRef} className="bhutan-map__clouds" aria-hidden="true" />
+          <div className="bhutan-map__caption">
+            <span>Kingdom of Bhutan</span>
+            <span ref={captionRef}>Discover the landscape through scrolling</span>
+          </div>
+          <div className="bhutan-map__progress" aria-hidden="true">
+            <span ref={progressRef} />
+          </div>
+        </div>
+        <div className="bhutan-map__legend" aria-label="Map legend">
+          {MAP_LAYERS.map(({ key, label, color }) => (
+            <span key={key} data-layer={key} data-visible={revealedLayers.includes(key) && !hiddenLayers.includes(key)}>
+              <i style={{ backgroundColor: color, color }} aria-hidden="true">{key === "airports" ? "✈" : key === "sites" ? "▲" : ""}</i>{label}
+            </span>
+          ))}
+        </div>
+        <div
+          ref={controlsRef}
+          className="bhutan-map__controls"
+          aria-label="Explore the Bhutan map"
+          aria-disabled={!explore}
+        >
+          <div className="bhutan-map__navigation">
+            <button
+              disabled={!explore}
+              onClick={() => apiRef.current?.overview()}
+              aria-label="Restore the overview of Bhutan"
+            >
+              Overview
+            </button>
+            <label>
+              Focus on a place
+              <select
+                disabled={!explore}
+                value={selectedCity}
+                onChange={(event) =>
+                  event.target.value
+                    ? apiRef.current?.focus(event.target.value)
+                    : apiRef.current?.overview()
+                }
+              >
+                <option value="">All Bhutan</option>
+                {cities.map((city) => (
+                  <option key={city.id} value={city.id}>
+                    {city.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <span className="bhutan-map__status" role="status">
+              {explore
+                  ? "Select a place or a layer to explore"
+                  : "Scroll to discover Bhutan"}
             </span>
           </div>
-        )}
-        <div
-          ref={artworkRef}
-          className="bhutan-map__artwork"
-          aria-busy={!ready && !loadFailed}
-        >
-          <div ref={cameraRef} className="bhutan-map__camera" />
-        </div>
-        <div
-          ref={shadowRef}
-          className="bhutan-map__shadow"
-          aria-hidden="true"
-        />
-        <div ref={cloudRef} className="bhutan-map__clouds" aria-hidden="true" />
-        <div className="bhutan-map__caption">
-          <span>Kingdom of Bhutan</span>
-          <span ref={captionRef}>Discover the landscape through scrolling</span>
-        </div>
-        <div className="bhutan-map__progress" aria-hidden="true">
-          <span ref={progressRef} />
-        </div>
-      </div>
-      <div
-        ref={controlsRef}
-        className="bhutan-map__controls"
-        aria-label="Explore the Bhutan map"
-        aria-disabled={!explore}
-      >
-        <div className="bhutan-map__navigation">
-          <button
-            disabled={!explore}
-            onClick={() => apiRef.current?.overview()}
-            aria-label="Restore the overview of Bhutan"
-          >
-            ← Return to Map
-          </button>
-          <label>
-            Focus on a place
-            <select
-              disabled={!explore}
-              value={selectedCity}
-              onChange={(event) =>
-                event.target.value
-                  ? apiRef.current?.focus(event.target.value)
-                  : apiRef.current?.overview()
-              }
-            >
-              <option value="">All Bhutan</option>
-              {cities.map((city) => (
-                <option key={city.id} value={city.id}>
-                  {city.label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <span className="bhutan-map__status" role="status">
-            {leaving
-              ? "Continue to the investment opportunity"
-              : explore
-                ? "Select a place or a layer to explore"
-                : "Scroll to discover Bhutan"}
-          </span>
-        </div>
-        <div className="bhutan-map__layers" aria-label="Map layers">
-          {MAP_LAYERS.map((layer) => (
-            <button
-              key={layer.key}
-              disabled={!explore}
-              aria-pressed={!hiddenLayers.includes(layer.key)}
-              onClick={() => apiRef.current?.layer(layer.key)}
-            >
-              <span
-                style={{ backgroundColor: layer.color }}
-                aria-hidden="true"
-              />
-              {layer.label}
-            </button>
-          ))}
+          <div className="bhutan-map__layers" aria-label="Map layers">
+            {MAP_LAYERS.map((layer) => (
+              <button
+                key={layer.key}
+                disabled={!explore}
+                aria-pressed={!hiddenLayers.includes(layer.key)}
+                onClick={() => apiRef.current?.layer(layer.key)}
+              >
+                <span
+                  style={{ backgroundColor: layer.color }}
+                  aria-hidden="true"
+                />
+                {layer.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </div>

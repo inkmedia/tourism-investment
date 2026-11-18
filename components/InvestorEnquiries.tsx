@@ -19,6 +19,8 @@ import {
 import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
 import EnquiryBackdrop from "./EnquiryBackdrop";
 import PrivacyPolicyLink from "./PrivacyPolicyLink";
+import { TOURISM_EMAIL } from "@/lib/contact";
+import { opportunities } from "./investmentData";
 
 type FieldProps = {
   label: string;
@@ -43,7 +45,29 @@ function Field({ label, icon, required, children, wide }: FieldProps) {
 
 export default function InvestorEnquiries() {
   const [step, setStep] = useState<1 | 2>(1);
-  const [draftOpened, setDraftOpened] = useState(false);
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [feedback, setFeedback] = useState("");
+  const [opportunityId, setOpportunityId] = useState("");
+  const sending = useRef(false);
+  const feedbackRef = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    const selectOpportunity = (event: MouseEvent) => {
+      if (sending.current) return;
+      const link = (event.target as Element).closest<HTMLAnchorElement>("a[data-investment-opportunity]");
+      if (!link || !opportunities.some((item) => String(item.id) === link.dataset.investmentOpportunity)) return;
+      setOpportunityId(link.dataset.investmentOpportunity!);
+      setStatus("idle");
+      setFeedback("");
+      setStep(1);
+    };
+    document.addEventListener("click", selectOpportunity);
+    return () => document.removeEventListener("click", selectOpportunity);
+  }, []);
+
+  useEffect(() => {
+    if (status === "success" || status === "error") feedbackRef.current?.focus();
+  }, [status]);
   const [source, setSource] = useState("");
   const [sourceOther, setSourceOther] = useState("");
   const stepHeading = useRef<HTMLHeadingElement>(null);
@@ -57,32 +81,38 @@ export default function InvestorEnquiries() {
     stepHeading.current?.scrollIntoView({ block: "start", behavior: "instant" });
   }, [step]);
 
-  const submit = (event: FormEvent<HTMLFormElement>) => {
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (sending.current || status === "success") return;
     if (step === 1) {
       setStep(2);
       return;
     }
-    const values = new FormData(event.currentTarget);
-    const body = [
-      `Full name: ${values.get("name") || ""}`,
-      `Email address: ${values.get("email") || ""}`,
-      `Job title: ${values.get("jobTitle") || ""}`,
-      `Company / fund name: ${values.get("company") || ""}`,
-      `Country of domicile: ${values.get("country") || ""}`,
-      `Investment sector: ${values.get("sector") || ""}`,
-      `Indicative investment range: ${values.get("investmentRange") || ""}`,
-      `Keys / rooms: ${values.get("keys") || ""}`,
-      `Preferred development timeline: ${values.get("timeline") || ""}`,
-      "",
-      `Brief concept description:\n${values.get("concept") || ""}`,
-      "",
-      `Message / additional context:\n${values.get("message") || ""}`,
-      "",
-      `How they heard about GMC Tourism Investment: ${source === "Other" ? `Other: ${sourceOther.trim()}` : source}`,
-    ].join("\n");
-    setDraftOpened(true);
-    window.location.href = `mailto:ghevaram.suthar@inkmedia.in?subject=${encodeURIComponent("Tourism investment enquiry")}&body=${encodeURIComponent(body)}`;
+    const values = Object.fromEntries(new FormData(event.currentTarget));
+    sending.current = true;
+    setStatus("sending");
+    setFeedback("");
+    try {
+      const response = await fetch("/api/enquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+        signal: AbortSignal.timeout(20000),
+      });
+      const result = await response.json();
+      if (!response.ok || result.accepted !== true) {
+        throw new Error(result.message || "We couldn’t confirm your submission. Please try again.");
+      }
+      setStatus("success");
+      setFeedback(result.message);
+    } catch (error) {
+      setStatus("error");
+      setFeedback(error instanceof Error && error.name !== "TimeoutError" && error.name !== "TypeError"
+        ? error.message
+        : `We couldn’t confirm your submission. Your entries are still here. Please try again or email ${TOURISM_EMAIL}.`);
+    } finally {
+      sending.current = false;
+    }
   };
 
   return (
@@ -101,6 +131,7 @@ export default function InvestorEnquiries() {
             the ambition to create the next generation of tourism and
             hospitality in Gelephu Mindfulness City.
           </p>
+          <p className="enquiries__contact">Email our tourism team: <a href={`mailto:${TOURISM_EMAIL}`}>{TOURISM_EMAIL}</a></p>
           <div className="enquiries__divider" />
           <div className="enquiries__invitation">
           <p className="enquiries__welcome">We welcome enquiries from</p>
@@ -113,7 +144,9 @@ export default function InvestorEnquiries() {
           </ul>
           </div>
         </div>
-        <form className="enquiries__form" onSubmit={submit} aria-label="Investor enquiry">
+        <form className="enquiries__form" onSubmit={submit} aria-label="Investor enquiry" aria-busy={status === "sending"}>
+          <fieldset className="enquiries__submission" disabled={status === "sending" || status === "success"}>
+          <input type="hidden" name="opportunityId" value={opportunityId} />
           <h3 className="enquiries__step-heading" ref={stepHeading} tabIndex={-1}>
             <span>0{step} / 02</span> {step === 1 ? "Your details" : "Your investment vision"}
           </h3>
@@ -272,11 +305,11 @@ export default function InvestorEnquiries() {
             <button key={step} className="button button--gold swap-button enquiries__submit" type="submit">
               <span className="swap-button__track">
                 <span className="swap-button__face">
-                  {step === 1 ? "Continue" : "Submit enquiry"}
+                  {status === "sending" ? "Sending…" : status === "success" ? "Submitted" : step === 1 ? "Continue" : "Submit enquiry"}
                   <span className="swap-button__icon" aria-hidden="true"><ArrowRight /></span>
                 </span>
                 <span className="swap-button__face" aria-hidden="true">
-                  {step === 1 ? "Continue" : "Submit enquiry"}
+                  {status === "sending" ? "Sending…" : status === "success" ? "Submitted" : step === 1 ? "Continue" : "Submit enquiry"}
                   <span className="swap-button__icon"><ArrowRight /></span>
                 </span>
               </span>
@@ -288,7 +321,8 @@ export default function InvestorEnquiries() {
               for information on how your personal data is handled.
             </p>
           </div>
-          {draftOpened && <p className="enquiries__status" role="status">Your email app will open with your enquiry. Please send the email to complete your submission.</p>}
+          </fieldset>
+          {feedback && <p ref={feedbackRef} tabIndex={-1} className={`enquiries__status enquiries__status--${status}`} role={status === "error" ? "alert" : "status"}>{feedback}</p>}
         </form>
       </div>
     </section>
