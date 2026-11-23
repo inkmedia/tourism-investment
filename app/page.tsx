@@ -7,6 +7,7 @@ import HisMajesty from "@/components/HisMajesty";
 import Footer from "@/components/Footer";
 import WhyInvest from "@/components/WhyInvest";
 import Opportunities from "@/components/Opportunities";
+import OpportunityGallery from "@/components/OpportunityGallery";
 import InvestorEnquiries from "@/components/InvestorEnquiries";
 import InvestmentFAQ from "@/components/InvestmentFAQ";
 import InvestmentJourney from "@/components/InvestmentJourney";
@@ -150,6 +151,7 @@ export default async function Home() {
       <HisMajesty />
       <WhyInvest />
       <Opportunities />
+      <OpportunityGallery />
       <AvailableInvestments />
       <PartnersCTA />
       <PlannedAttractions />

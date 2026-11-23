@@ -48,9 +48,6 @@ const reasons = [
 
 export default function WhyInvest() {
   const sectionRef = useRef<HTMLElement>(null);
-  const watermarkTimeline = useRef<gsap.core.Timeline | null>(null);
-  const activeReason = useRef<number | null>(null);
-  const watermarkVisible = useRef(false);
   const [hoveredReason, setHoveredReason] = useState<number | null>(null);
 
   useEffect(() => {
@@ -82,31 +79,20 @@ export default function WhyInvest() {
             fillOpacity: 1, strokeOpacity: 0,
             duration: 0.8, stagger: { amount: 0.5, from: "center" }, ease: "sine.inOut",
           }, 0.9);
-      watermarkTimeline.current = timeline;
 
       const observer = new IntersectionObserver(([entry]) => {
         if (!entry.isIntersecting) return;
-        watermarkVisible.current = true;
-        if (activeReason.current === null) timeline?.play();
+        timeline.play();
         observer.disconnect();
       }, { threshold: 0.16 });
       observer.observe(section);
       return () => {
         observer.disconnect();
         timeline?.kill();
-        watermarkTimeline.current = null;
       };
     });
     return () => motion.revert();
   }, []);
-
-  useEffect(() => {
-    activeReason.current = hoveredReason;
-    const timeline = watermarkTimeline.current;
-    if (!timeline) return;
-    if (hoveredReason === null && watermarkVisible.current) timeline.timeScale(1.5).play();
-    else timeline.timeScale(3).reverse();
-  }, [hoveredReason]);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -135,19 +121,12 @@ export default function WhyInvest() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="why-invest" data-hovering={hoveredReason !== null} id="why-invest" aria-labelledby="why-invest-title">
+    <section ref={sectionRef} className="why-invest" id="why-invest" aria-labelledby="why-invest-title">
       <div className="why-invest__watermark why-invest__watermark--top-left" aria-hidden="true">
         <FooterMark monochrome />
       </div>
       <div className="why-invest__watermark why-invest__watermark--bottom-right" aria-hidden="true">
         <FooterMark monochrome />
-      </div>
-      <div className="why-invest__icon-stage" aria-hidden="true">
-        {hoveredReason !== null && (
-          <span className="why-invest__active-icon" key={hoveredReason}>
-            <InvestmentIcon index={hoveredReason} />
-          </span>
-        )}
       </div>
       <div className="why-invest__inner">
         <header className="why-invest__header">
