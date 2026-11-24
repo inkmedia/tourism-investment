@@ -17,7 +17,7 @@ const advantages: [string, string, string][] = [
   ["National commitment", "High-level national commitment", "A national priority with coordinated government support across planning, approvals, and implementation."],
   ["Quality of life", "Talent, wellness & quality of life", "Bhutan’s wellness, nature and cultural assets attract talent, residents, and long-stay visitors."],
 ];
-const tenure = [["Residential", "99 years"], ["Hotel & Retail", "60 - 90 years leasehold"], ["Ultra High-End Integrated", "99 years"], ["Commercial Office", "60 years"], ["Industrial", "30 + 30 years"], ["Agricultural", "30 + 30 years"]];
+const tenure = [["Residential", "99 years"], ["Hotel & Retail", "60 years"], ["Commercial Office", "60 years"], ["Industrial", "30 years"]];
 
 export default function Advantages() {
   const advantagesSection = useRef<HTMLElement>(null);
@@ -127,7 +127,7 @@ export default function Advantages() {
           <div className="investor-framework__grid">
             <article><h3>Tax competitiveness</h3><dl className="investor-framework__tax">{[["Corporate tax", 15], ["Dividends", 0], ["Interest", 10], ["Royalties", 5]].map(([label, value]) => <div key={label}><dt>{label}</dt><dd aria-label={`${value}%`}><span aria-hidden="true" data-ticker={value}>{value}%</span></dd></div>)}</dl></article>
             <article><h3>Banking &amp; capital flows</h3><h4>DK Bank — Fully Digital</h4><p>GMC-incorporated companies access BTN and USD corporate accounts. Individual employee accounts available from day one.</p><hr /><h4>No FX Controls</h4><p>No foreign exchange controls other than for ngultrum. Dual-currency accounts support efficient capital repatriation.</p></article>
-            <article><h3>Land tenure</h3><dl className="investor-framework__tenure">{tenure.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl><p className="investor-framework__note">Each assessed on a case-by-case basis.</p></article>
+            <article><h3>Land tenure</h3><dl className="investor-framework__tenure">{tenure.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl><p className="investor-framework__note">Each proposal is assessed on a case-by-case basis. Longer tenures may be approved as the stated lease term plus an additional period. The lease rate applies to the initial term; rates and terms for the additional period will be renegotiated.</p></article>
           </div>
           <div className="investor-framework__path"><h3>GMCA investor facilitation — a single end-to-end pathway</h3><ol>{["Proposal review", "Land identification", "Incorporation", "Approvals", "Ongoing operational support"].map((step, index) => <li key={step}><small>{String(index + 1).padStart(2, "0")}</small><span>{step}</span>{index < 4 && <ArrowRight aria-hidden="true" size={15} />}</li>)}</ol></div>
           <p className="investor-framework__note">Tax rates and tenure terms are indicative and subject to confirmation by the GMC Authority.</p>
