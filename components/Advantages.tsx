@@ -21,7 +21,6 @@ const tenure = [["Residential", "99 years"], ["Hotel & Retail", "60 years"], ["C
 
 export default function Advantages() {
   const advantagesSection = useRef<HTMLElement>(null);
-  const framework = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
     const section = advantagesSection.current!;
@@ -57,6 +56,25 @@ export default function Advantages() {
     return () => media.revert();
   }, []);
 
+  return (
+    <section
+      ref={advantagesSection}
+      className="advantages advantages--mosaic"
+      aria-labelledby="advantages-title"
+    >
+      <div className="advantages__watermark advantages__watermark--top-right" aria-hidden="true"><FooterMark monochrome /></div>
+      <div className="advantages__watermark advantages__watermark--bottom-left" aria-hidden="true"><FooterMark monochrome /></div>
+      <div className="advantages__inner">
+        <header className="advantages__header"><div><p className="advantages__eyebrow">Why GMC stands apart</p><h2 id="advantages-title">The advantages of investing in GMC</h2></div><p>Explore the city’s approach to business, governance and development.</p></header>
+        <AdvantagesMosaic items={advantages} />
+        <footer className="advantages__footer"><p>Select an advantage to read more.</p></footer>
+      </div>
+    </section>
+  );
+}
+
+export function InvestorFramework() {
+  const framework = useRef<HTMLElement>(null);
   useLayoutEffect(() => {
     const section = framework.current!;
     const media = gsap.matchMedia();
@@ -107,32 +125,29 @@ export default function Advantages() {
     return () => media.revert();
   }, []);
   return (
-    <>
-    <section
-      ref={advantagesSection}
-      className="advantages advantages--mosaic"
-      aria-labelledby="advantages-title"
-    >
-      <div className="advantages__watermark advantages__watermark--top-right" aria-hidden="true"><FooterMark monochrome /></div>
-      <div className="advantages__watermark advantages__watermark--bottom-left" aria-hidden="true"><FooterMark monochrome /></div>
-      <div className="advantages__inner">
-        <header className="advantages__header"><div><p className="advantages__eyebrow">Why GMC stands apart</p><h2 id="advantages-title">The advantages of investing in GMC</h2></div><p>Explore the city’s approach to business, governance and development.</p></header>
-        <AdvantagesMosaic items={advantages} />
-        <footer className="advantages__footer"><p>Select an advantage to read more.</p></footer>
-      </div>
-    </section>
     <section ref={framework} id="investor-framework" className="investor-framework" aria-labelledby="investor-framework-title">
       <div className="investor-framework__inner">
         <header className="investor-framework__header"><div><p className="advantages__eyebrow">The investor framework</p><h2 id="investor-framework-title">Clarity. Confidence. Opportunity.</h2></div></header>
           <div className="investor-framework__grid">
             <article><h3>Tax competitiveness</h3><dl className="investor-framework__tax">{[["Corporate tax", 15], ["Dividends", 0], ["Interest", 10], ["Royalties", 5]].map(([label, value]) => <div key={label}><dt>{label}</dt><dd aria-label={`${value}%`}><span aria-hidden="true" data-ticker={value}>{value}%</span></dd></div>)}</dl></article>
             <article><h3>Banking &amp; capital flows</h3><h4>DK Bank — Fully Digital</h4><p>GMC-incorporated companies access BTN and USD corporate accounts. Individual employee accounts available from day one.</p><hr /><h4>No FX Controls</h4><p>No foreign exchange controls other than for ngultrum. Dual-currency accounts support efficient capital repatriation.</p></article>
-            <article><h3>Land tenure</h3><dl className="investor-framework__tenure">{tenure.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl><p className="investor-framework__note">Each proposal is assessed on a case-by-case basis. Longer tenures may be approved as the stated lease term plus an additional period. The lease rate applies to the initial term; rates and terms for the additional period will be renegotiated.</p></article>
+            <article><h3>Land tenure</h3><dl className="investor-framework__tenure">{tenure.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl><p className="investor-framework__note">Requests for longer lease terms are assessed individually. Where an extension is approved, the standard lease term applies first. The lease rate and terms for the additional period are renegotiated at the end of the initial term.</p></article>
           </div>
           <div className="investor-framework__path"><h3>GMCA investor facilitation — a single end-to-end pathway</h3><ol>{["Proposal review", "Land identification", "Incorporation", "Approvals", "Ongoing operational support"].map((step, index) => <li key={step}><small>{String(index + 1).padStart(2, "0")}</small><span>{step}</span>{index < 4 && <ArrowRight aria-hidden="true" size={15} />}</li>)}</ol></div>
           <p className="investor-framework__note">Tax rates and tenure terms are indicative and subject to confirmation by the GMC Authority.</p>
         </div>
     </section>
-    </>
+  );
+}
+
+export function AdvantagesSummary() {
+  return (
+    <section className="benefits-summary" aria-labelledby="benefits-summary-title">
+      <div className="benefits-summary__inner">
+        <p className="advantages__eyebrow">The investment case at a glance</p>
+        <h2 id="benefits-summary-title">GMC’s advantages, in summary</h2>
+        <ul>{advantages.map(([label, title]) => <li key={label}>{title}</li>)}</ul>
+      </div>
+    </section>
   );
 }

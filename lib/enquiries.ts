@@ -1,4 +1,4 @@
-import { opportunities } from "../components/investmentData";
+import { enquiryOpportunities } from "../components/investmentData";
 import { TOURISM_EMAIL } from "./contact";
 
 const fields = {
@@ -56,7 +56,7 @@ export async function handleEnquiry(request: Request, delivery: EnquiryDelivery 
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) return respond(400, "Please enter a valid email address.");
   if (values.source === "Other" && !values.sourceOther) return respond(400, "Please specify how you heard about us.");
-  const opportunity = opportunities.find((item) => String(item.id) === values.opportunityId);
+  const opportunity = enquiryOpportunities.find((item) => String(item.id) === values.opportunityId);
   if (values.opportunityId && !opportunity) return respond(400, "Please select a valid investment opportunity.");
   if (!delivery) return respond(503, `Online submission is not available yet. Your enquiry has not been sent. Please email ${TOURISM_EMAIL}; your entries are still here.`);
 

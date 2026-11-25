@@ -15,11 +15,12 @@ export default function SiteContext() {
         <header className="site-context__header">
           <div>
             <p className="site-context__eyebrow">Site context</p>
-            <h2 id="site-context-title">The development landscape</h2>
+            <h2 id="site-context-title">GMC within Bhutan</h2>
           </div>
           <p className="site-context__note">
-            Infrastructure, connectivity and urban ecosystem · For reference
-            purposes only. Not to scale.
+            GMC lies in southern Bhutan, on the border with India. The gold
+            outline highlights its location and extent within the country.
+            Map for geographic context, not for land or distance measurement.
           </p>
         </header>
       </div>

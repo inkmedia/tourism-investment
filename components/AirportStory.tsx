@@ -10,7 +10,6 @@ export default function AirportStory() {
   const imageRef = useRef<HTMLDivElement>(null);
   const transferRef = useRef<HTMLDivElement>(null);
   const passengersRef = useRef<HTMLElement>(null);
-  const growthRef = useRef<HTMLElement>(null);
   const startCountersRef = useRef<() => void>(() => {});
 
   useLayoutEffect(() => {
@@ -125,14 +124,12 @@ export default function AirportStory() {
   useEffect(() => {
     const hero = imageRef.current!;
     const passengers = passengersRef.current!;
-    const growth = growthRef.current!;
     const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
     let frame = 0;
     let started = false;
     const render = (progress: number) => {
       const eased = 1 - Math.pow(1 - progress, 4);
       passengers.textContent = `${(3.1 * eased).toFixed(1)}M`;
-      growth.textContent = `${Math.round(16 * eased)}%`;
     };
     const start = () => {
       if (started) return;
@@ -221,17 +218,19 @@ export default function AirportStory() {
               </div>
               <dl className="airport-story__stats">
                 <div>
-                  <dt>Passengers by 2044</dt>
-                  <dd ref={passengersRef}>0.0M</dd>
-                </div>
-                <div>
-                  <dt>Projected CAGR 2030–2044</dt>
-                  <dd ref={growthRef}>0%</dd>
+                  <dt>Planned airport capacity · passengers</dt>
+                  <dd ref={passengersRef}>3.1M</dd>
                 </div>
               </dl>
             </div>
           </div>
         </div>
+      </div>
+      <div className="airport-story__forecast">
+        <p className="airport-story__eyebrow">Passenger traffic forecast</p>
+        <p>Gelephu International Airport is projected to handle 1.3 million passengers annually by 2040, rising to 5.5 million by 2065.</p>
+        <p className="airport-story__forecast-source">Source: <a href="https://big.dk/projects/gelephu-international-airport-20769">BIG — Gelephu International Airport</a>.</p>
+        <p className="airport-story__forecast-source">The 3.1 million figure above refers to planned airport capacity, separately from forecast traffic. Its applicable period and development phase are awaiting confirmation.</p>
       </div>
       <div className="airport-story__details">
         <article>
@@ -266,7 +265,6 @@ export default function AirportStory() {
         </article>
       </div>
       <p className="airport-story__note">
-        Traffic forecasts benchmarked against comparable regional airports.
         Railway timeline subject to Government of India approvals.
       </p>
     </section>

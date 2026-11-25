@@ -72,7 +72,7 @@ export const opportunities = [
     ? `/img/opportunities/${opportunityImages[String(title)]}`
     : `/cards/${images[index % images.length]}`,
   description: "",
-}));
+})).filter((item) => !["Alpine Coaster", "Water Park"].includes(item.title));
 
 export const opportunityDetails = [
   {
@@ -119,4 +119,10 @@ export const opportunityDetails = [
       "High RevPAR potential in an undersupplied segment",
     ],
   },
+];
+
+// Partnership projects can be selected in enquiries without adding catalogue cards.
+export const enquiryOpportunities = [
+  ...opportunities.map(({ id, title }) => ({ id: String(id), title })),
+  { id: "tenda-scda", title: "Tenda by SCDA" },
 ];

@@ -75,7 +75,7 @@ function BookCard({ item, index }: { item: (typeof opportunities)[number]; index
         >
           <dl>
             <div>
-              <dt>Indicative investment</dt>
+              <dt>Indicative estimate</dt>
               <dd>{item.investment}</dd>
             </div>
             {details && (

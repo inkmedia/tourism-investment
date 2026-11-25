@@ -625,7 +625,7 @@ export default function BhutanInteractiveMap() {
                 };
                 let lastRevealed = "";
                 const captions = [
-                  "GMC boundaries",
+                  "GMC — its extent in southern Bhutan",
                   "The Mindfulness Trail",
                   "Protected forests",
                   "Ecological corridors",
@@ -851,7 +851,7 @@ export default function BhutanInteractiveMap() {
           />
           <div ref={cloudRef} className="bhutan-map__clouds" aria-hidden="true" />
           <div className="bhutan-map__caption">
-            <span>Kingdom of Bhutan</span>
+            <span>Kingdom of Bhutan · GMC outlined in gold</span>
             <span ref={captionRef}>Discover the landscape through scrolling</span>
           </div>
           <div className="bhutan-map__progress" aria-hidden="true">
@@ -877,7 +877,7 @@ export default function BhutanInteractiveMap() {
               onClick={() => apiRef.current?.overview()}
               aria-label="Restore the overview of Bhutan"
             >
-              Overview
+              All Bhutan
             </button>
             <label>
               Focus on a place

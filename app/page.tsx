@@ -19,7 +19,8 @@ import LatestUpdates from "@/components/LatestUpdates";
 import SiteContext from "@/components/SiteContext";
 import WhyInvestNow from "@/components/WhyInvestNow";
 import AirportStory from "@/components/AirportStory";
-import Advantages from "@/components/Advantages";
+import Advantages, { AdvantagesSummary, InvestorFramework } from "@/components/Advantages";
+import AboutGMC from "@/components/AboutGMC";
 import { ArrowRight, FileText, Plane, UsersRound, Landmark } from "lucide-react";
 
 const heading = ["A new destination.", "A rare hospitality", "opportunity."];
@@ -133,7 +134,7 @@ export default async function Home() {
             </div>
             <div className="hero__stat">
               <UsersRound className="hero__stat-icon" strokeWidth={1.4} aria-hidden="true" />
-              <dt>Passengers a year by 2044</dt>
+              <dt>Planned airport capacity</dt>
               <dd>3.1M</dd>
             </div>
             <div className="hero__stat">
@@ -150,7 +151,9 @@ export default async function Home() {
         </div>
       </section>
       <HisMajesty />
+      <AboutGMC />
       <WhyInvest />
+      <Advantages />
       <Opportunities />
       <OpportunityGallery />
       <OpportunitySpotlight />
@@ -160,7 +163,8 @@ export default async function Home() {
       <SiteContext />
       <WhyInvestNow />
       <AirportStory />
-      <Advantages />
+      <AdvantagesSummary />
+      <InvestorFramework />
       <InvestmentJourney />
       <LatestUpdates />
       <InvestorEnquiries />

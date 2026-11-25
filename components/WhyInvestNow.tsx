@@ -111,11 +111,35 @@ export default function WhyInvestNow() {
             <h2 id="invest-now-title">Why invest now?</h2>
           </div>
           <p className="invest-now__intro">
-            Gelephu Mindfulness City is entering a critical pre-growth phase.
-            The investors who move now secure positioning, terms and sites that
-            will not be available once the destination matures.
+            Gelephu Mindfulness City brings together proximity to key markets,
+            a long-term Royal vision and a distinct governance framework.
+            Early engagement gives tourism investors an opportunity to shape
+            the destination as its infrastructure develops.
           </p>
         </header>
+        <div className="invest-now__case">
+          <article>
+            <h3>Close to markets with growth potential</h3>
+            <p>On Bhutan’s border with India, GMC is positioned close to key
+              regional markets. The growth potential of India and South Asia
+              creates opportunities to serve visitors seeking wellness, leisure,
+              culture and business travel.</p>
+          </article>
+          <article>
+            <h3>A framework for long-term confidence</h3>
+            <p>Established by Royal Charter, GMC’s own executive and legislative
+              powers and independent judiciary provide a governance framework
+              designed to support stable, consistent policies and long-term
+              investment planning.</p>
+          </article>
+          <article>
+            <h3>Guided by His Majesty’s leadership</h3>
+            <p>His Majesty’s leadership gives GMC a clear long-term direction:
+              sustainable economic growth rooted in Bhutanese values. Tourism
+              investors can help translate that vision into a destination built
+              around mindfulness, nature and wellbeing.</p>
+          </article>
+        </div>
         <div className="invest-now__grid">
           {milestones.map((milestone, index) => (
             <article

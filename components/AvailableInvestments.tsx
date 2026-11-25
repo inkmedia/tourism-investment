@@ -139,7 +139,7 @@ function InvestmentCard({
             <h3><FitText singleLine>{item.title}</FitText></h3>
             <div className="available-card__bottom">
               <div>
-                <span className="available-card__label">Investment</span>
+                <span className="available-card__label">Indicative estimate</span>
                 <p>{item.investment}</p>
               </div>
               <span className="available-card__explore" aria-hidden="true">
@@ -196,7 +196,7 @@ function InvestmentCard({
                     <dd>{details.timeline}</dd>
                   </div>
                   <div>
-                    <dt>Investment</dt>
+                    <dt>Indicative estimate</dt>
                     <dd>{item.investment}</dd>
                   </div>
                 </dl>
@@ -229,7 +229,7 @@ function InvestmentCard({
                 </div>
                 <div className="available-card__back-investment">
                   <span className="available-card__label">
-                    Indicative investment
+                    Indicative estimate
                   </span>
                   <p>{item.investment}</p>
                 </div>
@@ -317,12 +317,13 @@ export default function AvailableInvestments() {
               opportunities
             </h2>
             <p className="available-investments__intro">
-              We welcome local and international investors to explore the following
-              projects for development in Gelephu Mindfulness City.
+              We welcome investor partners and enquiries from both Bhutanese and
+              foreign investors. These illustrative opportunities are a starting
+              point for discussion. Investors are welcome to propose their own concepts.
             </p>
           </div>
           <p className="available-investments__disclaimer">
-            All figures are indicative only and subject to change. IRR targets
+            Projected investment costs are indicative estimates and subject to change. IRR targets
             are unaudited projections and do not constitute a guarantee of
             returns. Click any card to discover more.
           </p>

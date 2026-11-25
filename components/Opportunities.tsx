@@ -66,6 +66,7 @@ export default function Opportunities() {
           <header className="tourism-areas__header">
             <p className="how-to-invest__eyebrow">Tourism opportunity areas</p>
             <h2 id="tourism-areas-title">We welcome investment partners in the following areas:</h2>
+            <p className="tourism-areas__intro">We welcome investor partners and enquiries from both Bhutanese and foreign investors. These illustrative examples are a starting point for conversation, and we welcome proposals for your own tourism concepts.</p>
           </header>
           <div className="tourism-areas__list" role="group" aria-label="Choose a tourism opportunity area">
             {areas.map((area, index) => (

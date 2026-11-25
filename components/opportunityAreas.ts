@@ -39,6 +39,6 @@ export const areas = [
     title: "Retail, F&B & Lifestyle",
     image: "/img/img/41.jpg",
     alt: "Lively shopping street framed by Bhutanese architecture",
-    description: "Food halls, dessert streets, cafés, restaurants, lifestyle retail, pop-up markets, craft stalls, wellness products, and small business opportunities linked to visitor spending.",
+    description: "Restaurants and cafés, food halls, dessert streets, lifestyle retail, pop-up markets, craft stalls, wellness products, and small business opportunities linked to visitor spending.",
   },
 ];

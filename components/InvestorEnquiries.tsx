@@ -20,7 +20,7 @@ import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
 import EnquiryBackdrop from "./EnquiryBackdrop";
 import PrivacyPolicyLink from "./PrivacyPolicyLink";
 import { TOURISM_EMAIL } from "@/lib/contact";
-import { opportunities } from "./investmentData";
+import { enquiryOpportunities } from "./investmentData";
 
 type FieldProps = {
   label: string;
@@ -55,7 +55,7 @@ export default function InvestorEnquiries() {
     const selectOpportunity = (event: MouseEvent) => {
       if (sending.current) return;
       const link = (event.target as Element).closest<HTMLAnchorElement>("a[data-investment-opportunity]");
-      if (!link || !opportunities.some((item) => String(item.id) === link.dataset.investmentOpportunity)) return;
+      if (!link || !enquiryOpportunities.some((item) => String(item.id) === link.dataset.investmentOpportunity)) return;
       setOpportunityId(link.dataset.investmentOpportunity!);
       setStatus("idle");
       setFeedback("");
@@ -127,9 +127,10 @@ export default function InvestorEnquiries() {
           <p className="enquiries__eyebrow">Investor enquiries</p>
           <h2 id="enquiries-title">Discuss your investment plans</h2>
           <p className="enquiries__lead">
-            We are seeking investors, developers and operators with
-            the ambition to create the next generation of tourism and
-            hospitality in Gelephu Mindfulness City.
+            We welcome investor partners and enquiries from both Bhutanese and
+            foreign investors, including developers and operators with the
+            ambition to create the next generation of tourism and hospitality
+            in Gelephu Mindfulness City.
           </p>
           <p className="enquiries__contact">Email our tourism team: <a href={`mailto:${TOURISM_EMAIL}`}>{TOURISM_EMAIL}</a></p>
           <div className="enquiries__divider" />
@@ -147,6 +148,7 @@ export default function InvestorEnquiries() {
         <form className="enquiries__form" onSubmit={submit} aria-label="Investor enquiry" aria-busy={status === "sending"}>
           <fieldset className="enquiries__submission" disabled={status === "sending" || status === "success"}>
           <input type="hidden" name="opportunityId" value={opportunityId} />
+          {opportunityId && <p className="enquiries__selected-project" role="status">Enquiring about: <strong>{enquiryOpportunities.find((item) => item.id === opportunityId)?.title}</strong> <button type="button" onClick={() => setOpportunityId("")}>Clear</button></p>}
           <h3 className="enquiries__step-heading" ref={stepHeading} tabIndex={-1}>
             <span>0{step} / 02</span> {step === 1 ? "Your details" : "Your investment vision"}
           </h3>

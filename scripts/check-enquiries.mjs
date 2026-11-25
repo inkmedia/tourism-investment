@@ -61,6 +61,11 @@ for (const sender of [async () => {throw Error('provider failed');}, async () =>
   assert.equal((await result.json()).accepted,undefined);
 }
 assert.equal(sent.length,2, 'Invalid requests must never reach delivery');
+result = await handleEnquiry(request({ ...sample, opportunityId: 'tenda-scda' }), delivery);
+assert.equal(result.status, 200);
+assert.ok(sent[2].subject.includes('Tenda by SCDA'));
+assert.ok(sent[2].text.includes('Opportunity reference: tenda-scda'));
+assert.ok(!catalogue.opportunities.some((item) => item.title === 'Tenda by SCDA'), 'Partnership projects must not create catalogue cards');
 const hostinger = compile('lib/hostinger-mail.ts');
 const { createHostingerDelivery, TEST_ENQUIRY_RECIPIENT } = hostinger;
 assert.equal(TEST_ENQUIRY_RECIPIENT, 'ghevaram.suthar@inkmeda.in');
