@@ -12,7 +12,7 @@
   --gold-light: #e0b713;
   --font-heading: "Lora", "Times New Roman", serif;
   --font-body: "Roboto", Arial, sans-serif;
-  /* Page 30 brand scale, adapted for responsive web reading. */
+
   --type-display: clamp(30px, 4vw, 35px);
   --type-section: clamp(28px, 3.75vw, 35px);
   --type-subheading: clamp(22px, 2vw, 28px);
@@ -2199,8 +2199,8 @@ button {
   }
   .how-to-invest__card p {
     font-size: var(--type-body);
-  font-weight: 300;
-}
+    font-weight: 300;
+  }
   .how-to-invest__footer {
     flex-direction: column;
     align-items: flex-start;
@@ -2643,8 +2643,8 @@ button {
   }
   .investment-card h3 {
     font-size: var(--type-subheading);
-  font-family: var(--font-heading);
-}
+    font-family: var(--font-heading);
+  }
   .site-header {
     min-height: 78px;
     padding: 12px 22px;
@@ -2721,8 +2721,8 @@ button {
     max-width: 570px;
     font-size: var(--type-body);
     line-height: 1.5;
-  font-weight: 300;
-}
+    font-weight: 300;
+  }
   .hero__actions {
     margin-top: 23px;
   }
@@ -2791,12 +2791,12 @@ button {
   }
   .investment-card h3 {
     font-size: var(--type-subheading);
-  font-family: var(--font-heading);
-}
+    font-family: var(--font-heading);
+  }
   .investment-card h3 {
     font-size: var(--type-subheading);
-  font-family: var(--font-heading);
-}
+    font-family: var(--font-heading);
+  }
   .brand img {
     width: 46px;
     height: 46px;
@@ -2815,8 +2815,8 @@ button {
     margin-bottom: 14px;
     font-size: var(--type-label);
     letter-spacing: 0.18em;
-  font-weight: 300;
-}
+    font-weight: 300;
+  }
   .hero__title {
     font-size: var(--type-display);
     line-height: 1.04;
@@ -2825,8 +2825,8 @@ button {
     margin-top: 15px;
     font-size: var(--type-body);
     line-height: 1.48;
-  font-weight: 300;
-}
+    font-weight: 300;
+  }
   .hero__actions {
     gap: 9px;
     margin-top: 20px;
@@ -2854,8 +2854,8 @@ button {
   }
   .enquiries__lead {
     font-size: var(--type-body);
-  font-weight: 300;
-}
+    font-weight: 300;
+  }
   .enquiries__divider {
     margin: 36px 0 24px;
   }
@@ -2911,8 +2911,8 @@ button {
   .site-footer__intro p {
     margin-top: 20px;
     font-size: var(--type-body);
-  font-weight: 300;
-}
+    font-weight: 300;
+  }
   .site-footer__column h2 {
     margin-bottom: 20px;
   }
@@ -3761,8 +3761,8 @@ button {
   }
   .available-card h3 {
     font-size: var(--type-subheading);
-  font-family: var(--font-heading);
-}
+    font-family: var(--font-heading);
+  }
 }
 @media (max-width: 700px) {
   .available-investments {
@@ -3964,8 +3964,8 @@ button {
   }
   .available-card h3 {
     font-size: var(--type-subheading);
-  font-family: var(--font-heading);
-}
+    font-family: var(--font-heading);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .available-card,
@@ -4621,8 +4621,8 @@ button {
   .opportunity-book__cover-copy h3 {
     font-size: var(--type-subheading);
     white-space: normal;
-  font-family: var(--font-heading);
-}
+    font-family: var(--font-heading);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .opportunity-book__cover,
@@ -4780,8 +4780,8 @@ section[id] {
   .hero__description {
     font-size: var(--type-body);
     line-height: 1.65;
-  font-weight: 300;
-}
+    font-weight: 300;
+  }
   .advantages-dialog__header {
     gap: 12px;
   }
@@ -4790,8 +4790,8 @@ section[id] {
   }
   .opportunity-book__cover-copy h3 {
     font-size: var(--type-subheading);
-  font-family: var(--font-heading);
-}
+    font-family: var(--font-heading);
+  }
   .opportunity-book__page {
     padding: 24px 18px 24px 32px;
   }
@@ -5368,8 +5368,8 @@ section[id] {
   .investment-journey__stage p {
     font-size: var(--type-body);
     max-width: 440px;
-  font-weight: 300;
-}
+    font-weight: 300;
+  }
   .investment-journey__footer {
     margin-top: 0;
   }
@@ -5419,7 +5419,10 @@ section[id] {
 .bhutan-map-stage {
   position: relative;
   width: 100%;
-  height: min(51.0204vw, calc(100svh - 84px - var(--map-controls-height) - 24px));
+  height: min(
+    51.0204vw,
+    calc(100svh - 84px - var(--map-controls-height) - 24px)
+  );
   overflow: hidden;
   border-radius: 0;
   background: #202522;
@@ -5649,7 +5652,10 @@ section[id] {
 }
 @media (max-width: 700px) {
   .bhutan-map-stage {
-    height: min(87.7193vw, calc(100svh - 84px - var(--map-controls-height) - 24px));
+    height: min(
+      87.7193vw,
+      calc(100svh - 84px - var(--map-controls-height) - 24px)
+    );
   }
   .bhutan-map__caption {
     top: 16px;
