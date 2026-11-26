@@ -2,6 +2,7 @@
 
 import { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import AlignmentDetail from "./AlignmentDetail";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   MAP_SELECTORS as S,
@@ -68,6 +69,7 @@ function orderTrail(paths: SVGPathElement[]) {
 }
 
 export default function BhutanInteractiveMap() {
+  const alignmentCalloutRef = useRef<HTMLButtonElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const artworkRef = useRef<HTMLDivElement>(null);
   const cameraRef = useRef<HTMLDivElement>(null);
@@ -77,6 +79,7 @@ export default function BhutanInteractiveMap() {
   const captionRef = useRef<HTMLSpanElement>(null);
   const progressRef = useRef<HTMLSpanElement>(null);
   const apiRef = useRef<MapApi | null>(null);
+  const [alignmentDetail, setAlignmentDetail] = useState(false);
   const [ready, setReady] = useState(false);
   const [loadFailed, setLoadFailed] = useState(false);
   const [explore, setExplore] = useState(false);
@@ -128,10 +131,15 @@ export default function BhutanInteractiveMap() {
                 .catch(() => null);
           const image = new Image();
           image.src = "/img/bhutan-satellite.webp";
-          const [markup, , preparedClouds] = await Promise.all([
+          const [markup, alignmentMarkup, , preparedClouds] = await Promise.all([
             fetch("/img/bhutan-map-production.svg", { signal: abort.signal })
               .then((response) => {
                 if (!response.ok) throw new Error("Map unavailable");
+                return response.text();
+              }),
+            fetch("/img/108-alignment.svg", { signal: abort.signal })
+              .then((response) => {
+                if (!response.ok) throw new Error("Alignment unavailable");
                 return response.text();
               }),
             image.decode(),
@@ -141,12 +149,16 @@ export default function BhutanInteractiveMap() {
           // This markup is a trusted local production asset, never user/remote HTML.
           camera.innerHTML = markup;
           const svg = camera.querySelector<SVGSVGElement>("svg")!;
+          const alignmentDocument = new DOMParser().parseFromString(alignmentMarkup, "image/svg+xml");
+          const alignment = alignmentDocument.querySelector(S.alignment108);
+          if (!alignment) throw new Error("Invalid alignment asset");
+          svg.querySelector(S.cities)!.before(document.importNode(alignment, true));
           // The accessible label below replaces the asset title and its native hover tooltip.
           svg.querySelectorAll("title").forEach((title) => title.remove());
           svg.setAttribute("role", "group");
           svg.setAttribute(
             "aria-label",
-            "Bhutan: satellite terrain, natural systems, GMC boundary, Mindfulness Trail and settlements. Use the controls below to explore.",
+            "Bhutan: satellite terrain, natural systems, GMC boundary, Mindfulness Trail, 108 Alignment (approximate placement) and settlements. Use the controls below to explore.",
           );
           svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
           svg
@@ -191,9 +203,21 @@ export default function BhutanInteractiveMap() {
               `${original.x} ${original.y} ${original.width} ${original.height}`,
             );
           setProjection();
+          const alignmentBox = (q(S.alignment108) as SVGGraphicsElement).getBBox();
+          const alignmentAnchor = { x: alignmentBox.x + alignmentBox.width / 2, y: alignmentBox.y + alignmentBox.height / 2 };
           let lastCameraTransform = "";
           const writeView = () => {
             if (disposed) return;
+            const callout = alignmentCalloutRef.current;
+            if (callout) {
+              const px = (alignmentAnchor.x - view.x) / view.width * stage.clientWidth;
+              const py = (alignmentAnchor.y - view.y) / view.height * stage.clientHeight;
+              callout.style.left = `${Math.max(8, Math.min(stage.clientWidth - 184, px + 12))}px`;
+              callout.style.top = `${Math.max(65, Math.min(stage.clientHeight - 52, py - 22))}px`;
+              const visible = stage.dataset.focused === "true" && original.width / view.width > 1.1 && px >= 0 && px <= stage.clientWidth && py >= 0 && py <= stage.clientHeight;
+              callout.dataset.visible = String(visible);
+              callout.inert = !visible;
+            }
             const { x, y, scale } = mapCameraTransform(original, view);
             const transform = `translate(${x.toFixed(5)}%, ${y.toFixed(5)}%) scale(${scale.toFixed(6)})`;
             if (transform === lastCameraTransform) return;
@@ -381,6 +405,7 @@ export default function BhutanInteractiveMap() {
             gmcBoundary: "gmc-boundary",
             airports: "airports",
             trail: "mindfulness-trail",
+            alignment108: "108-alignment",
             sites: "religious-sites",
           };
           MAP_LAYERS.forEach(({ key }) => {
@@ -737,6 +762,7 @@ export default function BhutanInteractiveMap() {
                     { opacity: 1, duration: 0.01 },
                     T.trail,
                   );
+                timeline.to(storyLayers.get("alignment108")!, { opacity: 1, duration: .06 }, T.alignment108);
                 layerMotion.reveal(timeline, storyLayers, T);
                 const total = trail.reduce(
                   (sum, segment) => sum + segment.length,
@@ -854,6 +880,10 @@ export default function BhutanInteractiveMap() {
             <span>Kingdom of Bhutan · GMC outlined in gold</span>
             <span ref={captionRef}>Discover the landscape through scrolling</span>
           </div>
+          <button ref={alignmentCalloutRef} className="bhutan-map__alignment-callout"
+            hidden={!explore || hiddenLayers.includes("alignment108")}
+            onClick={() => setAlignmentDetail(true)}>View 108 Alignment <span aria-hidden="true">↗</span></button>
+          {alignmentDetail && <AlignmentDetail onClose={() => setAlignmentDetail(false)} />}
           <div className="bhutan-map__progress" aria-hidden="true">
             <span ref={progressRef} />
           </div>
@@ -898,6 +928,7 @@ export default function BhutanInteractiveMap() {
                 ))}
               </select>
             </label>
+            <button className="bhutan-map__alignment-zoom" disabled={!explore} onClick={() => setAlignmentDetail(true)}>Zoom to 108 Alignment</button>
             <span className="bhutan-map__status" role="status">
               {explore
                   ? "Select a place or a layer to explore"

@@ -32,7 +32,7 @@ const milestones = [
     timing: "2029",
     image: "/img/why-invest-now/Bhutan Airport with Timber Lattice.webp",
     description:
-      "Direct international access expected to transform connectivity and unlock significant growth in tourism and business travel.",
+      "International flights already connect Gelephu and Kolkata (Calcutta). The new airport development targets December 2029, expanding capacity for tourism and business travel.",
   },
   {
     title: "Tourism Infrastructure",

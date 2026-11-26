@@ -7,8 +7,6 @@ import HisMajesty from "@/components/HisMajesty";
 import Footer from "@/components/Footer";
 import WhyInvest from "@/components/WhyInvest";
 import Opportunities from "@/components/Opportunities";
-import OpportunityGallery from "@/components/OpportunityGallery";
-import OpportunitySpotlight from "@/components/OpportunitySpotlight";
 import InvestorEnquiries from "@/components/InvestorEnquiries";
 import InvestmentFAQ from "@/components/InvestmentFAQ";
 import InvestmentJourney from "@/components/InvestmentJourney";
@@ -129,7 +127,7 @@ export default async function Home() {
           <dl className="hero__stats" aria-label="Investment highlights">
             <div className="hero__stat">
               <Plane className="hero__stat-icon" strokeWidth={1.4} aria-hidden="true" />
-              <dt>International airport opens</dt>
+              <dt>New airport development target</dt>
               <dd>December 2029</dd>
             </div>
             <div className="hero__stat">
@@ -155,8 +153,6 @@ export default async function Home() {
       <WhyInvest />
       <Advantages />
       <Opportunities />
-      <OpportunityGallery />
-      <OpportunitySpotlight />
       <AvailableInvestments />
       <PartnersCTA />
       <PlannedAttractions />

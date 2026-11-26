@@ -1,0 +1,32 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+import ts from 'typescript';
+const context={exports:{}};
+vm.runInNewContext(ts.transpileModule(fs.readFileSync('components/bhutan-map/alignmentGestures.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText,context);
+const {anchoredZoom,attachAlignmentGestures}=context.exports;
+const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-7,`${a} != ${b}`);
+for (const factor of [.01,.5,2,100]) {
+ const view={zoom:4,x:500,y:800,unit:3}, p={x:90,y:-60}, q={x:110,y:-40};
+ const next=anchoredZoom(view,p,q,factor);
+ near(view.x+p.x*view.unit,next.x+q.x*next.unit);
+ near(view.y+p.y*view.unit,next.y+q.y*next.unit);
+ assert.ok(next.zoom>=1 && next.zoom<=32);
+}
+const handlers=new Map();
+const svg={clientHeight:600,getBoundingClientRect:()=>({left:0,top:0,width:400,height:600}),setPointerCapture(){},addEventListener:(name,fn,opts)=>{handlers.set(name,fn);if(name==='wheel')assert.equal(opts.passive,false);},removeEventListener:name=>handlers.delete(name)};
+let taps=0;
+let view={zoom:1,x:1000,y:1000,unit:10};
+const dispose=attachAlignmentGestures(svg,()=>view,next=>{view=next;},()=>{taps++;});
+const fire=(type,id,x,y)=>handlers.get(type)({type,pointerId:id,clientX:x,clientY:y,pointerType:'touch',button:0});
+fire('pointerdown',1,150,300);fire('pointerdown',2,250,300);
+fire('pointermove',1,100,300);fire('pointermove',2,300,300);
+near(view.zoom,2);near(view.x,1000);near(view.y,1000);
+fire('pointerup',2,300,300);const before=view.x;fire('pointermove',1,120,300);near(view.x,before-100);
+fire('pointercancel',1,120,300);const saved=view;fire('pointermove',1,200,300);assert.equal(saved,view);
+let prevented=false;handlers.get('wheel')({clientX:300,clientY:200,deltaY:-100,deltaMode:0,preventDefault(){prevented=true;}});assert.ok(prevented && view.zoom>2);
+assert.equal(taps,0,'pinch and drag must not select markers');
+fire('pointerdown',3,200,300);fire('pointerup',3,200,300);assert.equal(taps,1,'stationary pointer tap selects');
+fire('pointerdown',4,200,300);fire('pointercancel',4,200,300);assert.equal(taps,1,'cancel must not select');
+dispose();assert.equal(handlers.size,0);
+console.log('PASS: wheel anchoring, pinch centroid, limits, pinch-to-pan transition, cancellation and cleanup');

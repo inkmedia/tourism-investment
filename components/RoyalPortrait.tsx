@@ -70,7 +70,7 @@ export default function RoyalPortrait() {
     <div ref={portraitRef} className="his-majesty__portrait">
       <div className="his-majesty__image-layer">
         <Image
-          src="/img/his-majesty.webp"
+          src="/img/his-majesty.jpg"
           alt="His Majesty King Jigme Khesar Namgyel Wangchuck at Bhutan Innovation Forum 2024"
           fill
           sizes="(max-width: 760px) 100vw, (max-width: 1760px) 55vw, 940px"

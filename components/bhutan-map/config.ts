@@ -7,6 +7,7 @@ export const MAP_SELECTORS = {
   protectedForests: "#protected-forests",
   corridors: "#ecological-corridors",
   trail: "#layer-mindfulness-trail",
+  alignment108: "#layer-alignment108",
   boundary: "#layer-boundary",
   gmcBoundary: "#layer-gmc-boundary",
   sites: "#layer-religious-sites",
@@ -18,12 +19,13 @@ export const MAP_SELECTORS = {
 export const MAP_ANIMATION = {
   descent: 0, descentDuration: .08, satellite: 0, approach: .02,
   boundary: .02, forests: .40, corridors: .53, rivers: .64, gmcBoundary: .08,
-  trail: .24, trailDuration: .08, cities: .76, airports: .76, sites: .78,
+  alignment108: .34, trail: .24, trailDuration: .08, cities: .76, airports: .76, sites: .78,
   controls: .90, legend: 0, interaction: .90,
 } as const;
 
 export const MAP_LAYERS = [
   { key: "gmcBoundary", label: "GMC boundary", color: "#f4d274" },
+  { key: "alignment108", label: "108 Alignment", color: "#f59af3" },
   { key: "trail", label: "Mindfulness Trail", color: "#d2232a" },
   { key: "protectedForests", label: "Protected forest", color: "#6fa43d" },
   { key: "corridors", label: "Ecological corridor", color: "#cae897" },

@@ -188,7 +188,7 @@ export default function AirportStory() {
               <h2 id="airport-story-title">
                 Improved connectivity
                 <br />
-                <em>opening GMC to the world.</em>
+                <em>connecting GMC to the world.</em>
               </h2>
             </div>
             <p className="airport-story__chapter">
@@ -209,7 +209,7 @@ export default function AirportStory() {
             <div className="airport-story__caption">
               <div>
                 <span className="invest-now__timing">
-                  Operational by December 2029
+                  New development target: December 2029
                 </span>
                 <h3>
                   <FitText singleLine>Gelephu International Airport</FitText>
@@ -239,9 +239,9 @@ export default function AirportStory() {
             <FitText singleLine>Close to major markets</FitText>
           </h3>
           <p>
-            Gelephu’s location in southern Bhutan places it close to India and
-            within short flying distance of key markets across South and
-            Southeast Asia.
+            International flights already operate between Gelephu and Kolkata
+            (Calcutta), served by Drukair. Gelephu’s location in southern Bhutan
+            places it close to key markets across South and Southeast Asia.
           </p>
           <p>
             For tourism investors, this offers the potential to attract regional

@@ -42,3 +42,71 @@ No geographic asset was changed for this refinement.
 Run `node scripts/check-map-performance.mjs`. It verifies camera projection equivalence, baked texture dimensions, first-frame readiness, pin/refresh buffer continuity, mesh reuse on resizing, offscreen suspension, idle versus active render cadence, mobile cloud counts, and disposal. The renderer is mocked for lifecycle tests; this does not claim measured GPU FPS. Browser checks separately verify pin entry/reversal, focus and filter controls. Completed forest reveals release their SVG mask; reversing or reactivating the layer reinstates it. Hover transforms and label opacity use independent wrappers so the reversing story never competes for the same SVG properties.
 
 The supplied `boundary-002` outline is displayed as a gold GMC boundary, with a matching legend entry and independent layer toggle. Dam geometry, its legend entry and its control are removed by `prepare-bhutan-map.py`. The supplied outline was cross-checked against the [public NSDI GMC boundary dataset](https://nsdi.systems.gov.bt/portal/home/item.html?id=69bdfca3640846f0a04b5c62288fa4eb); the source artwork retains its original registration.
+
+## 108 Alignment
+
+`python3 scripts/prepare-108-alignment.py` converts `public/108 Alignment.kmz`
+into `public/img/108-alignment.svg`. The client loads this 69 KB overlay alongside
+its base SVG, reveals it after the Mindfulness Trail, and uses the shared layer
+controls for independent visibility. CAD line segments are quantized to 0.1 SVG
+unit and deduplicated; point annotations and details smaller than that are omitted.
+
+The base artwork was recovered from a PDF and has no geographic reference. The
+converter uses a local affine fit to the Gelephu, Sarpang and Trongsa city markers
+(coordinate sources are linked in the script). Placement is approximate and must
+not be used for surveying or land measurement. Accurate registration requires the
+original map CRS/extent or surveyed control points. The original KMZ is unchanged.
+
+### Detailed alignment viewer
+
+“Zoom to 108 Alignment” opens a full-screen, on-demand 2D viewer. Run
+`python3 scripts/prepare-108-detail.py` to regenerate its JSON from the KMZ.
+The detail viewer uses the source coordinates in Web Mercator (EPSG:3857), translated to a local north-up frame,
+not the approximate artwork registration. It preserves nine line colors, 875
+point annotations and all 108 numbered markers. Altitude is not rendered.
+Duplicate segments are removed and coordinates rounded to 0.01 local metre.
+The 1.9 MB detail asset is fetched only when opened. Users can fit the full
+alignment, zoom up to 32×, drag or use arrow keys to pan, choose numbered markers,
+and enable other annotations. Labels are thinned at overview scale for clarity.
+Escape or “Back to Bhutan” closes the viewer and restores keyboard focus.
+
+
+Satellite imagery is enabled by default in the detailed viewer. Esri World Imagery
+256px tiles are positioned in the same EPSG:3857 frame as the source KMZ geometry;
+the generated JSON includes the Mercator origin. Only visible tiles are requested,
+at a viewport-dependent level capped at 19. Tiles and vectors share one SVG
+viewBox, so marker focus, zoom, resize and pan preserve registration. Attribution
+links to Esri's imagery documentation. The Satellite checkbox removes imagery
+requests; failed tiles show a status message without hiding the alignment.
+An internet connection is needed for satellite imagery. Imagery dates and accuracy
+vary; this does not validate the source KMZ against surveyed ground positions.
+
+Run `node scripts/check-alignment-satellite.mjs` to verify a source KMZ marker
+against the global tile grid, viewport coverage and bounded tile counts across
+phone, landscape and desktop dimensions at fit, 2×, 16× and 32× zoom.
+
+### Gesture controls and entry callout
+
+The detail viewer supports cursor-anchored wheel zoom and midpoint-anchored
+multi-pointer pinch zoom, limited to 1–32×. Pointer capture keeps one-finger
+panning continuous when a pinch ends; cancellation and lost capture clear the
+ended pointer. The non-passive wheel listener prevents page scrolling only over
+the map canvas. `node scripts/check-alignment-gestures.mjs` verifies anchoring,
+zoom bounds, pinch-to-pan transitions, cancellation and listener cleanup using
+simulated pointer input. Browser checks cover wheel zoom and dragging; physical
+multi-touch hardware was not available.
+
+A 44px-high “View 108 Alignment” callout follows the alignment's artwork position
+and is clamped to the stage on small screens. It fades in only during a focused, zoomed view when the alignment is on-screen
+and its layer is visible; the full Bhutan overview hides it. The viewer opens with a 320ms fade/scale;
+`prefers-reduced-motion: reduce` disables that animation.
+
+
+Numbered markers accept pointer taps (nearest marker within 22 screen pixels),
+Enter or Space. Their location card shows original KMZ latitude/longitude in
+WGS84, rounded to six decimal places for display, and highlights the selection.
+The generated data retains the original unrounded coordinates. Marker selection
+also works through the dropdown. Pointer travel beyond 6px, a second pointer,
+or cancellation suppresses tap selection so panning and pinching remain usable.
+Browser checks covered desktop and phone-sized selection, keyboard activation,
+closing cards, drag suppression, and callout hiding/restoration at overview/focus.
