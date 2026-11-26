@@ -25,7 +25,7 @@ export const MAP_ANIMATION = {
 
 export const MAP_LAYERS = [
   { key: "gmcBoundary", label: "GMC boundary", color: "#f4d274" },
-  { key: "alignment108", label: "108 Alignment", color: "#f59af3" },
+  { key: "alignment108", label: "108 Alignment", color: "#ff7d45" },
   { key: "trail", label: "Mindfulness Trail", color: "#d2232a" },
   { key: "protectedForests", label: "Protected forest", color: "#6fa43d" },
   { key: "corridors", label: "Ecological corridor", color: "#cae897" },

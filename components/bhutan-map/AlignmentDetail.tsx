@@ -119,7 +119,7 @@ export default function AlignmentDetail({ onClose }: { onClose: () => void }) {
         onKeyDown={e => { if (p.numbered && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); e.stopPropagation(); setMarkerDetails(p); setSelectedMarker(p.name); } }}>
         {p.numbered && <circle cx={p.x} cy={p.y} r={unit*10} fill="transparent" />}
         {markerDetails?.name === p.name && <circle cx={p.x} cy={p.y} r={unit*7} fill="none" stroke="white" strokeWidth={unit*2} />}
-        <circle cx={p.x} cy={p.y} r={unit*(p.numbered ? 2.5 : 1.5)} fill={p.numbered ? '#f59af3' : '#d5dce1'} />{(zoom >= 8 || (p.numbered && (Number(p.name)%10===0 || p.name==='1' || p.name==='108'))) && <text x={p.x+unit*7} y={p.y+unit*4} fontSize={unit*12} fill="white" stroke="#14201d" strokeWidth={unit*3} paintOrder="stroke">{p.name}</text>}</g>)}
+        <circle cx={p.x} cy={p.y} r={unit*(p.numbered ? 2.5 : 1.5)} fill={p.numbered ? 'var(--brand-orange)' : '#d5dce1'} />{(zoom >= 8 || (p.numbered && (Number(p.name)%10===0 || p.name==='1' || p.name==='108'))) && <text x={p.x+unit*7} y={p.y+unit*4} fontSize={unit*12} fill="white" stroke="#14201d" strokeWidth={unit*3} paintOrder="stroke">{p.name}</text>}</g>)}
     </svg>}
     {markerDetails && <aside className="alignment-detail__marker-card" aria-label={`Marker ${markerDetails.name} location`}>
       <div><strong>Marker {markerDetails.name}</strong><button aria-label="Close marker details" onClick={() => { setMarkerDetails(null); setSelectedMarker(""); svgRef.current?.focus(); }}>×</button></div>

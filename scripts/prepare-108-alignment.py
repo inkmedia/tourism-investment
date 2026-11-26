@@ -45,7 +45,7 @@ def main():
     path = ' '.join(f'M{x:g},{y:g} {xx:g},{yy:g}' for ((x, y), (xx, yy)) in sorted(segments))
     svg = ('<svg xmlns="http://www.w3.org/2000/svg"><g id="layer-alignment108" '
            'class="map-layer" aria-label="108 Alignment (approximate placement)" '
-           'fill="none" stroke="#f59af3" stroke-width="1.5" stroke-linecap="round" '
+           'fill="none" stroke="#ff7d45" stroke-width="1.5" stroke-linecap="round" '
            'stroke-linejoin="round" pointer-events="none">'
            f'<path vector-effect="non-scaling-stroke" d="{path}"/></g></svg>\n')
     destination = ROOT / 'public/img/108-alignment.svg'
