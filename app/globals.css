@@ -6533,7 +6533,7 @@ section[id] {
   .advantages-explorer__option { font-size: 16px; }
 }
 @media (max-width: 400px) {
-  .advantages-explorer__option { padding: 12px 8px; gap: 6px; }
+  .advantages-explorer__option { padding: 12px 6px; gap: 4px; font-size: 15px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .advantages-explorer__option { transition: none; }
