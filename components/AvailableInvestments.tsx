@@ -1,5 +1,8 @@
 "use client";
 
+import OpportunityModal from "./OpportunityModal";
+import { opportunityCopy } from "./opportunityCopy";
+
 import FitText from "@/components/FitText";
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
@@ -18,30 +21,9 @@ import {
   opportunityDetails,
 } from "./investmentData";
 
-const excludedCategories = new Set([
-  "Boutique & Micro-Stays",
-  "Scenic Transport",
-  "Nature & Eco",
-  "Culture & Heritage",
-]);
-
-const excludedOpportunities = new Set([
-  "Forest Edge Resort",
-  "Heritage Village",
-  "Riverfront Promenade",
-  "Capsule Hotel Retreat",
-  "Food Hall & Dessert Street",
-  "Wellness Farm Retreat",
-  "Eco-Cycle Hub & Scenic Bike Trails",
-]);
-
-const availableOpportunities = opportunities.filter(
-  (item) =>
-    !excludedOpportunities.has(item.title) &&
-    !excludedCategories.has(categories[item.category][0]),
-);
+const availableOpportunities = opportunities;
 const availableCategoryIds = new Set(
-  availableOpportunities.map((item) => item.category),
+  availableOpportunities.flatMap((item) => item.categoryIds),
 );
 
 function SwapLabel({
@@ -83,6 +65,7 @@ function InvestmentCard({
   index: number;
 }) {
   const [flipped, setFlipped] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
   const details = opportunityDetails[item.id];
   const frontRef = useRef<HTMLButtonElement>(null);
   const backRef = useRef<HTMLDivElement>(null);
@@ -105,7 +88,7 @@ function InvestmentCard({
         } as CSSProperties
       }
       onKeyDown={(event) => {
-        if (event.key === "Escape" && flipped) flip(false);
+        if (event.key === "Escape" && flipped && !showDetails) flip(false);
       }}
     >
       <button
@@ -204,6 +187,14 @@ function InvestmentCard({
                   <h4>Overview</h4>
                   <p>{details.overview}</p>
                 </div>
+                <button
+                  type="button"
+                  className="available-card__enquire available-card__read-more swap-button"
+                  aria-haspopup="dialog"
+                  onClick={() => setShowDetails(true)}
+                >
+                  <SwapLabel text="Read more" />
+                </button>
                 <div className="available-card__detail">
                   <h4>Key highlights</h4>
                   <ul>
@@ -223,10 +214,17 @@ function InvestmentCard({
                 <div className="available-card__detail">
                   <h4>The opportunity</h4>
                   <p>
-                    {item.description ||
-                      "Detailed opportunity information will be added soon."}
+                    {opportunityCopy[item.title]?.opportunity || item.description}
                   </p>
                 </div>
+                <button
+                  type="button"
+                  className="available-card__enquire available-card__read-more swap-button"
+                  aria-haspopup="dialog"
+                  onClick={() => setShowDetails(true)}
+                >
+                  <SwapLabel text="Read more" />
+                </button>
                 <div className="available-card__back-investment">
                   <span className="available-card__label">
                     Indicative estimate
@@ -251,6 +249,9 @@ function InvestmentCard({
           </button>
         </article>
       </div>
+      {showDetails && (
+        <OpportunityModal title={item.title} onClose={() => setShowDetails(false)} />
+      )}
     </li>
   );
 }
@@ -292,7 +293,7 @@ export default function AvailableInvestments() {
     };
   }, [category, expanded]);
   const filtered = availableOpportunities.filter(
-    (item) => category === null || item.category === category,
+    (item) => category === null || item.categoryIds.includes(category),
   );
   const visible = expanded ? filtered : filtered.slice(0, 8);
   return (
@@ -317,9 +318,13 @@ export default function AvailableInvestments() {
               opportunities
             </h2>
             <p className="available-investments__intro">
-              We welcome investor partners and enquiries from both Bhutanese and
-              foreign investors. These illustrative opportunities are a starting
-              point for discussion. Investors are welcome to propose their own concepts.
+              These concepts reflect the tourism experiences and businesses we would like to see developed in Gelephu Mindfulness City. They are a starting point for discussion with local and international investors, developers and operators.
+            </p>
+            <p className="available-investments__intro">
+              Each concept can be tailored to your investment objectives, operating model and preferred scale. We also welcome original proposals that support GMC’s tourism vision. Our team can work with you to explore the right location, project mix and development approach.
+            </p>
+            <p className="available-investments__intro">
+              We welcome both proposals that build on the concepts outlined here and ideas that start with an opportunity you’ve identified in Gelephu Mindfulness City.
             </p>
           </div>
           <p className="available-investments__disclaimer">

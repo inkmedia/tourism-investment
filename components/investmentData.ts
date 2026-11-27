@@ -35,7 +35,14 @@ const opportunityImages: Record<string, string> = {
   "River Sports Hub": "River-Sports-Hub.webp",
   "ATV Trail Experience": "ATV-Trail-Experience.webp",
 };
-// Detail copy can be added here as each opportunity brief is supplied.
+const suppliedCategories: Record<string, number[]> = {
+  "Forest Edge Resort": [3], "Heritage & Culture Lodge": [0],
+  "Heritage Village": [8, 3], "Riverfront Promenade": [8, 3],
+  "Capsule Hotel Retreat": [0], "Food Hall & Dessert Street": [8],
+  "Bird Watching Eco-Lodge": [0], "Nature Glamping Resort": [0],
+  "Cable Car": [8], "Alpine Coaster": [8, 5],
+  "Bhutanese Culinary Studio & Chef’s Table": [0],
+};
 export const opportunities = [
   ["5-Star City Hotel", 0, "USD 8–10M"],
   ["Conference & Business Hotel", 1, "~USD 20M"],
@@ -66,13 +73,14 @@ export const opportunities = [
 ].map(([title, category, investment], index) => ({
   id: index,
   title: String(title),
-  category: Number(category),
+  category: suppliedCategories[String(title)]?.[0] ?? Number(category),
+  categoryIds: suppliedCategories[String(title)] ?? [Number(category)],
   investment: String(investment),
   image: opportunityImages[String(title)]
     ? `/img/opportunities/${opportunityImages[String(title)]}`
     : `/cards/${images[index % images.length]}`,
   description: "",
-})).filter((item) => !["Alpine Coaster", "Water Park"].includes(item.title));
+}));
 
 export const opportunityDetails = [
   {
