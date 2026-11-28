@@ -2866,8 +2866,7 @@ button {
     align-items: stretch;
     gap: 0;
     padding: 12px 22px 26px;
-    background: rgba(14, 31, 43, 0.97);
-    backdrop-filter: blur(18px);
+    background: #fff;
     visibility: hidden;
     opacity: 0;
     transform: translateY(-12px);
@@ -2886,7 +2885,12 @@ button {
   .site-nav__link {
     padding: 14px 0;
     font-size: var(--type-label);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(16, 27, 34, 0.73);
+    border-bottom: 1px solid rgba(16, 27, 34, 0.1);
+  }
+  .site-nav__link:hover,
+  .site-nav__link:focus-visible {
+    color: var(--ink);
   }
   .site-nav__cta {
     align-self: flex-start;
