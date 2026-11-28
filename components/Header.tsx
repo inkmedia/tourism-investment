@@ -8,6 +8,7 @@ const navigation = [
   { label: "Why Invest", href: "#why-invest" },
   { label: "Opportunities", href: "#opportunities" },
   { label: "Map", href: "#investment-map" },
+  { label: "Investment Framework", href: "#investor-framework" },
   { label: "How to Invest", href: "#how-to-invest" },
   { label: "About GMC", href: "https://gmc.bt", external: true },
 ];
