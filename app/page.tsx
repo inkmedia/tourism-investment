@@ -155,12 +155,12 @@ export default async function Home() {
       <Opportunities />
       <AvailableInvestments />
       <PartnersCTA />
-      <PlannedAttractions />
       <SiteContext />
       <WhyInvestNow />
       <AirportStory />
       <AdvantagesSummary />
       <InvestorFramework />
+      <PlannedAttractions />
       <InvestmentJourney />
       <LatestUpdates />
       <InvestorEnquiries />

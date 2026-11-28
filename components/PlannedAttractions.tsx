@@ -32,79 +32,96 @@ export default function PlannedAttractions() {
   useEffect(() => {
     const rail = railRef.current;
     if (!rail) return;
+    const manualScrolling = matchMedia("(max-width: 600px), (any-pointer: coarse), (prefers-reduced-motion: reduce)");
     const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
-    let frame = 0;
-    let lastTime = 0;
-    let position = rail.scrollLeft;
-    let paused = false;
-    let visible = false;
-    const cards = Array.from(rail.querySelectorAll<HTMLElement>(".planned-attractions__cards li"));
-    let lastParallaxPosition = -1;
-    let lastRailWidth = -1;
+    const startAnimation = () => {
+      if (manualScrolling.matches) return () => {};
 
-    const updateParallax = () => {
-      const bounds = rail.getBoundingClientRect();
-      if (rail.scrollLeft === lastParallaxPosition && bounds.width === lastRailWidth) return;
-      lastParallaxPosition = rail.scrollLeft;
-      lastRailWidth = bounds.width;
-      // Read positions together before updating styles to avoid repeated layout work.
-      const offsets = cards.map((card) => {
-        const rect = card.getBoundingClientRect();
-        if (rect.right < bounds.left || rect.left > bounds.right) return null;
-        const progress = (rect.left + rect.width / 2 - bounds.left - bounds.width / 2)
-          / ((bounds.width + rect.width) / 2);
-        return -Math.max(-1, Math.min(1, progress)) * rect.width * 0.12;
-      });
-      cards.forEach((card, index) => {
-        if (offsets[index] !== null) {
-          card.style.setProperty("--parallax-x", `${offsets[index]}px`);
+      let frame = 0;
+      let lastTime = 0;
+      let position = rail.scrollLeft;
+      let paused = false;
+      let visible = false;
+      const cards = Array.from(rail.querySelectorAll<HTMLElement>(".planned-attractions__cards li"));
+      let lastParallaxPosition = -1;
+      let lastRailWidth = -1;
+
+      const updateParallax = () => {
+        const bounds = rail.getBoundingClientRect();
+        if (rail.scrollLeft === lastParallaxPosition && bounds.width === lastRailWidth) return;
+        lastParallaxPosition = rail.scrollLeft;
+        lastRailWidth = bounds.width;
+        // Read positions together before updating styles to avoid repeated layout work.
+        const offsets = cards.map((card) => {
+          const rect = card.getBoundingClientRect();
+          if (rect.right < bounds.left || rect.left > bounds.right) return null;
+          const progress = (rect.left + rect.width / 2 - bounds.left - bounds.width / 2)
+            / ((bounds.width + rect.width) / 2);
+          return -Math.max(-1, Math.min(1, progress)) * rect.width * 0.12;
+        });
+        cards.forEach((card, index) => {
+          if (offsets[index] !== null) {
+            card.style.setProperty("--parallax-x", `${offsets[index]}px`);
+          }
+        });
+      };
+
+      const tick = (time: number) => {
+        const elapsed = lastTime ? Math.min(time - lastTime, 50) : 0;
+        lastTime = time;
+        const collection = rail.firstElementChild as HTMLElement | null;
+        if (!paused && visible && !document.hidden && !reducedMotion.matches && collection) {
+          const loopWidth = collection.offsetWidth + 18;
+          position = (position + elapsed * 0.04) % loopWidth;
+          rail.scrollLeft = position;
+        } else {
+          position = rail.scrollLeft;
         }
-      });
-    };
-
-    const tick = (time: number) => {
-      const elapsed = lastTime ? Math.min(time - lastTime, 50) : 0;
-      lastTime = time;
-      const collection = rail.firstElementChild as HTMLElement | null;
-      if (!paused && visible && !document.hidden && !reducedMotion.matches && collection) {
-        const loopWidth = collection.offsetWidth + 18;
-        position = (position + elapsed * 0.04) % loopWidth;
-        rail.scrollLeft = position;
-      } else {
+        if (visible && !document.hidden && !reducedMotion.matches) updateParallax();
+        frame = requestAnimationFrame(tick);
+      };
+      const pause = () => { paused = true; };
+      const resume = () => {
+        paused = rail.matches(":hover, :focus-within");
         position = rail.scrollLeft;
-      }
-      if (visible && !document.hidden && !reducedMotion.matches) updateParallax();
+        lastTime = 0;
+      };
+      const observer = new IntersectionObserver(([entry]) => {
+        visible = entry.isIntersecting;
+        lastTime = 0;
+      });
+      observer.observe(rail);
+      rail.addEventListener("pointerenter", pause);
+      rail.addEventListener("pointerleave", resume);
+      rail.addEventListener("focusin", pause);
+      rail.addEventListener("focusout", resume);
+      rail.addEventListener("touchstart", pause, { passive: true });
+      rail.addEventListener("touchend", resume);
+      rail.addEventListener("touchcancel", resume);
       frame = requestAnimationFrame(tick);
+      return () => {
+        cancelAnimationFrame(frame);
+        observer.disconnect();
+        rail.removeEventListener("pointerenter", pause);
+        rail.removeEventListener("pointerleave", resume);
+        rail.removeEventListener("focusin", pause);
+        rail.removeEventListener("focusout", resume);
+        rail.removeEventListener("touchstart", pause);
+        rail.removeEventListener("touchend", resume);
+        rail.removeEventListener("touchcancel", resume);
+      };
     };
-    const pause = () => { paused = true; };
-    const resume = () => {
-      paused = rail.matches(":hover, :focus-within");
-      position = rail.scrollLeft;
-      lastTime = 0;
+    let stopAnimation = startAnimation();
+    const updateMode = () => {
+      stopAnimation();
+      // Reset the desktop loop when changing to a single, manually scrolled list.
+      rail.scrollLeft = 0;
+      stopAnimation = startAnimation();
     };
-    const observer = new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting;
-      lastTime = 0;
-    });
-    observer.observe(rail);
-    rail.addEventListener("pointerenter", pause);
-    rail.addEventListener("pointerleave", resume);
-    rail.addEventListener("focusin", pause);
-    rail.addEventListener("focusout", resume);
-    rail.addEventListener("touchstart", pause, { passive: true });
-    rail.addEventListener("touchend", resume);
-    rail.addEventListener("touchcancel", resume);
-    frame = requestAnimationFrame(tick);
+    manualScrolling.addEventListener("change", updateMode);
     return () => {
-      cancelAnimationFrame(frame);
-      observer.disconnect();
-      rail.removeEventListener("pointerenter", pause);
-      rail.removeEventListener("pointerleave", resume);
-      rail.removeEventListener("focusin", pause);
-      rail.removeEventListener("focusout", resume);
-      rail.removeEventListener("touchstart", pause);
-      rail.removeEventListener("touchend", resume);
-      rail.removeEventListener("touchcancel", resume);
+      stopAnimation();
+      manualScrolling.removeEventListener("change", updateMode);
     };
   }, []);
   return (
@@ -131,7 +148,8 @@ export default function PlannedAttractions() {
           className="planned-attractions__rail"
           role="region"
           tabIndex={0}
-          aria-label="Planned attractions. Automatically scrolling; pause by hovering or focusing."
+          aria-label="Planned attractions. Scroll to explore activities."
+          data-lenis-prevent
         >
           {[false, true].map((duplicate) => (
             <ul
@@ -145,7 +163,8 @@ export default function PlannedAttractions() {
                     src={`/img/planned-attractions/${attraction.replaceAll(" ", "-")}.webp`}
                     alt=""
                     fill
-                    sizes="(max-width: 600px) 386px, (max-width: 1138px) 338px, (max-width: 1502px) 30vw, 446px"
+                    draggable={false}
+                    sizes="(max-width: 600px) 85vw, (max-width: 1138px) 338px, (max-width: 1502px) 30vw, 446px"
                     className="planned-attractions__image"
                   />
                   <h3>{attraction}</h3>

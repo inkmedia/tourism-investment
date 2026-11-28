@@ -1177,10 +1177,27 @@ button {
     font-size: var(--type-section);
   }
   .planned-attractions__cards li {
-    width: min(105.3vw, 386px);
+    width: min(82vw, 386px);
     min-height: 260px;
   }
 
+}
+
+/* Native touch scrolling must not compete with the desktop marquee. */
+@media (max-width: 600px), (any-pointer: coarse), (prefers-reduced-motion: reduce) {
+  .planned-attractions__rail {
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+  }
+  .planned-attractions__cards[aria-hidden="true"] { display: none; }
+  .planned-attractions__cards li { scroll-snap-align: start; }
+  .planned-attractions__cards h3 { white-space: normal; }
+  .planned-attractions__image,
+  .planned-attractions__cards li:hover .planned-attractions__image {
+    transform: none;
+    scale: none;
+    transition: none;
+  }
 }
 
 /* Development landscape */
@@ -4226,13 +4243,52 @@ button {
 .available-card__scroll {
   min-height: 0;
   flex: 1;
-  overflow-y: auto;
+  overflow-y: scroll;
   overscroll-behavior: contain;
   scrollbar-width: thin;
-  scrollbar-color: #b8ad99 #eae5dc;
+  scrollbar-color: #96712f #eae5dc;
+  scrollbar-gutter: stable;
   padding-right: 9px;
   transform: translateZ(14px);
   cursor: pointer;
+}
+/* Use an explicitly sized classic scrollbar in WebKit/Blink, including macOS. */
+@supports selector(::-webkit-scrollbar) {
+  .available-card__scroll {
+    scrollbar-width: auto;
+    scrollbar-color: auto;
+  }
+}
+.available-card__scroll::-webkit-scrollbar {
+  width: 8px;
+}
+.available-card__scroll::-webkit-scrollbar-track {
+  background: #eae5dc;
+  border-radius: 8px;
+}
+.available-card__scroll::-webkit-scrollbar-thumb {
+  background: #96712f;
+  border: 2px solid #eae5dc;
+  border-radius: 8px;
+}
+.available-card__scroll-content {
+  padding-bottom: 12px;
+}
+.available-card__scroll-hint {
+  flex-shrink: 0;
+  min-height: 24px;
+  padding-top: 6px;
+  color: #765722;
+  font-size: 11px;
+  line-height: 18px;
+  text-align: center;
+  transform: translateZ(18px);
+  pointer-events: none;
+}
+.available-card__scroll-hint > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 .available-card__scroll:focus-visible {
   outline: 1px solid var(--gold);
@@ -4316,12 +4372,12 @@ button {
   color: #7a7e7e;
   margin: 14px 0 4px;
 }
-.available-card .available-card__return {
+.available-card button.available-card__return {
   flex-shrink: 0;
   transform: translateZ(18px);
-  margin-top: 12px;
-  padding-top: 10px;
-  min-height: 30px;
+  margin-top: 2px;
+  padding: 4px 0;
+  min-height: 28px;
 }
 .available-card.is-flipped .available-card__toggle {
   pointer-events: none;
@@ -6640,7 +6696,9 @@ html {
   .available-card__explore {
     font-size: 12px;
   }
-  .available-card .available-card__return,
+  .available-card button.available-card__return {
+    min-height: 32px;
+  }
   .available-card__enquire {
     min-height: 44px;
   }

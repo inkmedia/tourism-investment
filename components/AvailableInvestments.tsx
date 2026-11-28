@@ -69,7 +69,29 @@ function InvestmentCard({
   const details = opportunityDetails[item.id];
   const frontRef = useRef<HTMLButtonElement>(null);
   const backRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [hasMoreBelow, setHasMoreBelow] = useState(false);
   const scrollStart = useRef(0);
+  useEffect(() => {
+    const viewport = backRef.current;
+    const content = contentRef.current;
+    if (!flipped || !viewport || !content) return;
+
+    const updateScrollHint = () => {
+      setHasMoreBelow(
+        viewport.scrollHeight - viewport.clientHeight - viewport.scrollTop > 2,
+      );
+    };
+    updateScrollHint();
+    viewport.addEventListener("scroll", updateScrollHint, { passive: true });
+    const observer = new ResizeObserver(updateScrollHint);
+    observer.observe(viewport);
+    observer.observe(content);
+    return () => {
+      viewport.removeEventListener("scroll", updateScrollHint);
+      observer.disconnect();
+    };
+  }, [flipped]);
   function flip(value: boolean) {
     setFlipped(value);
     requestAnimationFrame(() =>
@@ -167,6 +189,7 @@ function InvestmentCard({
               flip(false);
             }}
           >
+            <div ref={contentRef} className="available-card__scroll-content">
             {details ? (
               <>
                 <dl className="available-card__metrics">
@@ -240,6 +263,12 @@ function InvestmentCard({
             >
               <SwapLabel text="Enquire now" />
             </a>
+            </div>
+          </div>
+          <div className="available-card__scroll-hint" aria-hidden="true">
+            <span style={{ visibility: hasMoreBelow ? "visible" : "hidden" }}>
+              Scroll for more <ChevronDown size={14} />
+            </span>
           </div>
           <button
             className="available-card__return swap-button"
